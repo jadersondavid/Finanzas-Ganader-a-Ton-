@@ -246,6 +246,92 @@
         .alert.info { background-color: #cfe2ff; color: var(--color-ai); border: 1px solid var(--color-ai); }
 
         .hidden { display: none; }
+        
+        /* Estilos para Modales de Edición */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: var(--color-card-bg);
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideDown 0.3s;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--color-primary);
+        }
+        
+        .modal-header h3 {
+            margin: 0;
+            color: var(--color-primary);
+            font-size: 1.5em;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: #999;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            background-color: #f0f0f0;
+            color: var(--color-expense);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
 
         .charts-container {
             display: grid;
@@ -473,7 +559,7 @@
 
             <!-- Sección del Dashboard Financiero -->
             <section id="dashboard" class="content-section active">
-                <h2>Resumen Financiero - Noviembre 2025</h2>
+                <h2 id="dashboardTitle">Resumen Financiero</h2>
                 
                 <div class="summary-cards">
                     <div class="card income">
@@ -746,6 +832,122 @@
             </section>
             
         </main>
+    </div>
+
+    <!-- Modal de Edición de Gasto -->
+    <div id="modalEditarGasto" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar Gasto</h3>
+                <button class="close-modal" onclick="cerrarModal('modalEditarGasto')">&times;</button>
+            </div>
+            <form id="formEditarGasto" class="form-container">
+                <input type="hidden" id="editGastoId">
+                <div class="form-group">
+                    <label for="editGastoFecha">Fecha del Gasto</label>
+                    <input type="date" id="editGastoFecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="editGastoProveedor">Proveedor / Persona</label>
+                    <select id="editGastoProveedor" required>
+                        <option value="">Seleccione un proveedor</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editGastoCategoria">Categoría del Gasto</label>
+                    <select id="editGastoCategoria" required>
+                        <option value="Alimentos">Alimentos</option>
+                        <option value="Insumos">Insumos (Semillas, Químicos)</option>
+                        <option value="Veterinaria">Veterinaria / Medicamentos</option>
+                        <option value="ManoDeObra">Mano de Obra</option>
+                        <option value="Herramientas">Herramientas / Maquinaria</option>
+                        <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editGastoMonto">Monto en Pesos (COP)</label>
+                    <input type="number" id="editGastoMonto" placeholder="Ej: 1500000" min="0" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="editGastoProduccion">Asignación a Producción</label>
+                    <select id="editGastoProduccion" required>
+                        <option value="Ganado">Ganado Bovino</option>
+                        <option value="Pollos">Pollos de Engorde</option>
+                        <option value="Marranos">Marranos</option>
+                        <option value="Cultivos">Producciones Agrícolas</option>
+                        <option value="Piscicultura">Piscicultura</option>
+                        <option value="Infraestructura">Infraestructura / Mantenimiento</option>
+                        <option value="Otro">Otro (Gastos Administrativos)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editGastoAdjunto">Cambiar Archivo Adjunto (Opcional)</label>
+                    <input type="file" id="editGastoAdjunto" accept=".pdf,.jpg,.png">
+                    <small style="color: #6c757d;">Dejar vacío para mantener el archivo actual</small>
+                </div>
+                <div class="form-group full-width">
+                    <label for="editGastoNota">Nota o Descripción del Gasto</label>
+                    <textarea id="editGastoNota" rows="2" placeholder="Compra de 10 bultos de alimento balanceado para engorde..."></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalEditarGasto')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Guardar Cambios</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Edición de Ingreso -->
+    <div id="modalEditarIngreso" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar Ingreso</h3>
+                <button class="close-modal" onclick="cerrarModal('modalEditarIngreso')">&times;</button>
+            </div>
+            <form id="formEditarIngreso" class="form-container">
+                <input type="hidden" id="editIngresoId">
+                <div class="form-group">
+                    <label for="editIngresoFecha">Fecha del Ingreso</label>
+                    <input type="date" id="editIngresoFecha" required>
+                </div>
+                <div class="form-group">
+                    <label for="editIngresoComprador">Comprador</label>
+                    <input type="text" id="editIngresoComprador" placeholder="Ej: Lácteos El Prado" required>
+                </div>
+                <div class="form-group">
+                    <label for="editIngresoTipo">Tipo de Ingreso</label>
+                    <select id="editIngresoTipo" required>
+                        <option value="GanadoVenta">Venta de Ganado</option>
+                        <option value="Leche">Venta de Leche</option>
+                        <option value="Pollos">Venta de Pollos de Engorde</option>
+                        <option value="Marranos">Venta de Marranos</option>
+                        <option value="Agricultura">Venta Productos Agrícolas</option>
+                        <option value="Servicios">Servicios Prestados</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editIngresoMonto">Monto Recibido (COP)</label>
+                    <input type="number" id="editIngresoMonto" placeholder="Ej: 5000000" min="0" required>
+                </div>
+                <div class="form-group full-width">
+                    <label for="editIngresoAdjunto">Cambiar Archivo Adjunto (Opcional)</label>
+                    <input type="file" id="editIngresoAdjunto" accept=".pdf,.jpg,.png">
+                    <small style="color: #6c757d;">Dejar vacío para mantener el archivo actual</small>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalEditarIngreso')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Guardar Cambios</span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <!-- Lógica JavaScript (ES6+) con Integración Gemini y Supabase -->
@@ -1188,9 +1390,13 @@
                     this.classList.add('active');
                     
                     // Recargar datos específicos
+                    if (targetId === 'dashboard') {
+                        // Actualizar dashboard cuando se navega a él
+                        updateDashboard();
+                    }
                     if (targetId === 'proveedores') {
                         cargarProveedores().then(() => {
-                            renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                        renderSupplierTable(MOCK_DATA.PROVEEDORES);
                             updateSupplierSelect();
                         });
                     }
@@ -1214,51 +1420,107 @@
         }
 
         /**
+         * Obtener mes y año actual
+         */
+        function getMesActual() {
+            const ahora = new Date();
+            return {
+                mes: ahora.getMonth() + 1,
+                año: ahora.getFullYear(),
+                nombreMes: ahora.toLocaleString('es-ES', { month: 'long' })
+            };
+        }
+        
+        /**
+         * Filtrar datos del mes actual
+         */
+        function filtrarDatosDelMes(datos) {
+            const { mes, año } = getMesActual();
+            return datos.filter(item => {
+                const fechaItem = new Date(item.fecha);
+                return fechaItem.getMonth() + 1 === mes && fechaItem.getFullYear() === año;
+            });
+        }
+
+        /**
          * Lógica de Cálculos y Dashboard
          */
         async function updateDashboard() {
-            // Cargar datos desde Supabase si está configurado
-            await Promise.all([
-                cargarGastos(),
-                cargarIngresos(),
-                cargarPresupuesto()
-            ]);
-            
-            totalGastos = MOCK_DATA.GASTOS.reduce((sum, item) => sum + item.monto, 0);
-            totalIngresos = MOCK_DATA.INGRESOS.reduce((sum, item) => sum + item.monto, 0);
+            try {
+                // Mostrar estado de carga
+                document.getElementById('totalIngresos').innerText = 'Cargando...';
+                document.getElementById('totalGastos').innerText = 'Cargando...';
+                document.getElementById('gananciaNeta').innerText = 'Cargando...';
+                
+                // Cargar datos desde Supabase si está configurado
+                await Promise.all([
+                    cargarGastos(),
+                    cargarIngresos(),
+                    cargarPresupuesto()
+                ]);
+                
+                // Obtener datos del mes actual
+                const { mes, año, nombreMes } = getMesActual();
+                const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS);
+                const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS);
+                
+                // Calcular totales del mes actual
+                totalGastos = gastosDelMes.reduce((sum, item) => sum + item.monto, 0);
+                totalIngresos = ingresosDelMes.reduce((sum, item) => sum + item.monto, 0);
             const gananciaNeta = totalIngresos - totalGastos;
             
+                // Actualizar título del dashboard
+                const dashboardTitle = document.querySelector('#dashboard h2');
+                if (dashboardTitle) {
+                    dashboardTitle.textContent = `Resumen Financiero - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                }
+                
+                // Actualizar tarjetas de resumen
             document.getElementById('totalIngresos').innerText = formatCurrency(totalIngresos);
             document.getElementById('totalGastos').innerText = formatCurrency(totalGastos);
             
             const gananciaElement = document.getElementById('gananciaNeta');
             gananciaElement.innerText = formatCurrency(gananciaNeta);
             
+                // Cambiar color según ganancia o pérdida
             if (gananciaNeta < 0) {
                 gananciaElement.style.color = 'var(--color-expense)';
-            } else {
+                } else if (gananciaNeta > 0) {
                 gananciaElement.style.color = 'var(--color-income)';
+                } else {
+                    gananciaElement.style.color = 'var(--color-text)';
             }
 
+                // Actualizar presupuesto
             actualizarPresupuesto(totalGastos);
+                
+                // Renderizar tablas (mostrar todos los datos, no solo del mes)
             renderExpenseTable(MOCK_DATA.GASTOS);
             renderIncomeTable(MOCK_DATA.INGRESOS);
             
-            if (typeof Chart !== 'undefined' && MOCK_DATA.GASTOS.length > 0) {
-                renderChartProduccion(MOCK_DATA.GASTOS);
-                renderChartTendencia(totalIngresos, totalGastos);
-            } else {
-                // Limpiar gráficos si no hay datos
-                const chartProduccion = document.getElementById('chartProduccion');
-                const chartTendencia = document.getElementById('chartTendencia');
-                if (chartProduccionInstance) {
-                    chartProduccionInstance.destroy();
-                    chartProduccionInstance = null;
+                // Renderizar gráficos
+            if (typeof Chart !== 'undefined') {
+                    // Pequeño delay para asegurar que el DOM esté listo
+                    setTimeout(() => {
+                        renderChartProduccion(gastosDelMes);
+                        renderChartTendencia(totalIngresos, totalGastos, mes, año);
+                    }, 100);
+                } else {
+                    // Si Chart.js no está cargado, limpiar gráficos
+                    if (chartProduccionInstance) {
+                        chartProduccionInstance.destroy();
+                        chartProduccionInstance = null;
+                    }
+                    if (chartTendenciaInstance) {
+                        chartTendenciaInstance.destroy();
+                        chartTendenciaInstance = null;
+                    }
                 }
-                if (chartTendenciaInstance) {
-                    chartTendenciaInstance.destroy();
-                    chartTendenciaInstance = null;
-                }
+            } catch (error) {
+                console.error('Error actualizando dashboard:', error);
+                document.getElementById('totalIngresos').innerText = 'Error';
+                document.getElementById('totalGastos').innerText = 'Error';
+                document.getElementById('gananciaNeta').innerText = 'Error';
             }
         }
 
@@ -1358,23 +1620,41 @@
             const budgetAlert = document.getElementById('budgetAlert');
             const presupuestoBase = document.getElementById('presupuestoBase');
             
+            if (!progressBar || !budgetStatus || !budgetAlert || !presupuestoBase) {
+                return; // Elementos no disponibles aún
+            }
+            
+            // Actualizar barra de progreso con animación
             progressBar.style.width = `${Math.min(progreso, 100)}%`;
-            budgetStatus.innerText = `Gasto actual: ${formatCurrency(gastosActuales)} / Límite: ${formatCurrency(PRESUPUESTO_MENSUAL)}`;
+            progressBar.style.transition = 'width 0.5s ease-in-out';
+            
+            // Calcular porcentaje usado
+            const porcentajeUsado = progreso.toFixed(1);
+            
+            // Actualizar texto de estado con mejor formato
+            budgetStatus.innerHTML = `<strong>Gasto actual:</strong> ${formatCurrency(gastosActuales)} / <strong>Límite:</strong> ${formatCurrency(PRESUPUESTO_MENSUAL)} <span style="color: ${progreso >= 100 ? 'var(--color-alert-danger)' : progreso >= 80 ? 'var(--color-alert-warn)' : 'var(--color-primary)'}; font-weight: bold;">(${porcentajeUsado}%)</span>`;
             presupuestoBase.innerText = formatCurrency(PRESUPUESTO_MENSUAL);
 
+            // Limpiar clases anteriores
             budgetAlert.classList.add('hidden');
             progressBar.classList.remove('warning', 'danger');
 
+            // Mostrar alertas según el porcentaje
             if (progreso >= 100) {
                 progressBar.classList.add('danger');
                 budgetAlert.classList.remove('hidden', 'warning');
                 budgetAlert.classList.add('danger');
-                budgetAlert.innerHTML = `<span>🛑</span> ¡ALERTA ROJA! Presupuesto excedido por ${formatCurrency(gastosActuales - PRESUPUESTO_MENSUAL)}.`;
+                const excedido = gastosActuales - PRESUPUESTO_MENSUAL;
+                budgetAlert.innerHTML = `<span>🛑</span> <strong>¡ALERTA ROJA!</strong> Presupuesto excedido por ${formatCurrency(excedido)}.`;
             } else if (progreso >= 80) {
                 progressBar.classList.add('warning');
                 budgetAlert.classList.remove('hidden', 'danger');
                 budgetAlert.classList.add('warning');
-                budgetAlert.innerHTML = `<span>🟠</span> ¡ADVERTENCIA! Ha superado el 80% del presupuesto mensual. Le quedan ${formatCurrency(PRESUPUESTO_MENSUAL - gastosActuales)}.`;
+                const restante = PRESUPUESTO_MENSUAL - gastosActuales;
+                budgetAlert.innerHTML = `<span>🟠</span> <strong>¡ADVERTENCIA!</strong> Ha superado el 80% del presupuesto mensual. Le quedan ${formatCurrency(restante)}.`;
+            } else {
+                // Todo bien, ocultar alerta
+                budgetAlert.classList.add('hidden');
             }
         }
         
@@ -1385,10 +1665,10 @@
                 if (newBudget && newBudget > 0) {
                     try {
                         await actualizarPresupuestoDB(parseInt(newBudget));
-                        document.getElementById('newBudget').value = '';
+                    document.getElementById('newBudget').value = '';
                         await updateDashboard();
-                        alertMessage('Presupuesto actualizado con éxito!', 'success');
-                        document.querySelector('[data-section="dashboard"]').click();
+                    alertMessage('Presupuesto actualizado con éxito!', 'success');
+                    document.querySelector('[data-section="dashboard"]').click();
                     } catch (error) {
                         alertMessage('Error al actualizar presupuesto: ' + error.message, 'danger');
                     }
@@ -1398,11 +1678,22 @@
         
         let chartProduccionInstance = null;
         function renderChartProduccion(data) {
+            const ctx = document.getElementById('chartProduccion');
+            if (!ctx) return;
+            
             if (!data || data.length === 0) {
                 if (chartProduccionInstance) {
                     chartProduccionInstance.destroy();
                     chartProduccionInstance = null;
                 }
+                // Mostrar mensaje en el canvas
+                const canvas = ctx;
+                const context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.font = '16px Arial';
+                context.fillStyle = '#6c757d';
+                context.textAlign = 'center';
+                context.fillText('No hay gastos registrados', canvas.width / 2, canvas.height / 2);
                 return;
             }
 
@@ -1411,51 +1702,174 @@
                 return acc;
             }, {});
             
-            const ctx = document.getElementById('chartProduccion').getContext('2d');
+            const labels = Object.keys(gastosPorProduccion);
+            const valores = Object.values(gastosPorProduccion);
             
-            if (chartProduccionInstance) { chartProduccionInstance.destroy(); }
+            if (chartProduccionInstance) { 
+                chartProduccionInstance.destroy(); 
+            }
             
             chartProduccionInstance = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: Object.keys(gastosPorProduccion),
+                    labels: labels,
                     datasets: [{
-                        data: Object.values(gastosPorProduccion),
-                        backgroundColor: ['#38761d', '#cc9900', '#990000', '#3c78d8', '#f1c232', '#6aa84f', '#76a5af'],
+                        data: valores,
+                        backgroundColor: [
+                            '#38761d', // Verde principal
+                            '#cc9900', // Marrón/Tierra
+                            '#990000', // Rojo oscuro
+                            '#3c78d8', // Azul
+                            '#f1c232', // Amarillo
+                            '#6aa84f', // Verde claro
+                            '#76a5af', // Azul gris
+                            '#e69138', // Naranja
+                            '#674ea7', // Morado
+                            '#cc0000'  // Rojo
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
                     }]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' }, title: { display: false } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return label + ': ' + formatCurrency(value) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    } 
+                }
             });
         }
 
         let chartTendenciaInstance = null;
-        function renderChartTendencia(ingresosNov, gastosNov) {
-            if (ingresosNov === 0 && gastosNov === 0) {
+        function renderChartTendencia(ingresosActual, gastosActual, mesActual, añoActual) {
+            const ctx = document.getElementById('chartTendencia');
+            if (!ctx) return;
+            
+            // Obtener datos de los últimos 3 meses
+            const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            const meses = [];
+            const ingresosMensuales = [];
+            const gastosMensuales = [];
+            
+            // Calcular datos de los últimos 3 meses
+            for (let i = 2; i >= 0; i--) {
+                const fecha = new Date(añoActual, mesActual - 1 - i, 1);
+                const mes = fecha.getMonth() + 1;
+                const año = fecha.getFullYear();
+                const nombreMes = mesesNombres[mes - 1];
+                
+                meses.push(nombreMes);
+                
+                // Calcular totales del mes
+                const gastosMes = MOCK_DATA.GASTOS.filter(g => {
+                    const fechaGasto = new Date(g.fecha);
+                    return fechaGasto.getMonth() + 1 === mes && fechaGasto.getFullYear() === año;
+                }).reduce((sum, g) => sum + g.monto, 0);
+                
+                const ingresosMes = MOCK_DATA.INGRESOS.filter(i => {
+                    const fechaIngreso = new Date(i.fecha);
+                    return fechaIngreso.getMonth() + 1 === mes && fechaIngreso.getFullYear() === año;
+                }).reduce((sum, i) => sum + i.monto, 0);
+                
+                ingresosMensuales.push(ingresosMes);
+                gastosMensuales.push(gastosMes);
+            }
+            
+            // Si no hay datos, mostrar mensaje
+            if (ingresosMensuales.every(v => v === 0) && gastosMensuales.every(v => v === 0)) {
                 if (chartTendenciaInstance) {
                     chartTendenciaInstance.destroy();
                     chartTendenciaInstance = null;
                 }
+                // Mostrar mensaje en el canvas
+                const canvas = ctx;
+                const context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.font = '16px Arial';
+                context.fillStyle = '#6c757d';
+                context.textAlign = 'center';
+                context.fillText('No hay datos para mostrar', canvas.width / 2, canvas.height / 2);
                 return;
             }
-
-            const meses = ['Septiembre', 'Octubre', 'Noviembre'];
-            const ingresosMensuales = [5500000, 7000000, ingresosNov];
-            const gastosMensuales = [4500000, 5000000, gastosNov];
             
-            const ctx = document.getElementById('chartTendencia').getContext('2d');
-            
-            if (chartTendenciaInstance) { chartTendenciaInstance.destroy(); }
+            if (chartTendenciaInstance) { 
+                chartTendenciaInstance.destroy(); 
+            }
 
             chartTendenciaInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: meses,
                     datasets: [
-                        { label: 'Ingresos Totales', data: ingresosMensuales, backgroundColor: 'var(--color-income)', borderWidth: 1 },
-                        { label: 'Gastos Totales', data: gastosMensuales, backgroundColor: 'var(--color-expense)', borderWidth: 1 }
+                        { 
+                            label: 'Ingresos Totales', 
+                            data: ingresosMensuales, 
+                            backgroundColor: '#27ae60', 
+                            borderColor: '#229954',
+                            borderWidth: 2,
+                            borderRadius: 5
+                        },
+                        { 
+                            label: 'Gastos Totales', 
+                            data: gastosMensuales, 
+                            backgroundColor: '#c0392b', 
+                            borderColor: '#a93226',
+                            borderWidth: 2,
+                            borderRadius: 5
+                        }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } }, plugins: { legend: { position: 'top' } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { 
+                        y: { 
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    if (value >= 1000000) {
+                                        return (value / 1000000).toFixed(1) + 'M';
+                                    } else if (value >= 1000) {
+                                        return (value / 1000).toFixed(0) + 'K';
+                                    }
+                                    return value;
+                                }
+                            }
+                        } 
+                    }, 
+                    plugins: { 
+                        legend: { position: 'top' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + formatCurrency(context.parsed.y);
+                                }
+                            }
+                        }
+                    } 
+                }
             });
         }
         
@@ -1541,9 +1955,19 @@
                     adjuntoCell.textContent = 'Sin adjunto';
                 }
                 
-                // Celda de acciones con botón eliminar
+                // Celda de acciones con botones editar y eliminar
                 const accionesCell = row.insertCell();
-                accionesCell.innerHTML = `<button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="eliminarGasto('${item.id}')"><span>🗑️ Eliminar</span></button>`;
+                accionesCell.style.display = 'flex';
+                accionesCell.style.gap = '8px';
+                accionesCell.style.flexWrap = 'wrap';
+                accionesCell.innerHTML = `
+                    <button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);" onclick="editarGasto('${item.id}')">
+                        <span>✏️ Editar</span>
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="eliminarGasto('${item.id}')">
+                        <span>🗑️ Eliminar</span>
+                    </button>
+                `;
             });
         }
         
@@ -1582,9 +2006,19 @@
                     adjuntoCell.textContent = 'Sin adjunto';
                 }
                 
-                // Celda de acciones con botón eliminar
+                // Celda de acciones con botones editar y eliminar
                 const accionesCell = row.insertCell();
-                accionesCell.innerHTML = `<button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="eliminarIngreso('${item.id}')"><span>🗑️ Eliminar</span></button>`;
+                accionesCell.style.display = 'flex';
+                accionesCell.style.gap = '8px';
+                accionesCell.style.flexWrap = 'wrap';
+                accionesCell.innerHTML = `
+                    <button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);" onclick="editarIngreso('${item.id}')">
+                        <span>✏️ Editar</span>
+                    </button>
+                    <button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="eliminarIngreso('${item.id}')">
+                        <span>🗑️ Eliminar</span>
+                    </button>
+                `;
             });
         }
         
@@ -1723,6 +2157,188 @@
                 } catch (error) {
                     alertMessage('Error al eliminar ingreso: ' + error.message, 'danger');
                 }
+            }
+        }
+        
+        // ========== FUNCIONES DE EDICIÓN ==========
+        
+        /**
+         * Abrir modal y cargar datos del gasto para editar
+         */
+        async function editarGasto(gastoId) {
+            const gasto = MOCK_DATA.GASTOS.find(g => g.id === gastoId);
+            if (!gasto) {
+                alertMessage('Gasto no encontrado', 'danger');
+                return;
+            }
+            
+            // Cargar proveedores en el select
+            await cargarProveedores();
+            updateSupplierSelect();
+            
+            // Llenar formulario con datos del gasto
+            document.getElementById('editGastoId').value = gasto.id;
+            document.getElementById('editGastoFecha').value = gasto.fecha;
+            document.getElementById('editGastoProveedor').value = gasto.proveedor || '';
+            document.getElementById('editGastoCategoria').value = gasto.categoria;
+            document.getElementById('editGastoMonto').value = gasto.monto;
+            document.getElementById('editGastoProduccion').value = gasto.produccion;
+            document.getElementById('editGastoNota').value = gasto.nota || '';
+            
+            // Actualizar select de proveedores
+            const selectProveedor = document.getElementById('editGastoProveedor');
+            selectProveedor.innerHTML = '<option value="">Seleccione un proveedor</option>';
+            MOCK_DATA.PROVEEDORES.forEach(proveedor => {
+                const option = document.createElement('option');
+                option.value = proveedor.id;
+                option.textContent = `${proveedor.nombre} (${proveedor.servicio})`;
+                if (proveedor.id === gasto.proveedor) {
+                    option.selected = true;
+                }
+                selectProveedor.appendChild(option);
+            });
+            
+            // Mostrar modal
+            document.getElementById('modalEditarGasto').style.display = 'block';
+        }
+        
+        /**
+         * Abrir modal y cargar datos del ingreso para editar
+         */
+        async function editarIngreso(ingresoId) {
+            const ingreso = MOCK_DATA.INGRESOS.find(i => i.id === ingresoId);
+            if (!ingreso) {
+                alertMessage('Ingreso no encontrado', 'danger');
+                return;
+            }
+            
+            // Llenar formulario con datos del ingreso
+            document.getElementById('editIngresoId').value = ingreso.id;
+            document.getElementById('editIngresoFecha').value = ingreso.fecha;
+            document.getElementById('editIngresoComprador').value = ingreso.comprador;
+            document.getElementById('editIngresoTipo').value = ingreso.tipo;
+            document.getElementById('editIngresoMonto').value = ingreso.monto;
+            
+            // Mostrar modal
+            document.getElementById('modalEditarIngreso').style.display = 'block';
+        }
+        
+        /**
+         * Cerrar modal
+         */
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            // Limpiar formulario
+            if (modalId === 'modalEditarGasto') {
+                document.getElementById('formEditarGasto').reset();
+            } else if (modalId === 'modalEditarIngreso') {
+                document.getElementById('formEditarIngreso').reset();
+            }
+        }
+        
+        /**
+         * Actualizar un gasto existente
+         */
+        async function actualizarGasto(gastoId, datosActualizados) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                // Actualizar en datos locales
+                const index = MOCK_DATA.GASTOS.findIndex(g => g.id === gastoId);
+                if (index !== -1) {
+                    MOCK_DATA.GASTOS[index] = { ...MOCK_DATA.GASTOS[index], ...datosActualizados };
+                }
+                return MOCK_DATA.GASTOS[index];
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('gastos')
+                    .update({
+                        fecha: datosActualizados.fecha,
+                        monto: datosActualizados.monto,
+                        categoria: datosActualizados.categoria,
+                        produccion: datosActualizados.produccion,
+                        proveedor_id: datosActualizados.proveedor || null,
+                        adjunto_url: datosActualizados.adjunto || null,
+                        nota: datosActualizados.nota || null
+                    })
+                    .eq('id', gastoId)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                const gastoActualizado = {
+                    id: data.id,
+                    fecha: data.fecha,
+                    monto: parseFloat(data.monto),
+                    categoria: data.categoria,
+                    produccion: data.produccion,
+                    proveedor: data.proveedor_id,
+                    adjunto: data.adjunto_url || 'sin_adjunto.pdf',
+                    nota: data.nota || ''
+                };
+                
+                // Actualizar en datos locales
+                const index = MOCK_DATA.GASTOS.findIndex(g => g.id === gastoId);
+                if (index !== -1) {
+                    MOCK_DATA.GASTOS[index] = gastoActualizado;
+                }
+                
+                return gastoActualizado;
+            } catch (error) {
+                console.error('Error actualizando gasto:', error);
+                throw error;
+            }
+        }
+        
+        /**
+         * Actualizar un ingreso existente
+         */
+        async function actualizarIngreso(ingresoId, datosActualizados) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                // Actualizar en datos locales
+                const index = MOCK_DATA.INGRESOS.findIndex(i => i.id === ingresoId);
+                if (index !== -1) {
+                    MOCK_DATA.INGRESOS[index] = { ...MOCK_DATA.INGRESOS[index], ...datosActualizados };
+                }
+                return MOCK_DATA.INGRESOS[index];
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('ingresos')
+                    .update({
+                        fecha: datosActualizados.fecha,
+                        monto: datosActualizados.monto,
+                        tipo: datosActualizados.tipo,
+                        comprador: datosActualizados.comprador,
+                        adjunto_url: datosActualizados.adjunto || null
+                    })
+                    .eq('id', ingresoId)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                const ingresoActualizado = {
+                    id: data.id,
+                    fecha: data.fecha,
+                    monto: parseFloat(data.monto),
+                    tipo: data.tipo,
+                    comprador: data.comprador,
+                    adjunto: data.adjunto_url || 'sin_comprobante.pdf'
+                };
+                
+                // Actualizar en datos locales
+                const index = MOCK_DATA.INGRESOS.findIndex(i => i.id === ingresoId);
+                if (index !== -1) {
+                    MOCK_DATA.INGRESOS[index] = ingresoActualizado;
+                }
+                
+                return ingresoActualizado;
+            } catch (error) {
+                console.error('Error actualizando ingreso:', error);
+                throw error;
             }
         }
         
@@ -2001,12 +2617,139 @@
             await cargarLogo();
         }
 
+        // Configurar formularios de edición
+        function setupEditForms() {
+            // Formulario de edición de gasto
+            document.getElementById('formEditarGasto').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const gastoId = document.getElementById('editGastoId').value;
+                const fecha = document.getElementById('editGastoFecha').value;
+                const proveedorId = document.getElementById('editGastoProveedor').value;
+                const categoria = document.getElementById('editGastoCategoria').value;
+                const monto = parseFloat(document.getElementById('editGastoMonto').value);
+                const produccion = document.getElementById('editGastoProduccion').value;
+                const nota = document.getElementById('editGastoNota').value || '';
+                const archivoAdjunto = document.getElementById('editGastoAdjunto').files[0];
+                
+                // Obtener el gasto original para mantener el adjunto si no se cambia
+                const gastoOriginal = MOCK_DATA.GASTOS.find(g => g.id === gastoId);
+                const adjunto = archivoAdjunto?.name || gastoOriginal?.adjunto || 'sin_adjunto.pdf';
+                
+                if (!proveedorId) {
+                    alertMessage('Por favor seleccione un proveedor', 'danger');
+                    return;
+                }
+                
+                try {
+                    const datosActualizados = {
+                        fecha: fecha,
+                        monto: monto,
+                        categoria: categoria,
+                        produccion: produccion,
+                        proveedor: proveedorId,
+                        adjunto: adjunto,
+                        nota: nota
+                    };
+                    
+                    await actualizarGasto(gastoId, datosActualizados);
+                    
+                    // Si hay nuevo archivo, guardarlo
+                    if (archivoAdjunto) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            localStorage.setItem(`adjunto_gasto_${gastoId}`, e.target.result);
+                        };
+                        reader.readAsDataURL(archivoAdjunto);
+                    }
+                    
+                    // Recargar proveedores para actualizar estadísticas
+                    await cargarProveedores();
+                    
+                    // Cerrar modal
+                    cerrarModal('modalEditarGasto');
+                    
+                    // Actualizar dashboard y tablas
+                    await updateDashboard();
+                    
+                    // Si estamos en la sección de proveedores, actualizar la tabla
+                    if (!document.getElementById('proveedores').classList.contains('hidden')) {
+                        renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                    }
+                    
+                    alertMessage('Gasto actualizado exitosamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al actualizar gasto: ' + error.message, 'danger');
+                }
+            });
+            
+            // Formulario de edición de ingreso
+            document.getElementById('formEditarIngreso').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const ingresoId = document.getElementById('editIngresoId').value;
+                const fecha = document.getElementById('editIngresoFecha').value;
+                const comprador = document.getElementById('editIngresoComprador').value;
+                const tipo = document.getElementById('editIngresoTipo').value;
+                const monto = parseFloat(document.getElementById('editIngresoMonto').value);
+                const archivoAdjunto = document.getElementById('editIngresoAdjunto').files[0];
+                
+                // Obtener el ingreso original para mantener el adjunto si no se cambia
+                const ingresoOriginal = MOCK_DATA.INGRESOS.find(i => i.id === ingresoId);
+                const adjunto = archivoAdjunto?.name || ingresoOriginal?.adjunto || 'sin_comprobante.pdf';
+                
+                try {
+                    const datosActualizados = {
+                        fecha: fecha,
+                        monto: monto,
+                        tipo: tipo,
+                        comprador: comprador,
+                        adjunto: adjunto
+                    };
+                    
+                    await actualizarIngreso(ingresoId, datosActualizados);
+                    
+                    // Si hay nuevo archivo, guardarlo
+                    if (archivoAdjunto) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            localStorage.setItem(`adjunto_ingreso_${ingresoId}`, e.target.result);
+                        };
+                        reader.readAsDataURL(archivoAdjunto);
+                    }
+                    
+                    // Cerrar modal
+                    cerrarModal('modalEditarIngreso');
+                    
+                    // Actualizar dashboard
+                    await updateDashboard();
+                    
+                    alertMessage('Ingreso actualizado exitosamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al actualizar ingreso: ' + error.message, 'danger');
+                }
+            });
+            
+            // Cerrar modal al hacer clic fuera de él
+            window.onclick = function(event) {
+                const modalGasto = document.getElementById('modalEditarGasto');
+                const modalIngreso = document.getElementById('modalEditarIngreso');
+                if (event.target === modalGasto) {
+                    cerrarModal('modalEditarGasto');
+                }
+                if (event.target === modalIngreso) {
+                    cerrarModal('modalEditarIngreso');
+                }
+            };
+        }
+        
         // Inicialización de la Aplicación
         window.onload = async function() {
             setupNavigation();
             setupBudgetForm();
             setupLogoUpload();
             setupSupplierForm();
+            setupEditForms();
             
             // Cargar datos desde Supabase
             try {
