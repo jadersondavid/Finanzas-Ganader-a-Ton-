@@ -9,31 +9,32 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Variables de Diseño Moderno y Vibrante */
+        /* Variables de Diseño - Colores Naturales de Ganadería */
         :root {
-            --color-primary: #00d4aa; /* Verde esmeralda vibrante */
-            --color-primary-dark: #00b894;
-            --color-secondary: #ff6b6b; /* Coral vibrante */
-            --color-secondary-dark: #ee5a6f;
-            --color-accent: #4ecdc4; /* Turquesa */
-            --color-accent-2: #ffe66d; /* Amarillo dorado */
-            --color-background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
-            --color-background-solid: #f0f4f8;
+            --color-primary: #2d8659; /* Verde campo natural */
+            --color-primary-dark: #1e5d3f;
+            --color-primary-light: #4a9d7a;
+            --color-secondary: #5b8fa3; /* Azul cielo suave */
+            --color-secondary-dark: #4a7280;
+            --color-accent: #7fb3a8; /* Verde agua */
+            --color-accent-2: #a8c5a0; /* Verde pasto */
+            --color-background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 25%, #e3f2fd 50%, #e8f5e9 75%, #f1f8f4 100%);
+            --color-background-solid: #f5f9f6;
             --color-card-bg: #ffffff;
-            --color-text: #2d3748;
-            --color-text-light: #718096;
-            --color-income: #48bb78; /* Verde éxito */
-            --color-expense: #f56565; /* Rojo coral */
-            --color-alert-warn: #ed8936; /* Naranja */
-            --color-alert-danger: #fc8181; /* Rojo claro */
-            --color-ai: #667eea; /* Púrpura azulado */
+            --color-text: #2c3e2d;
+            --color-text-light: #5a6c5b;
+            --color-income: #4a9d7a; /* Verde suave */
+            --color-expense: #c85a5a; /* Rojo terroso */
+            --color-alert-warn: #d4a574; /* Naranja tierra */
+            --color-alert-danger: #c85a5a; /* Rojo terroso */
+            --color-ai: #5b8fa3; /* Azul cielo */
             --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            --border-radius: 16px;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --border-radius: 12px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
             --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
-            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
-            --shadow-3d: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.15);
+            --shadow-3d: 0 8px 25px rgba(45, 134, 89, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
         body {
@@ -41,7 +42,7 @@
             font-family: var(--font-family);
             background: var(--color-background);
             background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            animation: gradientShift 20s ease infinite;
             color: var(--color-text);
             line-height: 1.6;
             min-height: 100vh;
@@ -61,19 +62,54 @@
         /* 1. Panel Lateral de Navegación */
         #sidebar {
             width: 280px;
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(180deg, #2d8659 0%, #1e5d3f 50%, #2d8659 100%);
             color: white;
-            padding: 20px 0;
-            box-shadow: var(--shadow-3d);
+            padding: 0;
+            box-shadow: var(--shadow-lg);
             position: sticky;
             top: 0;
             height: 100vh;
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
         
         #sidebar:hover {
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 30px rgba(45, 134, 89, 0.3);
+        }
+        
+        /* Contenedor del logo con scroll */
+        #sidebar > div:first-child {
+            padding: 20px;
+            flex-shrink: 0;
+        }
+        
+        /* Menú de navegación con scroll */
+        #navMenu {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 10px 0;
+        }
+        
+        /* Estilo de scrollbar personalizado */
+        #navMenu::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        #navMenu::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+        }
+        
+        #navMenu::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        
+        #navMenu::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
         }
 
         .logo {
@@ -102,16 +138,16 @@
             border-radius: 20px;
             object-fit: cover;
             border: 4px solid transparent;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #4a9d7a 100%);
             background-clip: padding-box;
-            border-image: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 4px rgba(102, 126, 234, 0.1);
+            border-image: linear-gradient(135deg, #2d8659 0%, #4a9d7a 50%, #5b8fa3 100%) 1;
+            box-shadow: 0 8px 25px rgba(45, 134, 89, 0.3), 0 0 0 4px rgba(45, 134, 89, 0.1);
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background: linear-gradient(135deg, #f5f9f6 0%, #e8f5e9 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #999;
+            color: #5a6c5b;
             font-size: 0.9em;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -133,8 +169,8 @@
 
         .logo-preview:hover {
             transform: scale(1.08) rotate(2deg);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5), 0 0 0 4px rgba(102, 126, 234, 0.2);
-            border-image: linear-gradient(135deg, #7c8ff5 0%, #8b5fbf 50%, #f5a5d8 100%) 1;
+            box-shadow: 0 15px 40px rgba(45, 134, 89, 0.4), 0 0 0 4px rgba(45, 134, 89, 0.2);
+            border-image: linear-gradient(135deg, #4a9d7a 0%, #5b8fa3 50%, #7fb3a8 100%) 1;
         }
         
         .logo-preview:hover::before {
@@ -151,15 +187,15 @@
 
         .logo-upload-btn {
             padding: 12px 24px;
-            background: linear-gradient(135deg, #ffe66d 0%, #ffd93d 50%, #f6c23e 100%);
-            color: #2d3748;
+            background: linear-gradient(135deg, #a8c5a0 0%, #7fb3a8 50%, #5b8fa3 100%);
+            color: white;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             font-size: 0.9em;
             font-weight: 700;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 6px 20px rgba(255, 230, 109, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 6px 20px rgba(168, 197, 160, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             position: relative;
             overflow: hidden;
         }
@@ -218,7 +254,7 @@
             top: 0;
             height: 100%;
             width: 4px;
-            background: linear-gradient(180deg, #ffe66d 0%, #ff6b6b 100%);
+            background: linear-gradient(180deg, #a8c5a0 0%, #7fb3a8 100%);
             transform: scaleY(0);
             transition: transform 0.3s ease;
         }
@@ -261,23 +297,20 @@
         header h1 {
             font-size: 2.2em;
             font-weight: 800;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #4a9d7a 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
+            text-shadow: 0 2px 10px rgba(45, 134, 89, 0.15);
         }
 
         .user-info {
             font-weight: 600;
-            background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            color: #2d8659;
             padding: 8px 16px;
             border-radius: 20px;
-            background-color: rgba(0, 212, 170, 0.1);
-            border: 2px solid rgba(0, 212, 170, 0.2);
+            background-color: rgba(45, 134, 89, 0.1);
+            border: 2px solid rgba(45, 134, 89, 0.2);
         }
 
         /* Estilo de Tarjetas con Efecto 3D */
@@ -416,9 +449,9 @@
 
         .budget-bar {
             height: 100%;
-            background: linear-gradient(135deg, #00d4aa 0%, #00b894 50%, #00a085 100%);
+            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #2d8659 100%);
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
-            box-shadow: 0 0 20px rgba(0, 212, 170, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(45, 134, 89, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
             position: relative;
             overflow: hidden;
         }
@@ -440,12 +473,12 @@
         }
 
         .budget-bar.danger { 
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%) !important;
-            box-shadow: 0 0 20px rgba(255, 107, 107, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+            background: linear-gradient(135deg, #c85a5a 0%, #b04545 50%, #9a3a3a 100%) !important;
+            box-shadow: 0 0 20px rgba(200, 90, 90, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
         }
         .budget-bar.warning { 
-            background: linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #f57c00 100%) !important;
-            box-shadow: 0 0 20px rgba(255, 167, 38, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+            background: linear-gradient(135deg, #d4a574 0%, #c8965a 50%, #b8854a 100%) !important;
+            box-shadow: 0 0 20px rgba(212, 165, 116, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
         }
 
         .alert {
@@ -517,12 +550,12 @@
             margin-bottom: 25px;
             padding-bottom: 20px;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
+            border-image: linear-gradient(90deg, #2d8659 0%, #4a9d7a 50%, #5b8fa3 100%) 1;
         }
         
         .modal-header h3 {
             margin: 0;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #4a9d7a 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -621,63 +654,63 @@
         }
 
         .btn-primary { 
-            background: linear-gradient(135deg, #00d4aa 0%, #00b894 50%, #00a085 100%);
+            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #2d8659 100%);
             color: white;
-            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 8px 25px rgba(45, 134, 89, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
         .btn-primary:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05);
-            box-shadow: 0 15px 35px rgba(0, 212, 170, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #00f5d4 0%, #00d4aa 50%, #00b894 100%);
+            box-shadow: 0 15px 35px rgba(45, 134, 89, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #4a9d7a 0%, #2d8659 50%, #1e5d3f 100%);
         }
 
         .btn-primary:active {
             transform: translateY(-2px) rotateX(2deg) scale(1.02);
-            box-shadow: 0 5px 15px rgba(0, 212, 170, 0.4);
+            box-shadow: 0 5px 15px rgba(45, 134, 89, 0.3);
         }
 
         .btn-ai { 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #5b8fa3 0%, #4a7280 50%, #5b8fa3 100%);
             color: white;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 8px 25px rgba(91, 143, 163, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             position: relative;
         }
         
         .btn-ai::before {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
         }
 
         .btn-ai:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05);
-            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #7c8ff5 0%, #8b5fbf 50%, #f5a5d8 100%);
+            box-shadow: 0 15px 35px rgba(91, 143, 163, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #7fb3a8 0%, #5b8fa3 50%, #4a7280 100%);
         }
 
         .btn-ai:active {
             transform: translateY(-2px) rotateX(2deg) scale(1.02);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 5px 15px rgba(91, 143, 163, 0.3);
         }
         
         /* Botones de acción (eliminar, editar) */
         button[onclick*="eliminar"], button[onclick*="Eliminar"] {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%) !important;
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+            background: linear-gradient(135deg, #c85a5a 0%, #b04545 50%, #9a3a3a 100%) !important;
+            box-shadow: 0 8px 25px rgba(200, 90, 90, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
         }
         
         button[onclick*="eliminar"]:hover, button[onclick*="Eliminar"]:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05) !important;
-            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+            box-shadow: 0 15px 35px rgba(200, 90, 90, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
         }
         
         button[onclick*="editar"], button[onclick*="Editar"] {
-            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%) !important;
-            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+            background: linear-gradient(135deg, #7fb3a8 0%, #5b8fa3 50%, #4a7280 100%) !important;
+            box-shadow: 0 8px 25px rgba(127, 179, 168, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
         }
         
         button[onclick*="editar"]:hover, button[onclick*="Editar"]:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05) !important;
-            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+            box-shadow: 0 15px 35px rgba(127, 179, 168, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
         }
 
         .btn span {
@@ -720,7 +753,7 @@
         #expenseTable, #incomeTable, #supplierTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
         
         #expenseTable th, #incomeTable th, #supplierTable th {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 100%);
             color: white; 
             padding: 16px; 
             text-align: left; 
@@ -728,7 +761,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(45, 134, 89, 0.2);
             position: relative;
         }
         
@@ -851,7 +884,7 @@
             <div class="logo">
                 <span role="img" aria-label="Cow">🐄</span> GANADERÍA TONÉ
             </div>
-            <nav id="navMenu">
+            <nav id="navMenu" style="flex: 1; overflow-y: auto; overflow-x: hidden;">
                 <a href="#dashboard" data-section="dashboard" class="nav-item active"><span>📈</span> Dashboard</a>
                 <a href="#ingresos" data-section="ingresos" class="nav-item"><span>💰</span> Ingresos / Ventas</a>
                 <a href="#gastos" data-section="gastos" class="nav-item"><span>🧾</span> Registro de Gastos</a>
@@ -3066,7 +3099,111 @@
         }
         
         function exportReport(format) {
-            alertMessage(`Simulación: Se generaría un reporte en formato ${format} con los filtros seleccionados.`, 'info');
+            const fechaInicio = document.getElementById('reporteInicio').value;
+            const fechaFin = document.getElementById('reporteFin').value;
+            const categoria = document.getElementById('reporteCategoria').value;
+            const produccion = document.getElementById('reporteProduccion').value;
+            
+            // Filtrar gastos según los filtros
+            let gastosFiltrados = MOCK_DATA.GASTOS;
+            
+            if (fechaInicio) {
+                gastosFiltrados = gastosFiltrados.filter(g => new Date(g.fecha) >= new Date(fechaInicio));
+            }
+            if (fechaFin) {
+                gastosFiltrados = gastosFiltrados.filter(g => new Date(g.fecha) <= new Date(fechaFin));
+            }
+            if (categoria) {
+                gastosFiltrados = gastosFiltrados.filter(g => g.categoria === categoria);
+            }
+            if (produccion) {
+                gastosFiltrados = gastosFiltrados.filter(g => g.produccion === produccion);
+            }
+            
+            if (gastosFiltrados.length === 0) {
+                alertMessage('No hay datos para exportar con los filtros seleccionados', 'warning');
+                return;
+            }
+            
+            if (format === 'Excel') {
+                // Crear CSV (compatible con Excel)
+                let csv = 'Fecha,Monto,Categoría,Producción,Proveedor,Nota\n';
+                gastosFiltrados.forEach(gasto => {
+                    const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === gasto.proveedor);
+                    const nombreProveedor = proveedor ? proveedor.nombre : 'N/A';
+                    const nota = (gasto.nota || '').replace(/"/g, '""');
+                    csv += `${gasto.fecha},${gasto.monto},"${gasto.categoria}","${gasto.produccion}","${nombreProveedor}","${nota}"\n`;
+                });
+                
+                // Crear blob y descargar
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                const url = URL.createObjectURL(blob);
+                link.setAttribute('href', url);
+                link.setAttribute('download', `reporte_gastos_${new Date().toISOString().split('T')[0]}.csv`);
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                alertMessage(`Reporte exportado a Excel (CSV) con ${gastosFiltrados.length} registros`, 'success');
+            } else if (format === 'PDF') {
+                // Para PDF, crear una tabla HTML y usar window.print()
+                let html = `
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <title>Reporte de Gastos - Ganadería Toné</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                h1 { color: #2d8659; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background: #2d8659; color: white; padding: 10px; text-align: left; }
+                                td { border: 1px solid #ddd; padding: 8px; }
+                                tr:nth-child(even) { background: #f5f9f6; }
+                                .summary { margin: 20px 0; padding: 15px; background: #f0f7f4; border-radius: 8px; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Reporte de Gastos - Ganadería Toné</h1>
+                            <div class="summary">
+                                <p><strong>Período:</strong> ${fechaInicio || 'Desde el inicio'} a ${fechaFin || 'Hasta hoy'}</p>
+                                <p><strong>Total de registros:</strong> ${gastosFiltrados.length}</p>
+                                <p><strong>Total gastado:</strong> ${formatCurrency(gastosFiltrados.reduce((sum, g) => sum + g.monto, 0))}</p>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Nota</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
+                
+                gastosFiltrados.forEach(gasto => {
+                    const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === gasto.proveedor);
+                    const nombreProveedor = proveedor ? proveedor.nombre : 'N/A';
+                    html += `<tr>
+                        <td>${gasto.fecha}</td>
+                        <td>${formatCurrency(gasto.monto)}</td>
+                        <td>${gasto.categoria}</td>
+                        <td>${gasto.produccion}</td>
+                        <td>${nombreProveedor}</td>
+                        <td>${gasto.nota || ''}</td>
+                    </tr>`;
+                });
+                
+                html += `</tbody></table></body></html>`;
+                
+                const ventana = window.open('', '_blank');
+                ventana.document.write(html);
+                ventana.document.close();
+                setTimeout(() => {
+                    ventana.print();
+                }, 250);
+                
+                alertMessage(`Reporte generado en PDF con ${gastosFiltrados.length} registros`, 'success');
+            }
         }
         
         function alertMessage(message, type) {
