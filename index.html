@@ -559,20 +559,20 @@
 
             <!-- Sección del Dashboard Financiero -->
             <section id="dashboard" class="content-section active">
-                <h2 id="dashboardTitle">Resumen Financiero</h2>
+                <h2 id="dashboardTitle">Dashboard de Gastos y Proveedores</h2>
                 
                 <div class="summary-cards">
-                    <div class="card income">
-                        <h3>Total Ingresos del Mes</h3>
-                        <p id="totalIngresos">Cargando...</p>
-                    </div>
                     <div class="card expense">
                         <h3>Total Gastos del Mes</h3>
                         <p id="totalGastos">Cargando...</p>
                     </div>
-                    <div class="card profit">
-                        <h3>Ganancia o Pérdida Neta</h3>
-                        <p id="gananciaNeta">Cargando...</p>
+                    <div class="card expense" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                        <h3>Total Proveedores</h3>
+                        <p id="totalProveedores">Cargando...</p>
+                    </div>
+                    <div class="card expense" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                        <h3>Gasto Promedio por Proveedor</h3>
+                        <p id="gastoPromedioProveedor">Cargando...</p>
                     </div>
                 </div>
 
@@ -592,8 +592,19 @@
                         <canvas id="chartProduccion"></canvas>
                     </div>
                     <div class="chart-box card">
-                        <h3>Comportamiento Financiero (Ingresos vs Gastos)</h3>
+                        <h3>Top 5 Proveedores por Gasto</h3>
+                        <canvas id="chartProveedores"></canvas>
+                    </div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-box card">
+                        <h3>Tendencia de Gastos (Últimos 3 Meses)</h3>
                         <canvas id="chartTendencia"></canvas>
+                    </div>
+                    <div class="chart-box card">
+                        <h3>Gastos por Categoría</h3>
+                        <canvas id="chartCategoria"></canvas>
                     </div>
                 </div>
             </section>
@@ -637,8 +648,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="gastoAdjunto">Adjuntar Factura/Recibo (Simulado)</label>
-                        <input type="file" id="gastoAdjunto" accept=".pdf,.jpg,.png">
+                        <label for="gastoAdjunto">Adjuntar Facturas/Recibos (Múltiples archivos permitidos)</label>
+                        <input type="file" id="gastoAdjunto" accept=".pdf,.jpg,.png,.jpeg" multiple>
+                        <small style="color: #6c757d; display: block; margin-top: 5px;">Puedes seleccionar varios archivos a la vez (Ctrl+Click o Cmd+Click)</small>
                     </div>
                     <div class="form-group full-width">
                         <label for="gastoNota">Nota o Descripción del Gasto</label>
@@ -693,7 +705,11 @@
                         </select>
                     </div>
                     <div class="form-group"> <label for="ingresoMonto">Monto Recibido (COP)</label> <input type="number" id="ingresoMonto" placeholder="Ej: 5000000" min="0" required> </div>
-                    <div class="form-group full-width"> <label for="ingresoAdjunto">Adjuntar Factura/Comprobante (Simulado)</label> <input type="file" id="ingresoAdjunto" accept=".pdf,.jpg,.png"> </div>
+                    <div class="form-group full-width">
+                        <label for="ingresoAdjunto">Adjuntar Facturas/Comprobantes (Múltiples archivos permitidos)</label>
+                        <input type="file" id="ingresoAdjunto" accept=".pdf,.jpg,.png,.jpeg" multiple>
+                        <small style="color: #6c757d; display: block; margin-top: 5px;">Puedes seleccionar varios archivos a la vez (Ctrl+Click o Cmd+Click)</small>
+                    </div>
                     <div class="btn-submit-container"> <button type="submit" class="btn btn-primary"><span>💾 Registrar Ingreso</span></button> </div>
                 </form>
                  <div class="card">
@@ -881,9 +897,9 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="editGastoAdjunto">Cambiar Archivo Adjunto (Opcional)</label>
-                    <input type="file" id="editGastoAdjunto" accept=".pdf,.jpg,.png">
-                    <small style="color: #6c757d;">Dejar vacío para mantener el archivo actual</small>
+                    <label for="editGastoAdjunto">Cambiar Archivos Adjuntos (Opcional)</label>
+                    <input type="file" id="editGastoAdjunto" accept=".pdf,.jpg,.png,.jpeg" multiple>
+                    <small style="color: #6c757d; display: block; margin-top: 5px;">Puedes seleccionar varios archivos. Dejar vacío para mantener los archivos actuales</small>
                 </div>
                 <div class="form-group full-width">
                     <label for="editGastoNota">Nota o Descripción del Gasto</label>
@@ -934,9 +950,9 @@
                     <input type="number" id="editIngresoMonto" placeholder="Ej: 5000000" min="0" required>
                 </div>
                 <div class="form-group full-width">
-                    <label for="editIngresoAdjunto">Cambiar Archivo Adjunto (Opcional)</label>
-                    <input type="file" id="editIngresoAdjunto" accept=".pdf,.jpg,.png">
-                    <small style="color: #6c757d;">Dejar vacío para mantener el archivo actual</small>
+                    <label for="editIngresoAdjunto">Cambiar Archivos Adjuntos (Opcional)</label>
+                    <input type="file" id="editIngresoAdjunto" accept=".pdf,.jpg,.png,.jpeg" multiple>
+                    <small style="color: #6c757d; display: block; margin-top: 5px;">Puedes seleccionar varios archivos. Dejar vacío para mantener los archivos actuales</small>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalEditarIngreso')">
@@ -1062,7 +1078,8 @@
                     categoria: g.categoria,
                     produccion: g.produccion,
                     proveedor: g.proveedor_id,
-                    adjunto: g.adjunto_url || 'sin_adjunto.pdf',
+                    adjuntos: g.adjunto_url ? g.adjunto_url.split(', ').filter(a => a.trim()) : [],
+                    adjunto: g.adjunto_url ? g.adjunto_url.split(', ')[0] : 'sin_adjunto.pdf', // Compatibilidad
                     nota: g.nota || ''
                 }));
                 
@@ -1096,7 +1113,8 @@
                     monto: parseFloat(i.monto),
                     tipo: i.tipo,
                     comprador: i.comprador,
-                    adjunto: i.adjunto_url || 'sin_comprobante.pdf'
+                    adjuntos: i.adjunto_url ? i.adjunto_url.split(', ').filter(a => a.trim()) : [],
+                    adjunto: i.adjunto_url ? i.adjunto_url.split(', ')[0] : 'sin_comprobante.pdf' // Compatibilidad
                 }));
                 
                 return MOCK_DATA.INGRESOS;
@@ -1245,7 +1263,8 @@
                     categoria: data.categoria,
                     produccion: data.produccion,
                     proveedor: data.proveedor_id,
-                    adjunto: data.adjunto_url || 'sin_adjunto.pdf',
+                    adjuntos: data.adjunto_url ? data.adjunto_url.split(', ').filter(a => a.trim()) : [],
+                    adjunto: data.adjunto_url ? data.adjunto_url.split(', ')[0] : 'sin_adjunto.pdf', // Compatibilidad
                     nota: data.nota || ''
                 };
                 
@@ -1278,7 +1297,7 @@
                         monto: ingreso.monto,
                         tipo: ingreso.tipo,
                         comprador: ingreso.comprador,
-                        adjunto_url: ingreso.adjunto || null
+                        adjunto_url: Array.isArray(ingreso.adjuntos) ? ingreso.adjuntos.join(', ') : (ingreso.adjunto || null)
                     })
                     .select()
                     .single();
@@ -1291,7 +1310,8 @@
                     monto: parseFloat(data.monto),
                     tipo: data.tipo,
                     comprador: data.comprador,
-                    adjunto: data.adjunto_url || 'sin_comprobante.pdf'
+                    adjuntos: data.adjunto_url ? data.adjunto_url.split(', ').filter(a => a.trim()) : [],
+                    adjunto: data.adjunto_url ? data.adjunto_url.split(', ')[0] : 'sin_comprobante.pdf' // Compatibilidad
                 };
                 
                 MOCK_DATA.INGRESOS.push(nuevoIngreso);
@@ -1448,62 +1468,62 @@
         async function updateDashboard() {
             try {
                 // Mostrar estado de carga
-                document.getElementById('totalIngresos').innerText = 'Cargando...';
                 document.getElementById('totalGastos').innerText = 'Cargando...';
-                document.getElementById('gananciaNeta').innerText = 'Cargando...';
+                document.getElementById('totalProveedores').innerText = 'Cargando...';
+                document.getElementById('gastoPromedioProveedor').innerText = 'Cargando...';
                 
                 // Cargar datos desde Supabase si está configurado
                 await Promise.all([
                     cargarGastos(),
-                    cargarIngresos(),
+                    cargarProveedores(),
                     cargarPresupuesto()
                 ]);
                 
                 // Obtener datos del mes actual
                 const { mes, año, nombreMes } = getMesActual();
                 const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS);
-                const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS);
                 
                 // Calcular totales del mes actual
                 totalGastos = gastosDelMes.reduce((sum, item) => sum + item.monto, 0);
-                totalIngresos = ingresosDelMes.reduce((sum, item) => sum + item.monto, 0);
-            const gananciaNeta = totalIngresos - totalGastos;
+                
+                // Calcular estadísticas de proveedores
+                const totalProveedores = MOCK_DATA.PROVEEDORES.length;
+                const gastosPorProveedor = {};
+                MOCK_DATA.GASTOS.forEach(gasto => {
+                    const proveedorId = gasto.proveedor;
+                    if (proveedorId) {
+                        gastosPorProveedor[proveedorId] = (gastosPorProveedor[proveedorId] || 0) + gasto.monto;
+                    }
+                });
+                const gastoPromedio = totalProveedores > 0 
+                    ? Object.values(gastosPorProveedor).reduce((sum, val) => sum + val, 0) / totalProveedores 
+                    : 0;
             
                 // Actualizar título del dashboard
                 const dashboardTitle = document.querySelector('#dashboard h2');
                 if (dashboardTitle) {
-                    dashboardTitle.textContent = `Resumen Financiero - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                    dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
                 }
                 
                 // Actualizar tarjetas de resumen
-            document.getElementById('totalIngresos').innerText = formatCurrency(totalIngresos);
-            document.getElementById('totalGastos').innerText = formatCurrency(totalGastos);
-            
-            const gananciaElement = document.getElementById('gananciaNeta');
-            gananciaElement.innerText = formatCurrency(gananciaNeta);
-            
-                // Cambiar color según ganancia o pérdida
-            if (gananciaNeta < 0) {
-                gananciaElement.style.color = 'var(--color-expense)';
-                } else if (gananciaNeta > 0) {
-                gananciaElement.style.color = 'var(--color-income)';
-                } else {
-                    gananciaElement.style.color = 'var(--color-text)';
-            }
+                document.getElementById('totalGastos').innerText = formatCurrency(totalGastos);
+                document.getElementById('totalProveedores').innerText = totalProveedores;
+                document.getElementById('gastoPromedioProveedor').innerText = formatCurrency(gastoPromedio);
 
                 // Actualizar presupuesto
-            actualizarPresupuesto(totalGastos);
+                actualizarPresupuesto(totalGastos);
                 
                 // Renderizar tablas (mostrar todos los datos, no solo del mes)
-            renderExpenseTable(MOCK_DATA.GASTOS);
-            renderIncomeTable(MOCK_DATA.INGRESOS);
+                renderExpenseTable(MOCK_DATA.GASTOS);
             
                 // Renderizar gráficos
-            if (typeof Chart !== 'undefined') {
+                if (typeof Chart !== 'undefined') {
                     // Pequeño delay para asegurar que el DOM esté listo
                     setTimeout(() => {
                         renderChartProduccion(gastosDelMes);
-                        renderChartTendencia(totalIngresos, totalGastos, mes, año);
+                        renderChartProveedores(gastosPorProveedor);
+                        renderChartTendencia(mes, año);
+                        renderChartCategoria(gastosDelMes);
                     }, 100);
                 } else {
                     // Si Chart.js no está cargado, limpiar gráficos
@@ -1515,12 +1535,20 @@
                         chartTendenciaInstance.destroy();
                         chartTendenciaInstance = null;
                     }
+                    if (chartProveedoresInstance) {
+                        chartProveedoresInstance.destroy();
+                        chartProveedoresInstance = null;
+                    }
+                    if (chartCategoriaInstance) {
+                        chartCategoriaInstance.destroy();
+                        chartCategoriaInstance = null;
+                    }
                 }
             } catch (error) {
                 console.error('Error actualizando dashboard:', error);
-                document.getElementById('totalIngresos').innerText = 'Error';
                 document.getElementById('totalGastos').innerText = 'Error';
-                document.getElementById('gananciaNeta').innerText = 'Error';
+                document.getElementById('totalProveedores').innerText = 'Error';
+                document.getElementById('gastoPromedioProveedor').innerText = 'Error';
             }
         }
 
@@ -1761,7 +1789,7 @@
         }
 
         let chartTendenciaInstance = null;
-        function renderChartTendencia(ingresosActual, gastosActual, mesActual, añoActual) {
+        function renderChartTendencia(mesActual, añoActual) {
             const ctx = document.getElementById('chartTendencia');
             if (!ctx) return;
             
@@ -1770,7 +1798,6 @@
                                  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
             
             const meses = [];
-            const ingresosMensuales = [];
             const gastosMensuales = [];
             
             // Calcular datos de los últimos 3 meses
@@ -1788,17 +1815,11 @@
                     return fechaGasto.getMonth() + 1 === mes && fechaGasto.getFullYear() === año;
                 }).reduce((sum, g) => sum + g.monto, 0);
                 
-                const ingresosMes = MOCK_DATA.INGRESOS.filter(i => {
-                    const fechaIngreso = new Date(i.fecha);
-                    return fechaIngreso.getMonth() + 1 === mes && fechaIngreso.getFullYear() === año;
-                }).reduce((sum, i) => sum + i.monto, 0);
-                
-                ingresosMensuales.push(ingresosMes);
                 gastosMensuales.push(gastosMes);
             }
             
             // Si no hay datos, mostrar mensaje
-            if (ingresosMensuales.every(v => v === 0) && gastosMensuales.every(v => v === 0)) {
+            if (gastosMensuales.every(v => v === 0)) {
                 if (chartTendenciaInstance) {
                     chartTendenciaInstance.destroy();
                     chartTendenciaInstance = null;
@@ -1819,25 +1840,18 @@
             }
 
             chartTendenciaInstance = new Chart(ctx, {
-                type: 'bar',
+                type: 'line',
                 data: {
                     labels: meses,
                     datasets: [
                         { 
-                            label: 'Ingresos Totales', 
-                            data: ingresosMensuales, 
-                            backgroundColor: '#27ae60', 
-                            borderColor: '#229954',
-                            borderWidth: 2,
-                            borderRadius: 5
-                        },
-                        { 
                             label: 'Gastos Totales', 
                             data: gastosMensuales, 
-                            backgroundColor: '#c0392b', 
-                            borderColor: '#a93226',
-                            borderWidth: 2,
-                            borderRadius: 5
+                            backgroundColor: 'rgba(192, 57, 43, 0.2)', 
+                            borderColor: '#c0392b',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
                         }
                     ]
                 },
@@ -1869,6 +1883,174 @@
                             }
                         }
                     } 
+                }
+            });
+        }
+        
+        // Gráfico de Top 5 Proveedores por Gasto
+        let chartProveedoresInstance = null;
+        function renderChartProveedores(gastosPorProveedor) {
+            const ctx = document.getElementById('chartProveedores');
+            if (!ctx) return;
+            
+            // Convertir objeto a array y ordenar por monto
+            const proveedoresArray = Object.entries(gastosPorProveedor)
+                .map(([proveedorId, monto]) => {
+                    const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === proveedorId);
+                    return {
+                        nombre: proveedor ? proveedor.nombre : 'Proveedor Desconocido',
+                        monto: monto
+                    };
+                })
+                .sort((a, b) => b.monto - a.monto)
+                .slice(0, 5); // Top 5
+            
+            if (proveedoresArray.length === 0) {
+                if (chartProveedoresInstance) {
+                    chartProveedoresInstance.destroy();
+                    chartProveedoresInstance = null;
+                }
+                const canvas = ctx;
+                const context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.font = '16px Arial';
+                context.fillStyle = '#6c757d';
+                context.textAlign = 'center';
+                context.fillText('No hay gastos por proveedores', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            if (chartProveedoresInstance) {
+                chartProveedoresInstance.destroy();
+            }
+            
+            chartProveedoresInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: proveedoresArray.map(p => p.nombre),
+                    datasets: [{
+                        label: 'Gasto Total',
+                        data: proveedoresArray.map(p => p.monto),
+                        backgroundColor: [
+                            '#c0392b',
+                            '#e74c3c',
+                            '#ec7063',
+                            '#f1948a',
+                            '#f5b7b1'
+                        ],
+                        borderColor: '#a93226',
+                        borderWidth: 2,
+                        borderRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return formatCurrency(context.parsed.x);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Gráfico de Gastos por Categoría
+        let chartCategoriaInstance = null;
+        function renderChartCategoria(data) {
+            const ctx = document.getElementById('chartCategoria');
+            if (!ctx) return;
+            
+            if (!data || data.length === 0) {
+                if (chartCategoriaInstance) {
+                    chartCategoriaInstance.destroy();
+                    chartCategoriaInstance = null;
+                }
+                const canvas = ctx;
+                const context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.font = '16px Arial';
+                context.fillStyle = '#6c757d';
+                context.textAlign = 'center';
+                context.fillText('No hay gastos registrados', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            const gastosPorCategoria = data.reduce((acc, item) => {
+                acc[item.categoria] = (acc[item.categoria] || 0) + item.monto;
+                return acc;
+            }, {});
+            
+            const labels = Object.keys(gastosPorCategoria);
+            const valores = Object.values(gastosPorCategoria);
+            
+            if (chartCategoriaInstance) {
+                chartCategoriaInstance.destroy();
+            }
+            
+            chartCategoriaInstance = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: valores,
+                        backgroundColor: [
+                            '#c0392b',
+                            '#e67e22',
+                            '#f39c12',
+                            '#27ae60',
+                            '#3498db',
+                            '#9b59b6',
+                            '#1abc9c',
+                            '#34495e'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return label + ': ' + formatCurrency(value) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
                 }
             });
         }
@@ -1913,10 +2095,31 @@
             }
         }
         
-        // Función para obtener archivo desde localStorage
-        function obtenerArchivoAdjunto(id, tipo) {
-            const key = tipo === 'gasto' ? `adjunto_gasto_${id}` : `adjunto_ingreso_${id}`;
-            return localStorage.getItem(key);
+        // Función para obtener archivos desde localStorage
+        function obtenerArchivosAdjuntos(id, tipo) {
+            const key = tipo === 'gasto' ? `adjuntos_gasto_${id}` : `adjuntos_ingreso_${id}`;
+            const data = localStorage.getItem(key);
+            if (data) {
+                try {
+                    return JSON.parse(data);
+                } catch (e) {
+                    // Fallback: si es un string antiguo (un solo archivo)
+                    return [{ nombre: 'archivo', data: data }];
+                }
+            }
+            // Compatibilidad con formato antiguo (un solo archivo)
+            const oldKey = tipo === 'gasto' ? `adjunto_gasto_${id}` : `adjunto_ingreso_${id}`;
+            const oldData = localStorage.getItem(oldKey);
+            if (oldData) {
+                return [{ nombre: 'archivo_adjunto', data: oldData }];
+            }
+            return [];
+        }
+        
+        // Función para guardar múltiples archivos en localStorage
+        function guardarArchivosAdjuntos(id, tipo, archivos) {
+            const key = tipo === 'gasto' ? `adjuntos_gasto_${id}` : `adjuntos_ingreso_${id}`;
+            localStorage.setItem(key, JSON.stringify(archivos));
         }
         
         function renderExpenseTable(data) {
@@ -1942,17 +2145,29 @@
                 row.insertCell().textContent = item.produccion;
                 row.insertCell().textContent = MOCK_DATA.PROVEEDORES.find(p => p.id === item.proveedor)?.nombre || item.proveedor;
                 
-                // Celda de adjunto con descarga funcional
+                // Celda de adjuntos con descarga funcional (múltiples archivos)
                 const adjuntoCell = row.insertCell();
-                if (item.adjunto && item.adjunto !== 'sin_adjunto.pdf') {
-                    const archivoData = obtenerArchivoAdjunto(item.id, 'gasto');
-                    const tipoMime = item.adjunto.endsWith('.pdf') ? 'application/pdf' : 
-                                     (item.adjunto.endsWith('.jpg') || item.adjunto.endsWith('.jpeg')) ? 'image/jpeg' :
-                                     item.adjunto.endsWith('.png') ? 'image/png' : 'application/octet-stream';
-                    const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'") : 'null';
-                    adjuntoCell.innerHTML = `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer;" onclick="descargarAdjunto('${item.adjunto}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${item.adjunto}</a>`;
+                // Compatibilidad: si tiene adjunto (antiguo) o adjuntos (nuevo)
+                const adjuntos = Array.isArray(item.adjuntos) ? item.adjuntos : 
+                                (item.adjunto && item.adjunto !== 'sin_adjunto.pdf' ? [item.adjunto] : []);
+                
+                if (adjuntos.length > 0) {
+                    const archivosGuardados = obtenerArchivosAdjuntos(item.id, 'gasto');
+                    let htmlAdjuntos = '<div style="display: flex; flex-direction: column; gap: 5px; max-width: 200px;">';
+                    
+                    adjuntos.forEach((nombreArchivo, index) => {
+                        const archivoData = archivosGuardados[index]?.data || null;
+                        const tipoMime = nombreArchivo.endsWith('.pdf') ? 'application/pdf' : 
+                                         (nombreArchivo.endsWith('.jpg') || nombreArchivo.endsWith('.jpeg')) ? 'image/jpeg' :
+                                         nombreArchivo.endsWith('.png') ? 'image/png' : 'application/octet-stream';
+                        const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '') : 'null';
+                        htmlAdjuntos += `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer; font-size: 0.9em; word-break: break-word;" onclick="descargarAdjunto('${nombreArchivo.replace(/'/g, "\\'")}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${nombreArchivo}</a>`;
+                    });
+                    
+                    htmlAdjuntos += `</div><small style="color: #6c757d; display: block; margin-top: 5px;">${adjuntos.length} archivo(s)</small>`;
+                    adjuntoCell.innerHTML = htmlAdjuntos;
                 } else {
-                    adjuntoCell.textContent = 'Sin adjunto';
+                    adjuntoCell.textContent = 'Sin adjuntos';
                 }
                 
                 // Celda de acciones con botones editar y eliminar
@@ -1993,17 +2208,28 @@
                 row.insertCell().textContent = item.tipo;
                 row.insertCell().textContent = item.comprador;
                 
-                // Celda de adjunto con descarga funcional
+                // Celda de adjuntos con descarga funcional (múltiples archivos)
                 const adjuntoCell = row.insertCell();
-                if (item.adjunto && item.adjunto !== 'sin_comprobante.pdf') {
-                    const archivoData = obtenerArchivoAdjunto(item.id, 'ingreso');
-                    const tipoMime = item.adjunto.endsWith('.pdf') ? 'application/pdf' : 
-                                     (item.adjunto.endsWith('.jpg') || item.adjunto.endsWith('.jpeg')) ? 'image/jpeg' :
-                                     item.adjunto.endsWith('.png') ? 'image/png' : 'application/octet-stream';
-                    const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'") : 'null';
-                    adjuntoCell.innerHTML = `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer;" onclick="descargarAdjunto('${item.adjunto}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${item.adjunto}</a>`;
+                const adjuntos = Array.isArray(item.adjuntos) ? item.adjuntos : 
+                                (item.adjunto && item.adjunto !== 'sin_comprobante.pdf' ? [item.adjunto] : []);
+                
+                if (adjuntos.length > 0) {
+                    const archivosGuardados = obtenerArchivosAdjuntos(item.id, 'ingreso');
+                    let htmlAdjuntos = '<div style="display: flex; flex-direction: column; gap: 5px;">';
+                    
+                    adjuntos.forEach((nombreArchivo, index) => {
+                        const archivoData = archivosGuardados[index]?.data || null;
+                        const tipoMime = nombreArchivo.endsWith('.pdf') ? 'application/pdf' : 
+                                         (nombreArchivo.endsWith('.jpg') || nombreArchivo.endsWith('.jpeg')) ? 'image/jpeg' :
+                                         nombreArchivo.endsWith('.png') ? 'image/png' : 'application/octet-stream';
+                        const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'").replace(/"/g, '&quot;') : 'null';
+                        htmlAdjuntos += `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer; font-size: 0.9em;" onclick="descargarAdjunto('${nombreArchivo}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${nombreArchivo}</a>`;
+                    });
+                    
+                    htmlAdjuntos += `</div><small style="color: #6c757d;">${adjuntos.length} archivo(s)</small>`;
+                    adjuntoCell.innerHTML = htmlAdjuntos;
                 } else {
-                    adjuntoCell.textContent = 'Sin adjunto';
+                    adjuntoCell.textContent = 'Sin adjuntos';
                 }
                 
                 // Celda de acciones con botones editar y eliminar
@@ -2069,12 +2295,12 @@
         }
 
         // Función para actualizar el select de proveedores en el formulario de gastos
-        function updateSupplierSelect() {
-            const select = document.getElementById('gastoProveedor');
+        function updateSupplierSelect(selectId = 'gastoProveedor', selectedValue = null) {
+            const select = document.getElementById(selectId);
             if (!select) return;
             
-            // Guardar el valor actual
-            const currentValue = select.value;
+            // Guardar el valor actual si no se proporciona uno
+            const currentValue = selectedValue !== null ? selectedValue : select.value;
             
             // Limpiar opciones existentes (excepto la primera si es placeholder)
             select.innerHTML = '<option value="">Seleccione un proveedor</option>';
@@ -2087,7 +2313,7 @@
                 select.appendChild(option);
             });
             
-            // Restaurar el valor si aún existe
+            // Establecer el valor seleccionado
             if (currentValue && MOCK_DATA.PROVEEDORES.find(p => p.id === currentValue)) {
                 select.value = currentValue;
             }
@@ -2150,8 +2376,9 @@
             if (confirm('¿Está seguro de que desea eliminar este ingreso?')) {
                 try {
                     await eliminarIngresoDB(ingresoId);
-                    // Eliminar archivo adjunto de localStorage
-                    localStorage.removeItem(`adjunto_ingreso_${ingresoId}`);
+                    // Eliminar archivos adjuntos de localStorage
+                    localStorage.removeItem(`adjuntos_ingreso_${ingresoId}`);
+                    localStorage.removeItem(`adjunto_ingreso_${ingresoId}`); // Compatibilidad con formato antiguo
                     await updateDashboard();
                     alertMessage('Ingreso eliminado correctamente', 'success');
                 } catch (error) {
@@ -2172,31 +2399,33 @@
                 return;
             }
             
-            // Cargar proveedores en el select
+            // Cargar proveedores primero
             await cargarProveedores();
-            updateSupplierSelect();
+            
+            // Actualizar select de proveedores en el modal de edición con el valor del gasto
+            updateSupplierSelect('editGastoProveedor', gasto.proveedor || '');
             
             // Llenar formulario con datos del gasto
             document.getElementById('editGastoId').value = gasto.id;
             document.getElementById('editGastoFecha').value = gasto.fecha;
-            document.getElementById('editGastoProveedor').value = gasto.proveedor || '';
             document.getElementById('editGastoCategoria').value = gasto.categoria;
             document.getElementById('editGastoMonto').value = gasto.monto;
             document.getElementById('editGastoProduccion').value = gasto.produccion;
             document.getElementById('editGastoNota').value = gasto.nota || '';
             
-            // Actualizar select de proveedores
-            const selectProveedor = document.getElementById('editGastoProveedor');
-            selectProveedor.innerHTML = '<option value="">Seleccione un proveedor</option>';
-            MOCK_DATA.PROVEEDORES.forEach(proveedor => {
-                const option = document.createElement('option');
-                option.value = proveedor.id;
-                option.textContent = `${proveedor.nombre} (${proveedor.servicio})`;
-                if (proveedor.id === gasto.proveedor) {
-                    option.selected = true;
-                }
-                selectProveedor.appendChild(option);
-            });
+            // Mostrar archivos adjuntos existentes
+            const adjuntosExistentes = Array.isArray(gasto.adjuntos) ? gasto.adjuntos : 
+                                      (gasto.adjunto && gasto.adjunto !== 'sin_adjunto.pdf' ? [gasto.adjunto] : []);
+            if (adjuntosExistentes.length > 0) {
+                const adjuntoInfo = document.createElement('div');
+                adjuntoInfo.style.marginTop = '10px';
+                adjuntoInfo.style.padding = '10px';
+                adjuntoInfo.style.backgroundColor = '#f8f9fa';
+                adjuntoInfo.style.borderRadius = '5px';
+                adjuntoInfo.innerHTML = `<strong>Archivos actuales:</strong><br>${adjuntosExistentes.map(a => `📄 ${a}`).join('<br>')}`;
+                const adjuntoInput = document.getElementById('editGastoAdjunto');
+                adjuntoInput.parentNode.insertBefore(adjuntoInfo, adjuntoInput.nextSibling);
+            }
             
             // Mostrar modal
             document.getElementById('modalEditarGasto').style.display = 'block';
@@ -2219,6 +2448,20 @@
             document.getElementById('editIngresoTipo').value = ingreso.tipo;
             document.getElementById('editIngresoMonto').value = ingreso.monto;
             
+            // Mostrar archivos adjuntos existentes
+            const adjuntosExistentes = Array.isArray(ingreso.adjuntos) ? ingreso.adjuntos : 
+                                      (ingreso.adjunto && ingreso.adjunto !== 'sin_comprobante.pdf' ? [ingreso.adjunto] : []);
+            if (adjuntosExistentes.length > 0) {
+                const adjuntoInfo = document.createElement('div');
+                adjuntoInfo.style.marginTop = '10px';
+                adjuntoInfo.style.padding = '10px';
+                adjuntoInfo.style.backgroundColor = '#f8f9fa';
+                adjuntoInfo.style.borderRadius = '5px';
+                adjuntoInfo.innerHTML = `<strong>Archivos actuales:</strong><br>${adjuntosExistentes.map(a => `📄 ${a}`).join('<br>')}`;
+                const adjuntoInput = document.getElementById('editIngresoAdjunto');
+                adjuntoInput.parentNode.insertBefore(adjuntoInfo, adjuntoInput.nextSibling);
+            }
+            
             // Mostrar modal
             document.getElementById('modalEditarIngreso').style.display = 'block';
         }
@@ -2228,11 +2471,19 @@
          */
         function cerrarModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
-            // Limpiar formulario
+            // Limpiar formulario y remover información de archivos existentes
             if (modalId === 'modalEditarGasto') {
                 document.getElementById('formEditarGasto').reset();
+                // Remover div de archivos existentes si existe
+                const adjuntoInput = document.getElementById('editGastoAdjunto');
+                const adjuntoInfo = adjuntoInput.parentNode.querySelector('div[style*="background-color: #f8f9fa"]');
+                if (adjuntoInfo) adjuntoInfo.remove();
             } else if (modalId === 'modalEditarIngreso') {
                 document.getElementById('formEditarIngreso').reset();
+                // Remover div de archivos existentes si existe
+                const adjuntoInput = document.getElementById('editIngresoAdjunto');
+                const adjuntoInfo = adjuntoInput.parentNode.querySelector('div[style*="background-color: #f8f9fa"]');
+                if (adjuntoInfo) adjuntoInfo.remove();
             }
         }
         
@@ -2258,7 +2509,7 @@
                         categoria: datosActualizados.categoria,
                         produccion: datosActualizados.produccion,
                         proveedor_id: datosActualizados.proveedor || null,
-                        adjunto_url: datosActualizados.adjunto || null,
+                        adjunto_url: Array.isArray(datosActualizados.adjuntos) ? datosActualizados.adjuntos.join(', ') : (datosActualizados.adjunto || null),
                         nota: datosActualizados.nota || null
                     })
                     .eq('id', gastoId)
@@ -2274,7 +2525,8 @@
                     categoria: data.categoria,
                     produccion: data.produccion,
                     proveedor: data.proveedor_id,
-                    adjunto: data.adjunto_url || 'sin_adjunto.pdf',
+                    adjuntos: data.adjunto_url ? data.adjunto_url.split(', ').filter(a => a.trim()) : [],
+                    adjunto: data.adjunto_url ? data.adjunto_url.split(', ')[0] : 'sin_adjunto.pdf', // Compatibilidad
                     nota: data.nota || ''
                 };
                 
@@ -2312,7 +2564,7 @@
                         monto: datosActualizados.monto,
                         tipo: datosActualizados.tipo,
                         comprador: datosActualizados.comprador,
-                        adjunto_url: datosActualizados.adjunto || null
+                        adjunto_url: Array.isArray(datosActualizados.adjuntos) ? datosActualizados.adjuntos.join(', ') : (datosActualizados.adjunto || null)
                     })
                     .eq('id', ingresoId)
                     .select()
@@ -2326,7 +2578,8 @@
                     monto: parseFloat(data.monto),
                     tipo: data.tipo,
                     comprador: data.comprador,
-                    adjunto: data.adjunto_url || 'sin_comprobante.pdf'
+                    adjuntos: data.adjunto_url ? data.adjunto_url.split(', ').filter(a => a.trim()) : [],
+                    adjunto: data.adjunto_url ? data.adjunto_url.split(', ')[0] : 'sin_comprobante.pdf' // Compatibilidad
                 };
                 
                 // Actualizar en datos locales
@@ -2630,11 +2883,16 @@
                 const monto = parseFloat(document.getElementById('editGastoMonto').value);
                 const produccion = document.getElementById('editGastoProduccion').value;
                 const nota = document.getElementById('editGastoNota').value || '';
-                const archivoAdjunto = document.getElementById('editGastoAdjunto').files[0];
+                const archivosAdjuntos = Array.from(document.getElementById('editGastoAdjunto').files);
                 
-                // Obtener el gasto original para mantener el adjunto si no se cambia
+                // Obtener el gasto original para mantener los adjuntos si no se cambian
                 const gastoOriginal = MOCK_DATA.GASTOS.find(g => g.id === gastoId);
-                const adjunto = archivoAdjunto?.name || gastoOriginal?.adjunto || 'sin_adjunto.pdf';
+                const adjuntosExistentes = Array.isArray(gastoOriginal?.adjuntos) ? gastoOriginal.adjuntos : 
+                                           (gastoOriginal?.adjunto && gastoOriginal.adjunto !== 'sin_adjunto.pdf' ? [gastoOriginal.adjunto] : []);
+                
+                const adjuntos = archivosAdjuntos.length > 0 
+                    ? archivosAdjuntos.map(f => f.name) 
+                    : adjuntosExistentes;
                 
                 if (!proveedorId) {
                     alertMessage('Por favor seleccione un proveedor', 'danger');
@@ -2648,19 +2906,34 @@
                         categoria: categoria,
                         produccion: produccion,
                         proveedor: proveedorId,
-                        adjunto: adjunto,
+                        adjuntos: adjuntos,
+                        adjunto: adjuntos[0] || 'sin_adjunto.pdf', // Compatibilidad
                         nota: nota
                     };
                     
                     await actualizarGasto(gastoId, datosActualizados);
                     
-                    // Si hay nuevo archivo, guardarlo
-                    if (archivoAdjunto) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            localStorage.setItem(`adjunto_gasto_${gastoId}`, e.target.result);
-                        };
-                        reader.readAsDataURL(archivoAdjunto);
+                    // Si hay nuevos archivos, guardarlos
+                    if (archivosAdjuntos.length > 0) {
+                        const archivosParaGuardar = [];
+                        let archivosLeidos = 0;
+                        
+                        archivosAdjuntos.forEach((archivo) => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                archivosParaGuardar.push({
+                                    nombre: archivo.name,
+                                    data: e.target.result
+                                });
+                                archivosLeidos++;
+                                
+                                // Cuando todos los archivos estén leídos, guardarlos
+                                if (archivosLeidos === archivosAdjuntos.length) {
+                                    guardarArchivosAdjuntos(gastoId, 'gasto', archivosParaGuardar);
+                                }
+                            };
+                            reader.readAsDataURL(archivo);
+                        });
                     }
                     
                     // Recargar proveedores para actualizar estadísticas
@@ -2671,6 +2944,10 @@
                     
                     // Actualizar dashboard y tablas
                     await updateDashboard();
+                    
+                    // Actualizar tablas de gastos e ingresos si están visibles
+                    renderExpenseTable(MOCK_DATA.GASTOS);
+                    renderIncomeTable(MOCK_DATA.INGRESOS);
                     
                     // Si estamos en la sección de proveedores, actualizar la tabla
                     if (!document.getElementById('proveedores').classList.contains('hidden')) {
@@ -2692,11 +2969,16 @@
                 const comprador = document.getElementById('editIngresoComprador').value;
                 const tipo = document.getElementById('editIngresoTipo').value;
                 const monto = parseFloat(document.getElementById('editIngresoMonto').value);
-                const archivoAdjunto = document.getElementById('editIngresoAdjunto').files[0];
+                const archivosAdjuntos = Array.from(document.getElementById('editIngresoAdjunto').files);
                 
-                // Obtener el ingreso original para mantener el adjunto si no se cambia
+                // Obtener el ingreso original para mantener los adjuntos si no se cambian
                 const ingresoOriginal = MOCK_DATA.INGRESOS.find(i => i.id === ingresoId);
-                const adjunto = archivoAdjunto?.name || ingresoOriginal?.adjunto || 'sin_comprobante.pdf';
+                const adjuntosExistentes = Array.isArray(ingresoOriginal?.adjuntos) ? ingresoOriginal.adjuntos : 
+                                          (ingresoOriginal?.adjunto && ingresoOriginal.adjunto !== 'sin_comprobante.pdf' ? [ingresoOriginal.adjunto] : []);
+                
+                const adjuntos = archivosAdjuntos.length > 0 
+                    ? archivosAdjuntos.map(f => f.name) 
+                    : adjuntosExistentes;
                 
                 try {
                     const datosActualizados = {
@@ -2704,25 +2986,44 @@
                         monto: monto,
                         tipo: tipo,
                         comprador: comprador,
-                        adjunto: adjunto
+                        adjuntos: adjuntos,
+                        adjunto: adjuntos[0] || 'sin_comprobante.pdf' // Compatibilidad
                     };
                     
                     await actualizarIngreso(ingresoId, datosActualizados);
                     
-                    // Si hay nuevo archivo, guardarlo
-                    if (archivoAdjunto) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            localStorage.setItem(`adjunto_ingreso_${ingresoId}`, e.target.result);
-                        };
-                        reader.readAsDataURL(archivoAdjunto);
+                    // Si hay nuevos archivos, guardarlos
+                    if (archivosAdjuntos.length > 0) {
+                        const archivosParaGuardar = [];
+                        let archivosLeidos = 0;
+                        
+                        archivosAdjuntos.forEach((archivo) => {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                archivosParaGuardar.push({
+                                    nombre: archivo.name,
+                                    data: e.target.result
+                                });
+                                archivosLeidos++;
+                                
+                                // Cuando todos los archivos estén leídos, guardarlos
+                                if (archivosLeidos === archivosAdjuntos.length) {
+                                    guardarArchivosAdjuntos(ingresoId, 'ingreso', archivosParaGuardar);
+                                }
+                            };
+                            reader.readAsDataURL(archivo);
+                        });
                     }
                     
                     // Cerrar modal
                     cerrarModal('modalEditarIngreso');
                     
-                    // Actualizar dashboard
+                    // Actualizar dashboard y tablas
                     await updateDashboard();
+                    
+                    // Actualizar tablas de gastos e ingresos si están visibles
+                    renderExpenseTable(MOCK_DATA.GASTOS);
+                    renderIncomeTable(MOCK_DATA.INGRESOS);
                     
                     alertMessage('Ingreso actualizado exitosamente', 'success');
                 } catch (error) {
@@ -2776,8 +3077,10 @@
             const monto = parseFloat(document.getElementById('gastoMonto').value);
             const produccion = document.getElementById('gastoProduccion').value;
             const nota = document.getElementById('gastoNota').value || '';
-            const archivoAdjunto = document.getElementById('gastoAdjunto').files[0];
-            const adjunto = archivoAdjunto?.name || 'sin_adjunto.pdf';
+            const archivosAdjuntos = Array.from(document.getElementById('gastoAdjunto').files);
+            const nombresAdjuntos = archivosAdjuntos.length > 0 
+                ? archivosAdjuntos.map(f => f.name) 
+                : ['sin_adjunto.pdf'];
             
             if (!proveedorId) {
                 alertMessage('Por favor seleccione un proveedor', 'danger');
@@ -2791,20 +3094,35 @@
                 categoria: categoria,
                 produccion: produccion,
                 proveedor: proveedorId,
-                adjunto: adjunto,
+                adjuntos: nombresAdjuntos, // Array de nombres
+                adjunto: nombresAdjuntos[0] || 'sin_adjunto.pdf', // Compatibilidad con formato antiguo
                 nota: nota
             };
             
             try {
                 const gastoGuardado = await guardarGasto(nuevoGasto);
                 
-                // Guardar archivo adjunto en localStorage si existe
-                if (archivoAdjunto && gastoGuardado && gastoGuardado.id) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        localStorage.setItem(`adjunto_gasto_${gastoGuardado.id}`, e.target.result);
-                    };
-                    reader.readAsDataURL(archivoAdjunto);
+                // Guardar múltiples archivos adjuntos en localStorage
+                if (archivosAdjuntos.length > 0 && gastoGuardado && gastoGuardado.id) {
+                    const archivosParaGuardar = [];
+                    let archivosLeidos = 0;
+                    
+                    archivosAdjuntos.forEach((archivo, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            archivosParaGuardar.push({
+                                nombre: archivo.name,
+                                data: e.target.result
+                            });
+                            archivosLeidos++;
+                            
+                            // Cuando todos los archivos estén leídos, guardarlos
+                            if (archivosLeidos === archivosAdjuntos.length) {
+                                guardarArchivosAdjuntos(gastoGuardado.id, 'gasto', archivosParaGuardar);
+                            }
+                        };
+                        reader.readAsDataURL(archivo);
+                    });
                 }
                 
                 // Recargar proveedores para actualizar estadísticas
@@ -2835,8 +3153,10 @@
             const comprador = document.getElementById('ingresoComprador').value;
             const tipo = document.getElementById('ingresoTipo').value;
             const monto = parseFloat(document.getElementById('ingresoMonto').value);
-            const archivoAdjunto = document.getElementById('ingresoAdjunto').files[0];
-            const adjunto = archivoAdjunto?.name || 'sin_comprobante.pdf';
+            const archivosAdjuntos = Array.from(document.getElementById('ingresoAdjunto').files);
+            const nombresAdjuntos = archivosAdjuntos.length > 0 
+                ? archivosAdjuntos.map(f => f.name) 
+                : ['sin_comprobante.pdf'];
             
             // Crear nuevo ingreso
             const nuevoIngreso = {
@@ -2844,19 +3164,34 @@
                 monto: monto,
                 tipo: tipo,
                 comprador: comprador,
-                adjunto: adjunto
+                adjuntos: nombresAdjuntos, // Array de nombres
+                adjunto: nombresAdjuntos[0] || 'sin_comprobante.pdf' // Compatibilidad con formato antiguo
             };
             
             try {
                 const ingresoGuardado = await guardarIngreso(nuevoIngreso);
                 
-                // Guardar archivo adjunto en localStorage si existe
-                if (archivoAdjunto && ingresoGuardado && ingresoGuardado.id) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        localStorage.setItem(`adjunto_ingreso_${ingresoGuardado.id}`, e.target.result);
-                    };
-                    reader.readAsDataURL(archivoAdjunto);
+                // Guardar múltiples archivos adjuntos en localStorage
+                if (archivosAdjuntos.length > 0 && ingresoGuardado && ingresoGuardado.id) {
+                    const archivosParaGuardar = [];
+                    let archivosLeidos = 0;
+                    
+                    archivosAdjuntos.forEach((archivo, index) => {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            archivosParaGuardar.push({
+                                nombre: archivo.name,
+                                data: e.target.result
+                            });
+                            archivosLeidos++;
+                            
+                            // Cuando todos los archivos estén leídos, guardarlos
+                            if (archivosLeidos === archivosAdjuntos.length) {
+                                guardarArchivosAdjuntos(ingresoGuardado.id, 'ingreso', archivosParaGuardar);
+                            }
+                        };
+                        reader.readAsDataURL(archivo);
+                    });
                 }
                 
                 // Limpiar formulario
