@@ -961,6 +961,10 @@
          */
         async function guardarGasto(gasto) {
             if (!SUPABASE_CONFIGURADO || !supabase) {
+                // Asignar ID temporal si no existe
+                if (!gasto.id) {
+                    gasto.id = 'local_' + Date.now();
+                }
                 MOCK_DATA.GASTOS.push(gasto);
                 return gasto;
             }
@@ -1006,6 +1010,10 @@
          */
         async function guardarIngreso(ingreso) {
             if (!SUPABASE_CONFIGURADO || !supabase) {
+                // Asignar ID temporal si no existe
+                if (!ingreso.id) {
+                    ingreso.id = 'local_' + Date.now();
+                }
                 MOCK_DATA.INGRESOS.push(ingreso);
                 return ingreso;
             }
@@ -1401,6 +1409,52 @@
             });
         }
         
+        // Función para descargar archivo adjunto
+        function descargarAdjunto(archivoNombre, archivoData, tipo = 'application/pdf') {
+            try {
+                let blob;
+                if (archivoData && archivoData !== 'null' && archivoData !== 'undefined') {
+                    try {
+                        // Si tenemos los datos del archivo (base64), crear blob desde ellos
+                        const base64Data = archivoData.includes(',') ? archivoData.split(',')[1] : archivoData;
+                        const byteCharacters = atob(base64Data);
+                        const byteNumbers = new Array(byteCharacters.length);
+                        for (let i = 0; i < byteCharacters.length; i++) {
+                            byteNumbers[i] = byteCharacters.charCodeAt(i);
+                        }
+                        const byteArray = new Uint8Array(byteNumbers);
+                        blob = new Blob([byteArray], { type: tipo });
+                    } catch (e) {
+                        // Si falla la conversión, crear archivo de texto con el nombre
+                        blob = new Blob(['Archivo: ' + archivoNombre + '\n\nEste archivo fue adjuntado pero no se pudo recuperar el contenido original.'], { type: 'text/plain' });
+                    }
+                } else {
+                    // Si no hay datos, crear un archivo de texto informativo
+                    blob = new Blob(['Archivo adjunto: ' + archivoNombre + '\n\nEste archivo fue registrado pero no se guardó el contenido.'], { type: 'text/plain' });
+                }
+                
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = archivoNombre;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+                
+                alertMessage('Archivo descargado: ' + archivoNombre, 'success');
+            } catch (error) {
+                console.error('Error al descargar archivo:', error);
+                alertMessage('Error al descargar el archivo: ' + error.message, 'danger');
+            }
+        }
+        
+        // Función para obtener archivo desde localStorage
+        function obtenerArchivoAdjunto(id, tipo) {
+            const key = tipo === 'gasto' ? `adjunto_gasto_${id}` : `adjunto_ingreso_${id}`;
+            return localStorage.getItem(key);
+        }
+        
         function renderExpenseTable(data) {
             const tbody = document.getElementById('expenseTableBody');
             tbody.innerHTML = '';
@@ -1411,7 +1465,19 @@
                 row.insertCell().textContent = item.categoria;
                 row.insertCell().textContent = item.produccion;
                 row.insertCell().textContent = MOCK_DATA.PROVEEDORES.find(p => p.id === item.proveedor)?.nombre || item.proveedor;
-                row.insertCell().innerHTML = `<a href="#" onclick="alert('Descarga simulada de: ${item.adjunto}')">${item.adjunto}</a>`;
+                
+                // Celda de adjunto con descarga funcional
+                const adjuntoCell = row.insertCell();
+                if (item.adjunto && item.adjunto !== 'sin_adjunto.pdf') {
+                    const archivoData = obtenerArchivoAdjunto(item.id, 'gasto');
+                    const tipoMime = item.adjunto.endsWith('.pdf') ? 'application/pdf' : 
+                                     (item.adjunto.endsWith('.jpg') || item.adjunto.endsWith('.jpeg')) ? 'image/jpeg' :
+                                     item.adjunto.endsWith('.png') ? 'image/png' : 'application/octet-stream';
+                    const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'") : 'null';
+                    adjuntoCell.innerHTML = `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer;" onclick="descargarAdjunto('${item.adjunto}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${item.adjunto}</a>`;
+                } else {
+                    adjuntoCell.textContent = 'Sin adjunto';
+                }
             });
         }
         
@@ -1424,7 +1490,19 @@
                 row.insertCell().textContent = formatCurrency(item.monto);
                 row.insertCell().textContent = item.tipo;
                 row.insertCell().textContent = item.comprador;
-                row.insertCell().innerHTML = `<a href="#" onclick="alert('Descarga simulada de: ${item.adjunto}')">${item.adjunto}</a>`;
+                
+                // Celda de adjunto con descarga funcional
+                const adjuntoCell = row.insertCell();
+                if (item.adjunto && item.adjunto !== 'sin_comprobante.pdf') {
+                    const archivoData = obtenerArchivoAdjunto(item.id, 'ingreso');
+                    const tipoMime = item.adjunto.endsWith('.pdf') ? 'application/pdf' : 
+                                     (item.adjunto.endsWith('.jpg') || item.adjunto.endsWith('.jpeg')) ? 'image/jpeg' :
+                                     item.adjunto.endsWith('.png') ? 'image/png' : 'application/octet-stream';
+                    const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'") : 'null';
+                    adjuntoCell.innerHTML = `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer;" onclick="descargarAdjunto('${item.adjunto}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${item.adjunto}</a>`;
+                } else {
+                    adjuntoCell.textContent = 'Sin adjunto';
+                }
             });
         }
         
@@ -1588,6 +1666,16 @@
             const logoFileInput = document.getElementById('logoFileInput');
             const logoPreview = document.getElementById('logoPreview');
             const logoPlaceholder = document.getElementById('logoPlaceholder');
+            const logoUploadBtn = document.querySelector('.logo-upload-btn');
+
+            function ocultarBotonSiHayLogo() {
+                const savedLogo = localStorage.getItem('ganaderiaToneLogo');
+                if (savedLogo) {
+                    logoUploadBtn.style.display = 'none';
+                } else {
+                    logoUploadBtn.style.display = 'block';
+                }
+            }
 
             logoFileInput.addEventListener('change', function(e) {
                 const file = e.target.files[0];
@@ -1597,6 +1685,8 @@
                         logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Ganadería Toné">`;
                         // Guardar en localStorage para persistencia
                         localStorage.setItem('ganaderiaToneLogo', e.target.result);
+                        // Ocultar el botón después de cargar
+                        logoUploadBtn.style.display = 'none';
                     };
                     reader.readAsDataURL(file);
                 }
@@ -1606,6 +1696,31 @@
             const savedLogo = localStorage.getItem('ganaderiaToneLogo');
             if (savedLogo) {
                 logoPreview.innerHTML = `<img src="${savedLogo}" alt="Logo Ganadería Toné">`;
+            }
+            
+            // Ocultar botón si ya hay logo
+            ocultarBotonSiHayLogo();
+            
+            // Agregar botón para eliminar logo (aparece cuando hay logo)
+            if (savedLogo) {
+                const removeBtn = document.createElement('button');
+                removeBtn.className = 'logo-upload-btn';
+                removeBtn.style.marginTop = '10px';
+                removeBtn.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
+                removeBtn.textContent = '🗑️ Eliminar Logo';
+                removeBtn.onclick = function(e) {
+                    e.stopPropagation();
+                    if (confirm('¿Desea eliminar el logo?')) {
+                        localStorage.removeItem('ganaderiaToneLogo');
+                        logoPreview.innerHTML = '<span id="logoPlaceholder">📷<br>Click para subir logo</span>';
+                        logoUploadBtn.style.display = 'block';
+                        removeBtn.remove();
+                    }
+                };
+                const container = document.querySelector('.logo-upload-container');
+                if (!container.querySelector('button[style*="background: linear-gradient(135deg, #e74c3c"]')) {
+                    container.appendChild(removeBtn);
+                }
             }
         }
 
@@ -1641,7 +1756,8 @@
             const monto = parseFloat(document.getElementById('gastoMonto').value);
             const produccion = document.getElementById('gastoProduccion').value;
             const nota = document.getElementById('gastoNota').value || '';
-            const adjunto = document.getElementById('gastoAdjunto').files[0]?.name || 'sin_adjunto.pdf';
+            const archivoAdjunto = document.getElementById('gastoAdjunto').files[0];
+            const adjunto = archivoAdjunto?.name || 'sin_adjunto.pdf';
             
             if (!proveedorId) {
                 alertMessage('Por favor seleccione un proveedor', 'danger');
@@ -1660,7 +1776,16 @@
             };
             
             try {
-                await guardarGasto(nuevoGasto);
+                const gastoGuardado = await guardarGasto(nuevoGasto);
+                
+                // Guardar archivo adjunto en localStorage si existe
+                if (archivoAdjunto && gastoGuardado && gastoGuardado.id) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        localStorage.setItem(`adjunto_gasto_${gastoGuardado.id}`, e.target.result);
+                    };
+                    reader.readAsDataURL(archivoAdjunto);
+                }
                 
                 // Recargar proveedores para actualizar estadísticas
                 await cargarProveedores();
@@ -1690,7 +1815,8 @@
             const comprador = document.getElementById('ingresoComprador').value;
             const tipo = document.getElementById('ingresoTipo').value;
             const monto = parseFloat(document.getElementById('ingresoMonto').value);
-            const adjunto = document.getElementById('ingresoAdjunto').files[0]?.name || 'sin_comprobante.pdf';
+            const archivoAdjunto = document.getElementById('ingresoAdjunto').files[0];
+            const adjunto = archivoAdjunto?.name || 'sin_comprobante.pdf';
             
             // Crear nuevo ingreso
             const nuevoIngreso = {
@@ -1702,7 +1828,16 @@
             };
             
             try {
-                await guardarIngreso(nuevoIngreso);
+                const ingresoGuardado = await guardarIngreso(nuevoIngreso);
+                
+                // Guardar archivo adjunto en localStorage si existe
+                if (archivoAdjunto && ingresoGuardado && ingresoGuardado.id) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        localStorage.setItem(`adjunto_ingreso_${ingresoGuardado.id}`, e.target.result);
+                    };
+                    reader.readAsDataURL(archivoAdjunto);
+                }
                 
                 // Limpiar formulario
                 document.getElementById('incomeForm').reset();
