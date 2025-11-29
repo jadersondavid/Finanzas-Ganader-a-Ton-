@@ -9,32 +9,32 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Variables de Diseño - Colores Naturales de Ganadería */
+        /* Variables de Diseño - Colores Vivos y Naturales de Ganadería */
         :root {
-            --color-primary: #2d8659; /* Verde campo natural */
-            --color-primary-dark: #1e5d3f;
-            --color-primary-light: #4a9d7a;
-            --color-secondary: #5b8fa3; /* Azul cielo suave */
-            --color-secondary-dark: #4a7280;
-            --color-accent: #7fb3a8; /* Verde agua */
-            --color-accent-2: #a8c5a0; /* Verde pasto */
-            --color-background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 25%, #e3f2fd 50%, #e8f5e9 75%, #f1f8f4 100%);
-            --color-background-solid: #f5f9f6;
+            --color-primary: #22c55e; /* Verde esmeralda vivo */
+            --color-primary-dark: #16a34a;
+            --color-primary-light: #4ade80;
+            --color-secondary: #3b82f6; /* Azul cielo vibrante */
+            --color-secondary-dark: #2563eb;
+            --color-accent: #10b981; /* Verde turquesa */
+            --color-accent-2: #84cc16; /* Verde lima */
+            --color-background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 25%, #e0f2fe 50%, #ecfdf5 75%, #f0fdf4 100%);
+            --color-background-solid: #f0fdf4;
             --color-card-bg: #ffffff;
-            --color-text: #2c3e2d;
-            --color-text-light: #5a6c5b;
-            --color-income: #4a9d7a; /* Verde suave */
-            --color-expense: #c85a5a; /* Rojo terroso */
-            --color-alert-warn: #d4a574; /* Naranja tierra */
-            --color-alert-danger: #c85a5a; /* Rojo terroso */
-            --color-ai: #5b8fa3; /* Azul cielo */
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-income: #10b981; /* Verde esmeralda */
+            --color-expense: #ef4444; /* Rojo coral */
+            --color-alert-warn: #f59e0b; /* Naranja ámbar */
+            --color-alert-danger: #dc2626; /* Rojo intenso */
+            --color-ai: #3b82f6; /* Azul brillante */
             --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             --border-radius: 12px;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.08);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --shadow-lg: 0 8px 20px rgba(0, 0, 0, 0.12);
-            --shadow-xl: 0 15px 35px rgba(0, 0, 0, 0.15);
-            --shadow-3d: 0 8px 25px rgba(45, 134, 89, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 8px 20px rgba(34, 197, 94, 0.15);
+            --shadow-xl: 0 15px 35px rgba(34, 197, 94, 0.2);
+            --shadow-3d: 0 8px 25px rgba(34, 197, 94, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
         body {
@@ -62,7 +62,7 @@
         /* 1. Panel Lateral de Navegación */
         #sidebar {
             width: 280px;
-            background: linear-gradient(180deg, #2d8659 0%, #1e5d3f 50%, #2d8659 100%);
+            background: linear-gradient(180deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
             color: white;
             padding: 0;
             box-shadow: var(--shadow-lg);
@@ -76,7 +76,7 @@
         }
         
         #sidebar:hover {
-            box-shadow: 0 10px 30px rgba(45, 134, 89, 0.3);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
         }
         
         /* Contenedor del logo con scroll */
@@ -138,16 +138,16 @@
             border-radius: 20px;
             object-fit: cover;
             border: 4px solid transparent;
-            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #4a9d7a 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
             background-clip: padding-box;
-            border-image: linear-gradient(135deg, #2d8659 0%, #4a9d7a 50%, #5b8fa3 100%) 1;
-            box-shadow: 0 8px 25px rgba(45, 134, 89, 0.3), 0 0 0 4px rgba(45, 134, 89, 0.1);
+            border-image: linear-gradient(135deg, #22c55e 0%, #10b981 50%, #3b82f6 100%) 1;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4), 0 0 0 4px rgba(34, 197, 94, 0.15);
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #f5f9f6 0%, #e8f5e9 100%);
+            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #5a6c5b;
+            color: #1f2937;
             font-size: 0.9em;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -162,15 +162,15 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.4), transparent);
             transform: rotate(45deg);
             transition: all 0.6s;
         }
 
         .logo-preview:hover {
             transform: scale(1.08) rotate(2deg);
-            box-shadow: 0 15px 40px rgba(45, 134, 89, 0.4), 0 0 0 4px rgba(45, 134, 89, 0.2);
-            border-image: linear-gradient(135deg, #4a9d7a 0%, #5b8fa3 50%, #7fb3a8 100%) 1;
+            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5), 0 0 0 4px rgba(34, 197, 94, 0.25);
+            border-image: linear-gradient(135deg, #4ade80 0%, #3b82f6 50%, #60a5fa 100%) 1;
         }
         
         .logo-preview:hover::before {
@@ -187,7 +187,7 @@
 
         .logo-upload-btn {
             padding: 12px 24px;
-            background: linear-gradient(135deg, #a8c5a0 0%, #7fb3a8 50%, #5b8fa3 100%);
+            background: linear-gradient(135deg, #84cc16 0%, #10b981 50%, #3b82f6 100%);
             color: white;
             border: none;
             border-radius: 12px;
@@ -195,7 +195,7 @@
             font-size: 0.9em;
             font-weight: 700;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 6px 20px rgba(168, 197, 160, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 6px 20px rgba(132, 204, 22, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             position: relative;
             overflow: hidden;
         }
@@ -254,7 +254,7 @@
             top: 0;
             height: 100%;
             width: 4px;
-            background: linear-gradient(180deg, #a8c5a0 0%, #7fb3a8 100%);
+            background: linear-gradient(180deg, #84cc16 0%, #3b82f6 100%);
             transform: scaleY(0);
             transition: transform 0.3s ease;
         }
@@ -263,7 +263,7 @@
         .nav-item.active::before {
             transform: scaleY(1);
         }
-        
+
         .nav-item:hover, .nav-item.active {
             background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
             transform: translateX(5px);
@@ -297,20 +297,20 @@
         header h1 {
             font-size: 2.2em;
             font-weight: 800;
-            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #4a9d7a 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 2px 10px rgba(45, 134, 89, 0.15);
+            text-shadow: 0 2px 10px rgba(34, 197, 94, 0.2);
         }
 
         .user-info {
             font-weight: 600;
-            color: #2d8659;
+            color: #16a34a;
             padding: 8px 16px;
             border-radius: 20px;
-            background-color: rgba(45, 134, 89, 0.1);
-            border: 2px solid rgba(45, 134, 89, 0.2);
+            background-color: rgba(34, 197, 94, 0.15);
+            border: 2px solid rgba(34, 197, 94, 0.3);
         }
 
         /* Estilo de Tarjetas con Efecto 3D */
@@ -378,15 +378,15 @@
         
         .card.income { 
             border-color: var(--color-income);
-            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
         }
         .card.expense { 
             border-color: var(--color-expense);
-            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
         }
         .card.profit { 
             border-color: var(--color-primary);
-            background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
         }
 
         .summary-cards .card h3 {
@@ -413,13 +413,13 @@
         }
 
         .card.income p { 
-            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
         .card.expense p { 
-            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -449,9 +449,9 @@
 
         .budget-bar {
             height: 100%;
-            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #2d8659 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
-            box-shadow: 0 0 20px rgba(45, 134, 89, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
             position: relative;
             overflow: hidden;
         }
@@ -473,12 +473,12 @@
         }
 
         .budget-bar.danger { 
-            background: linear-gradient(135deg, #c85a5a 0%, #b04545 50%, #9a3a3a 100%) !important;
-            box-shadow: 0 0 20px rgba(200, 90, 90, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%) !important;
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
         }
         .budget-bar.warning { 
-            background: linear-gradient(135deg, #d4a574 0%, #c8965a 50%, #b8854a 100%) !important;
-            box-shadow: 0 0 20px rgba(212, 165, 116, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 50%, #b45309 100%) !important;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
         }
 
         .alert {
@@ -492,9 +492,9 @@
 
         .alert span { margin-right: 10px; }
 
-        .alert.warning { background-color: #fcefdc; color: var(--color-alert-warn); border: 1px solid var(--color-alert-warn); }
-        .alert.danger { background-color: #f8d7da; color: var(--color-alert-danger); border: 1px solid var(--color-alert-danger); }
-        .alert.info { background-color: #cfe2ff; color: var(--color-ai); border: 1px solid var(--color-ai); }
+        .alert.warning { background-color: #fef3c7; color: #d97706; border: 1px solid #f59e0b; }
+        .alert.danger { background-color: #fee2e2; color: #b91c1c; border: 1px solid #ef4444; }
+        .alert.info { background-color: #dbeafe; color: #1e40af; border: 1px solid #3b82f6; }
 
         .hidden { display: none; }
         
@@ -528,7 +528,7 @@
             animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-height: 90vh;
             overflow-y: auto;
-            border: 2px solid rgba(102, 126, 234, 0.2);
+            border: 2px solid rgba(34, 197, 94, 0.2);
             backdrop-filter: blur(10px);
         }
         
@@ -550,12 +550,12 @@
             margin-bottom: 25px;
             padding-bottom: 20px;
             border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #2d8659 0%, #4a9d7a 50%, #5b8fa3 100%) 1;
+            border-image: linear-gradient(90deg, #22c55e 0%, #10b981 50%, #3b82f6 100%) 1;
         }
         
         .modal-header h3 {
             margin: 0;
-            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #4a9d7a 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -654,26 +654,26 @@
         }
 
         .btn-primary { 
-            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 50%, #2d8659 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
             color: white;
-            box-shadow: 0 8px 25px rgba(45, 134, 89, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
         .btn-primary:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05);
-            box-shadow: 0 15px 35px rgba(45, 134, 89, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #4a9d7a 0%, #2d8659 50%, #1e5d3f 100%);
+            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
         }
 
         .btn-primary:active {
             transform: translateY(-2px) rotateX(2deg) scale(1.02);
-            box-shadow: 0 5px 15px rgba(45, 134, 89, 0.3);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
         }
 
         .btn-ai { 
-            background: linear-gradient(135deg, #5b8fa3 0%, #4a7280 50%, #5b8fa3 100%);
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
             color: white;
-            box-shadow: 0 8px 25px rgba(91, 143, 163, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
             position: relative;
         }
         
@@ -683,34 +683,34 @@
 
         .btn-ai:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05);
-            box-shadow: 0 15px 35px rgba(91, 143, 163, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #7fb3a8 0%, #5b8fa3 50%, #4a7280 100%);
+            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
         }
 
         .btn-ai:active {
             transform: translateY(-2px) rotateX(2deg) scale(1.02);
-            box-shadow: 0 5px 15px rgba(91, 143, 163, 0.3);
+            box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
         }
         
         /* Botones de acción (eliminar, editar) */
         button[onclick*="eliminar"], button[onclick*="Eliminar"] {
-            background: linear-gradient(135deg, #c85a5a 0%, #b04545 50%, #9a3a3a 100%) !important;
-            box-shadow: 0 8px 25px rgba(200, 90, 90, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%) !important;
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
         }
         
         button[onclick*="eliminar"]:hover, button[onclick*="Eliminar"]:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05) !important;
-            box-shadow: 0 15px 35px rgba(200, 90, 90, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+            box-shadow: 0 15px 35px rgba(239, 68, 68, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
         }
         
         button[onclick*="editar"], button[onclick*="Editar"] {
-            background: linear-gradient(135deg, #7fb3a8 0%, #5b8fa3 50%, #4a7280 100%) !important;
-            box-shadow: 0 8px 25px rgba(127, 179, 168, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+            background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%) !important;
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
         }
         
         button[onclick*="editar"]:hover, button[onclick*="Editar"]:hover {
             transform: translateY(-5px) rotateX(5deg) scale(1.05) !important;
-            box-shadow: 0 15px 35px rgba(127, 179, 168, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+            box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
         }
 
         .btn span {
@@ -753,7 +753,7 @@
         #expenseTable, #incomeTable, #supplierTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
         
         #expenseTable th, #incomeTable th, #supplierTable th {
-            background: linear-gradient(135deg, #2d8659 0%, #1e5d3f 100%);
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
             color: white; 
             padding: 16px; 
             text-align: left; 
@@ -761,7 +761,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 8px rgba(45, 134, 89, 0.2);
+            box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
             position: relative;
         }
         
@@ -2743,6 +2743,77 @@
             }
         }
 
+        // Función para editar un proveedor (scope global)
+        window.editarProveedor = function(proveedorId) {
+            const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === proveedorId);
+            if (!proveedor) {
+                alertMessage('Proveedor no encontrado', 'danger');
+                return;
+            }
+            
+            // Llenar formulario con datos del proveedor
+            document.getElementById('editProveedorId').value = proveedor.id;
+            document.getElementById('editProveedorNombre').value = proveedor.nombre;
+            document.getElementById('editProveedorServicio').value = proveedor.servicio;
+            document.getElementById('editProveedorTelefono').value = proveedor.telefono || '';
+            document.getElementById('editProveedorEmail').value = proveedor.email || '';
+            document.getElementById('editProveedorDireccion').value = proveedor.direccion || '';
+            
+            // Mostrar modal
+            document.getElementById('modalEditarProveedor').style.display = 'block';
+        };
+        
+        // Función para actualizar un proveedor
+        async function actualizarProveedor(proveedorId, datosActualizados) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                // Actualizar en datos locales
+                const index = MOCK_DATA.PROVEEDORES.findIndex(p => p.id === proveedorId);
+                if (index !== -1) {
+                    MOCK_DATA.PROVEEDORES[index] = { ...MOCK_DATA.PROVEEDORES[index], ...datosActualizados };
+                }
+                return MOCK_DATA.PROVEEDORES[index];
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('proveedores')
+                    .update({
+                        nombre: datosActualizados.nombre,
+                        servicio: datosActualizados.servicio,
+                        telefono: datosActualizados.telefono || null,
+                        email: datosActualizados.email || null,
+                        direccion: datosActualizados.direccion || null
+                    })
+                    .eq('id', proveedorId)
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                const proveedorActualizado = {
+                    id: data.id,
+                    nombre: data.nombre,
+                    servicio: data.servicio,
+                    telefono: data.telefono || '',
+                    email: data.email || '',
+                    direccion: data.direccion || '',
+                    compras: data.compras || 0,
+                    totalGastado: parseFloat(data.total_gastado || 0)
+                };
+                
+                // Actualizar en datos locales
+                const index = MOCK_DATA.PROVEEDORES.findIndex(p => p.id === proveedorId);
+                if (index !== -1) {
+                    MOCK_DATA.PROVEEDORES[index] = proveedorActualizado;
+                }
+                
+                return proveedorActualizado;
+            } catch (error) {
+                console.error('Error actualizando proveedor:', error);
+                throw error;
+            }
+        }
+        
         // Función para eliminar un proveedor
         async function deleteSupplier(supplierId) {
             if (confirm('¿Está seguro de que desea eliminar este proveedor?')) {
@@ -2816,7 +2887,7 @@
         /**
          * Abrir modal y cargar datos del gasto para editar
          */
-        async function editarGasto(gastoId) {
+        window.editarGasto = async function(gastoId) {
             const gasto = MOCK_DATA.GASTOS.find(g => g.id === gastoId);
             if (!gasto) {
                 alertMessage('Gasto no encontrado', 'danger');
@@ -2863,7 +2934,7 @@
         /**
          * Abrir modal y cargar datos del ingreso para editar
          */
-        async function editarIngreso(ingresoId) {
+        window.editarIngreso = async function(ingresoId) {
             const ingreso = MOCK_DATA.INGRESOS.find(i => i.id === ingresoId);
             if (!ingreso) {
                 alertMessage('Ingreso no encontrado', 'danger');
