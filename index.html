@@ -6,6 +6,8 @@
     <title>Dashboard Financiero - GANADERÍA TONÉ</title>
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         /* Variables de Diseño (Campo + Innovación) */
         :root {
@@ -696,14 +698,32 @@
         </main>
     </div>
 
-    <!-- Lógica JavaScript (ES6+) con Integración Gemini -->
+    <!-- Lógica JavaScript (ES6+) con Integración Gemini y Supabase -->
     <script>
+        // ** CONFIGURACIÓN DE SUPABASE **
+        const SUPABASE_URL = 'https://wpkixaojlagnrjjgwuep.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Indwa2l4YW9qbGFnbnJqamd3dWVwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQzNzI4MTQsImV4cCI6MjA3OTk0ODgxNH0.F-9RpHqDObouaH0q0aVMIU7mtfFcztGsn9AFyvwHuFY';
+        
+        // Variable para verificar si Supabase está configurado
+        const SUPABASE_CONFIGURADO = SUPABASE_URL !== 'TU_SUPABASE_URL_AQUI' && SUPABASE_ANON_KEY !== 'TU_SUPABASE_ANON_KEY_AQUI';
+        
+        // Inicializar cliente de Supabase
+        let supabase = null;
+        if (SUPABASE_CONFIGURADO && typeof window.supabase !== 'undefined') {
+            try {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } catch (error) {
+                console.error('Error inicializando Supabase:', error);
+                supabase = null;
+            }
+        }
+
         // ** CONFIGURACIÓN DE GEMINI API **
         const apiKey = ""; // La clave se provee en tiempo de ejecución en Canvas
         const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=" + apiKey;
 
-        // ** Datos Simulados (Mock Data) - Iniciando desde cero **
-        const MOCK_DATA = {
+        // ** Datos en memoria (cache local) **
+        let MOCK_DATA = {
             GASTOS: [],
             INGRESOS: [],
             PROVEEDORES: []
@@ -712,6 +732,347 @@
         let PRESUPUESTO_MENSUAL = 8000000;
         let totalGastos = 0;
         let totalIngresos = 0;
+        
+        // ** FUNCIONES DE SUPABASE **
+        
+        /**
+         * Cargar todos los proveedores desde Supabase
+         */
+        async function cargarProveedores() {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                console.warn('Supabase no configurado, usando datos locales');
+                return MOCK_DATA.PROVEEDORES;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('proveedores')
+                    .select('*')
+                    .order('nombre', { ascending: true });
+                
+                if (error) throw error;
+                
+                // Calcular totales de gastos por proveedor
+                const proveedoresConTotales = await Promise.all(
+                    (data || []).map(async (proveedor) => {
+                        const { data: gastosData, error: gastosError } = await supabase
+                            .from('gastos')
+                            .select('monto')
+                            .eq('proveedor_id', proveedor.id);
+                        
+                        if (gastosError) throw gastosError;
+                        
+                        const totalGastado = gastosData?.reduce((sum, g) => sum + parseFloat(g.monto || 0), 0) || 0;
+                        const compras = gastosData?.length || 0;
+                        
+                        return {
+                            id: proveedor.id,
+                            nombre: proveedor.nombre,
+                            servicio: proveedor.servicio,
+                            telefono: proveedor.telefono,
+                            email: proveedor.email,
+                            direccion: proveedor.direccion,
+                            totalGastado: totalGastado,
+                            compras: compras
+                        };
+                    })
+                );
+                
+                MOCK_DATA.PROVEEDORES = proveedoresConTotales;
+                return proveedoresConTotales;
+            } catch (error) {
+                console.error('Error cargando proveedores:', error);
+                alertMessage('Error al cargar proveedores: ' + error.message, 'danger');
+                return MOCK_DATA.PROVEEDORES;
+            }
+        }
+        
+        /**
+         * Cargar todos los gastos desde Supabase
+         */
+        async function cargarGastos() {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                return MOCK_DATA.GASTOS;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('gastos')
+                    .select('*')
+                    .order('fecha', { ascending: false });
+                
+                if (error) throw error;
+                
+                MOCK_DATA.GASTOS = (data || []).map(g => ({
+                    id: g.id,
+                    fecha: g.fecha,
+                    monto: parseFloat(g.monto),
+                    categoria: g.categoria,
+                    produccion: g.produccion,
+                    proveedor: g.proveedor_id,
+                    adjunto: g.adjunto_url || 'sin_adjunto.pdf',
+                    nota: g.nota || ''
+                }));
+                
+                return MOCK_DATA.GASTOS;
+            } catch (error) {
+                console.error('Error cargando gastos:', error);
+                alertMessage('Error al cargar gastos: ' + error.message, 'danger');
+                return MOCK_DATA.GASTOS;
+            }
+        }
+        
+        /**
+         * Cargar todos los ingresos desde Supabase
+         */
+        async function cargarIngresos() {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                return MOCK_DATA.INGRESOS;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('ingresos')
+                    .select('*')
+                    .order('fecha', { ascending: false });
+                
+                if (error) throw error;
+                
+                MOCK_DATA.INGRESOS = (data || []).map(i => ({
+                    id: i.id,
+                    fecha: i.fecha,
+                    monto: parseFloat(i.monto),
+                    tipo: i.tipo,
+                    comprador: i.comprador,
+                    adjunto: i.adjunto_url || 'sin_comprobante.pdf'
+                }));
+                
+                return MOCK_DATA.INGRESOS;
+            } catch (error) {
+                console.error('Error cargando ingresos:', error);
+                alertMessage('Error al cargar ingresos: ' + error.message, 'danger');
+                return MOCK_DATA.INGRESOS;
+            }
+        }
+        
+        /**
+         * Cargar presupuesto mensual desde Supabase
+         */
+        async function cargarPresupuesto() {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                return PRESUPUESTO_MENSUAL;
+            }
+            
+            try {
+                const mesActual = new Date().getMonth() + 1;
+                const añoActual = new Date().getFullYear();
+                
+                const { data, error } = await supabase
+                    .from('presupuesto_mensual')
+                    .select('monto')
+                    .eq('mes', mesActual)
+                    .eq('año', añoActual)
+                    .single();
+                
+                if (error && error.code !== 'PGRST116') { // PGRST116 = no rows returned
+                    throw error;
+                }
+                
+                if (data) {
+                    PRESUPUESTO_MENSUAL = parseFloat(data.monto);
+                }
+                
+                return PRESUPUESTO_MENSUAL;
+            } catch (error) {
+                console.error('Error cargando presupuesto:', error);
+                return PRESUPUESTO_MENSUAL;
+            }
+        }
+        
+        /**
+         * Guardar un nuevo proveedor en Supabase
+         */
+        async function guardarProveedor(proveedor) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                MOCK_DATA.PROVEEDORES.push(proveedor);
+                return proveedor;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('proveedores')
+                    .insert({
+                        nombre: proveedor.nombre,
+                        servicio: proveedor.servicio,
+                        telefono: proveedor.telefono,
+                        email: proveedor.email || null,
+                        direccion: proveedor.direccion || null
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                const nuevoProveedor = {
+                    id: data.id,
+                    nombre: data.nombre,
+                    servicio: data.servicio,
+                    telefono: data.telefono,
+                    email: data.email,
+                    direccion: data.direccion,
+                    totalGastado: 0,
+                    compras: 0
+                };
+                
+                MOCK_DATA.PROVEEDORES.push(nuevoProveedor);
+                return nuevoProveedor;
+            } catch (error) {
+                console.error('Error guardando proveedor:', error);
+                throw error;
+            }
+        }
+        
+        /**
+         * Eliminar un proveedor de Supabase
+         */
+        async function eliminarProveedor(proveedorId) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                MOCK_DATA.PROVEEDORES = MOCK_DATA.PROVEEDORES.filter(p => p.id !== proveedorId);
+                return;
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('proveedores')
+                    .delete()
+                    .eq('id', proveedorId);
+                
+                if (error) throw error;
+                
+                MOCK_DATA.PROVEEDORES = MOCK_DATA.PROVEEDORES.filter(p => p.id !== proveedorId);
+            } catch (error) {
+                console.error('Error eliminando proveedor:', error);
+                throw error;
+            }
+        }
+        
+        /**
+         * Guardar un nuevo gasto en Supabase
+         */
+        async function guardarGasto(gasto) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                MOCK_DATA.GASTOS.push(gasto);
+                return gasto;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('gastos')
+                    .insert({
+                        fecha: gasto.fecha,
+                        monto: gasto.monto,
+                        categoria: gasto.categoria,
+                        produccion: gasto.produccion,
+                        proveedor_id: gasto.proveedor || null,
+                        adjunto_url: gasto.adjunto || null,
+                        nota: gasto.nota || null
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                const nuevoGasto = {
+                    id: data.id,
+                    fecha: data.fecha,
+                    monto: parseFloat(data.monto),
+                    categoria: data.categoria,
+                    produccion: data.produccion,
+                    proveedor: data.proveedor_id,
+                    adjunto: data.adjunto_url || 'sin_adjunto.pdf',
+                    nota: data.nota || ''
+                };
+                
+                MOCK_DATA.GASTOS.push(nuevoGasto);
+                return nuevoGasto;
+            } catch (error) {
+                console.error('Error guardando gasto:', error);
+                throw error;
+            }
+        }
+        
+        /**
+         * Guardar un nuevo ingreso en Supabase
+         */
+        async function guardarIngreso(ingreso) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                MOCK_DATA.INGRESOS.push(ingreso);
+                return ingreso;
+            }
+            
+            try {
+                const { data, error } = await supabase
+                    .from('ingresos')
+                    .insert({
+                        fecha: ingreso.fecha,
+                        monto: ingreso.monto,
+                        tipo: ingreso.tipo,
+                        comprador: ingreso.comprador,
+                        adjunto_url: ingreso.adjunto || null
+                    })
+                    .select()
+                    .single();
+                
+                if (error) throw error;
+                
+                const nuevoIngreso = {
+                    id: data.id,
+                    fecha: data.fecha,
+                    monto: parseFloat(data.monto),
+                    tipo: data.tipo,
+                    comprador: data.comprador,
+                    adjunto: data.adjunto_url || 'sin_comprobante.pdf'
+                };
+                
+                MOCK_DATA.INGRESOS.push(nuevoIngreso);
+                return nuevoIngreso;
+            } catch (error) {
+                console.error('Error guardando ingreso:', error);
+                throw error;
+            }
+        }
+        
+        /**
+         * Actualizar presupuesto mensual en Supabase
+         */
+        async function actualizarPresupuestoDB(monto) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                PRESUPUESTO_MENSUAL = monto;
+                return;
+            }
+            
+            try {
+                const mesActual = new Date().getMonth() + 1;
+                const añoActual = new Date().getFullYear();
+                
+                const { error } = await supabase
+                    .from('presupuesto_mensual')
+                    .upsert({
+                        mes: mesActual,
+                        año: añoActual,
+                        monto: monto
+                    }, {
+                        onConflict: 'mes,año'
+                    });
+                
+                if (error) throw error;
+                
+                PRESUPUESTO_MENSUAL = monto;
+            } catch (error) {
+                console.error('Error actualizando presupuesto:', error);
+                throw error;
+            }
+        }
         
         /**
          * Función genérica para llamar a la API de Gemini con manejo de reintentos.
@@ -770,8 +1131,10 @@
                     
                     // Recargar datos específicos
                     if (targetId === 'proveedores') {
-                        renderSupplierTable(MOCK_DATA.PROVEEDORES);
-                        updateSupplierSelect();
+                        cargarProveedores().then(() => {
+                            renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                            updateSupplierSelect();
+                        });
                     }
                     if (targetId === 'presupuesto') {
                          document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
@@ -795,7 +1158,14 @@
         /**
          * Lógica de Cálculos y Dashboard
          */
-        function updateDashboard() {
+        async function updateDashboard() {
+            // Cargar datos desde Supabase si está configurado
+            await Promise.all([
+                cargarGastos(),
+                cargarIngresos(),
+                cargarPresupuesto()
+            ]);
+            
             totalGastos = MOCK_DATA.GASTOS.reduce((sum, item) => sum + item.monto, 0);
             totalIngresos = MOCK_DATA.INGRESOS.reduce((sum, item) => sum + item.monto, 0);
             const gananciaNeta = totalIngresos - totalGastos;
@@ -951,15 +1321,19 @@
         }
         
         function setupBudgetForm() {
-            document.getElementById('budgetForm').addEventListener('submit', function(e) {
+            document.getElementById('budgetForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const newBudget = document.getElementById('newBudget').value;
                 if (newBudget && newBudget > 0) {
-                    PRESUPUESTO_MENSUAL = parseInt(newBudget);
-                    document.getElementById('newBudget').value = '';
-                    updateDashboard();
-                    alertMessage('Presupuesto actualizado con éxito!', 'success');
-                    document.querySelector('[data-section="dashboard"]').click();
+                    try {
+                        await actualizarPresupuestoDB(parseInt(newBudget));
+                        document.getElementById('newBudget').value = '';
+                        await updateDashboard();
+                        alertMessage('Presupuesto actualizado con éxito!', 'success');
+                        document.querySelector('[data-section="dashboard"]').click();
+                    } catch (error) {
+                        alertMessage('Error al actualizar presupuesto: ' + error.message, 'danger');
+                    }
                 }
             });
         }
@@ -1126,18 +1500,23 @@
         }
 
         // Función para eliminar un proveedor
-        function deleteSupplier(supplierId) {
+        async function deleteSupplier(supplierId) {
             if (confirm('¿Está seguro de que desea eliminar este proveedor?')) {
-                MOCK_DATA.PROVEEDORES = MOCK_DATA.PROVEEDORES.filter(p => p.id !== supplierId);
-                renderSupplierTable(MOCK_DATA.PROVEEDORES);
-                updateSupplierSelect();
-                alertMessage('Proveedor eliminado correctamente', 'success');
+                try {
+                    await eliminarProveedor(supplierId);
+                    await cargarProveedores(); // Recargar desde DB
+                    renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                    updateSupplierSelect();
+                    alertMessage('Proveedor eliminado correctamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al eliminar proveedor: ' + error.message, 'danger');
+                }
             }
         }
 
         // Función para manejar el formulario de proveedores
         function setupSupplierForm() {
-            document.getElementById('supplierForm').addEventListener('submit', function(e) {
+            document.getElementById('supplierForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 const nombre = document.getElementById('supplierNombre').value.trim();
@@ -1158,7 +1537,6 @@
                 
                 // Crear nuevo proveedor
                 const newSupplier = {
-                    id: nombre.replace(/\s+/g, ''), // ID sin espacios
                     nombre: nombre,
                     servicio: servicio,
                     telefono: telefono,
@@ -1168,15 +1546,21 @@
                     compras: 0
                 };
                 
-                MOCK_DATA.PROVEEDORES.push(newSupplier);
-                
-                // Limpiar formulario
-                document.getElementById('supplierForm').reset();
-                
-                // Actualizar tabla
-                renderSupplierTable(MOCK_DATA.PROVEEDORES);
-                
-                alertMessage('Proveedor registrado exitosamente', 'success');
+                try {
+                    await guardarProveedor(newSupplier);
+                    await cargarProveedores(); // Recargar desde DB
+                    
+                    // Limpiar formulario
+                    document.getElementById('supplierForm').reset();
+                    
+                    // Actualizar tabla
+                    renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                    updateSupplierSelect();
+                    
+                    alertMessage('Proveedor registrado exitosamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al registrar proveedor: ' + error.message, 'danger');
+                }
             });
         }
         
@@ -1226,18 +1610,29 @@
         }
 
         // Inicialización de la Aplicación
-        window.onload = function() {
+        window.onload = async function() {
             setupNavigation();
             setupBudgetForm();
             setupLogoUpload();
             setupSupplierForm();
-            updateSupplierSelect(); // Cargar proveedores en el select inicialmente
-            updateDashboard();
-            document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+            
+            // Cargar datos desde Supabase
+            try {
+                await cargarProveedores();
+                updateSupplierSelect(); // Cargar proveedores en el select inicialmente
+                await updateDashboard();
+                await cargarPresupuesto();
+                document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+            } catch (error) {
+                console.error('Error cargando datos iniciales:', error);
+                if (SUPABASE_CONFIGURADO) {
+                    alertMessage('Error al conectar con la base de datos. Verifica tu configuración de Supabase.', 'danger');
+                }
+            }
         };
         
         // Manejo de formulario de gastos
-        document.getElementById('expenseForm').addEventListener('submit', (e) => {
+        document.getElementById('expenseForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fecha = document.getElementById('gastoFecha').value;
@@ -1255,7 +1650,6 @@
             
             // Crear nuevo gasto
             const nuevoGasto = {
-                id: Date.now(), // ID único basado en timestamp
                 fecha: fecha,
                 monto: monto,
                 categoria: categoria,
@@ -1265,32 +1659,31 @@
                 nota: nota
             };
             
-            // Agregar a MOCK_DATA
-            MOCK_DATA.GASTOS.push(nuevoGasto);
-            
-            // Actualizar estadísticas del proveedor
-            const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === proveedorId);
-            if (proveedor) {
-                proveedor.totalGastado = (proveedor.totalGastado || 0) + monto;
-                proveedor.compras = (proveedor.compras || 0) + 1;
+            try {
+                await guardarGasto(nuevoGasto);
+                
+                // Recargar proveedores para actualizar estadísticas
+                await cargarProveedores();
+                
+                // Limpiar formulario
+                document.getElementById('expenseForm').reset();
+                
+                // Actualizar dashboard y tablas
+                await updateDashboard();
+                
+                // Si estamos en la sección de proveedores, actualizar la tabla
+                if (!document.getElementById('proveedores').classList.contains('hidden')) {
+                    renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                }
+                
+                alertMessage('Gasto registrado exitosamente', 'success');
+            } catch (error) {
+                alertMessage('Error al registrar gasto: ' + error.message, 'danger');
             }
-            
-            // Limpiar formulario
-            document.getElementById('expenseForm').reset();
-            
-            // Actualizar dashboard y tablas
-            updateDashboard();
-            
-            // Si estamos en la sección de proveedores, actualizar la tabla
-            if (!document.getElementById('proveedores').classList.contains('hidden')) {
-                renderSupplierTable(MOCK_DATA.PROVEEDORES);
-            }
-            
-            alertMessage('Gasto registrado exitosamente', 'success');
         });
         
         // Manejo de formulario de ingresos
-        document.getElementById('incomeForm').addEventListener('submit', (e) => {
+        document.getElementById('incomeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fecha = document.getElementById('ingresoFecha').value;
@@ -1301,7 +1694,6 @@
             
             // Crear nuevo ingreso
             const nuevoIngreso = {
-                id: Date.now(),
                 fecha: fecha,
                 monto: monto,
                 tipo: tipo,
@@ -1309,16 +1701,19 @@
                 adjunto: adjunto
             };
             
-            // Agregar a MOCK_DATA
-            MOCK_DATA.INGRESOS.push(nuevoIngreso);
-            
-            // Limpiar formulario
-            document.getElementById('incomeForm').reset();
-            
-            // Actualizar dashboard
-            updateDashboard();
-            
-            alertMessage('Ingreso registrado exitosamente', 'success');
+            try {
+                await guardarIngreso(nuevoIngreso);
+                
+                // Limpiar formulario
+                document.getElementById('incomeForm').reset();
+                
+                // Actualizar dashboard
+                await updateDashboard();
+                
+                alertMessage('Ingreso registrado exitosamente', 'success');
+            } catch (error) {
+                alertMessage('Error al registrar ingreso: ' + error.message, 'danger');
+            }
         });
 
     </script>
