@@ -803,6 +803,32 @@
             padding-bottom: 5px;
         }
 
+        /* Botón hamburguesa para móvil */
+        .mobile-menu-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1001;
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-toggle:active {
+            transform: scale(0.95);
+        }
+        
+        .mobile-menu-toggle:hover {
+            box-shadow: var(--shadow-xl);
+        }
+        
         /* Responsive Design */
         @media (max-width: 1200px) {
             .charts-container { grid-template-columns: 1fr; }
@@ -810,65 +836,309 @@
         }
         
         @media (max-width: 900px) {
-            #app { flex-direction: column; }
-            #sidebar { 
-                width: 100%; 
-                height: auto; 
-                position: relative; 
-                padding: 10px 0; 
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            .mobile-menu-toggle {
+                display: block;
             }
-            .logo { margin-bottom: 10px; padding: 10px 20px; font-size: 1.3em; }
-            .logo-upload-container { margin-bottom: 15px; }
-            .logo-preview { width: 120px; height: 120px; }
-            nav { display: flex; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
-            .nav-item { flex-shrink: 0; padding: 10px 15px; white-space: nowrap; font-size: 0.95em; }
-            .nav-item.active { border-left: none; border-bottom: 3px solid var(--color-secondary); }
-            #main-content { padding: 15px; }
-            header { flex-direction: column; align-items: flex-start; }
-            header h1 { margin-bottom: 10px; font-size: 1.5em; }
-            .charts-container { grid-template-columns: 1fr; }
-            .chart-box { height: 300px; }
-            .summary-cards { grid-template-columns: 1fr; gap: 15px; }
-            .summary-cards .card p { font-size: 1.8em; }
-            .form-container { grid-template-columns: 1fr; }
+            
+            #app { 
+                flex-direction: column; 
+                position: relative;
+            }
+            
+            #sidebar { 
+                position: fixed;
+                left: -100%;
+                top: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1000;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            }
+            
+            #sidebar.mobile-open {
+                left: 0;
+            }
+            
+            /* Overlay para cerrar el menú */
+            .sidebar-overlay {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 999;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+            }
+            
+            .sidebar-overlay.active {
+                display: block;
+                opacity: 1;
+            }
+            
+            .logo { 
+                margin-bottom: 10px; 
+                padding: 15px 20px; 
+                font-size: 1.2em; 
+                text-align: center;
+            }
+            
+            .logo-upload-container { 
+                margin-bottom: 15px; 
+                padding: 15px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .logo-preview { 
+                width: 100px; 
+                height: 100px; 
+                margin-bottom: 10px;
+            }
+            
+            #navMenu {
+                padding: 10px 0;
+            }
+            
+            .nav-item { 
+                padding: 12px 20px; 
+                font-size: 1em;
+                border-left: none;
+            }
+            
+            .nav-item.active { 
+                border-left: 4px solid white;
+                border-bottom: none;
+            }
+            
+            #main-content { 
+                padding: 60px 15px 15px 15px; 
+                width: 100%;
+            }
+            
+            header { 
+                flex-direction: column; 
+                align-items: flex-start; 
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            
+            header h1 { 
+                margin-bottom: 10px; 
+                font-size: 1.5em; 
+            }
+            
+            .charts-container { 
+                grid-template-columns: 1fr; 
+            }
+            
+            .chart-box { 
+                height: 280px; 
+            }
+            
+            .summary-cards { 
+                grid-template-columns: 1fr; 
+                gap: 15px; 
+            }
+            
+            .summary-cards .card p { 
+                font-size: 1.6em; 
+            }
+            
+            .form-container { 
+                grid-template-columns: 1fr; 
+                gap: 15px;
+            }
+            
             .table-responsive { 
                 overflow-x: auto; 
                 -webkit-overflow-scrolling: touch;
                 display: block;
+                width: 100%;
+                position: relative;
             }
+            
             #expenseTable, #incomeTable, #supplierTable {
-                min-width: 800px;
-                font-size: 0.9em;
+                min-width: 700px;
+                font-size: 0.85em;
             }
+            
             #expenseTable th, #incomeTable th, #supplierTable th,
             #expenseTable td, #incomeTable td, #supplierTable td {
-                padding: 8px 6px;
+                padding: 10px 8px;
             }
-            .btn { padding: 10px 20px; font-size: 0.9em; }
-            .card { padding: 15px; margin-bottom: 15px; }
+            
+            .btn { 
+                padding: 12px 20px; 
+                font-size: 0.95em; 
+                min-height: 44px; /* Tamaño mínimo para touch */
+            }
+            
+            .card { 
+                padding: 15px; 
+                margin-bottom: 15px; 
+            }
+            
+            /* Modales responsive */
+            .modal-content {
+                width: 95%;
+                max-width: 95%;
+                max-height: 90vh;
+                overflow-y: auto;
+                margin: 5vh auto;
+            }
+            
+            .modal-header {
+                padding: 15px;
+            }
+            
+            .modal-header h3 {
+                font-size: 1.3em;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            /* Botones en formularios móviles */
+            .form-group > div[style*="display: flex"],
+            .categoria-select-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .form-group > div[style*="display: flex"] > button,
+            .categoria-select-container > button {
+                width: 100%;
+            }
+            
+            .categoria-select-container > select {
+                width: 100%;
+            }
         }
         
         @media (max-width: 600px) {
-            #main-content { padding: 10px; }
-            header h1 { font-size: 1.3em; }
-            .summary-cards .card p { font-size: 1.5em; }
-            .logo-preview { width: 100px; height: 100px; }
-            .logo-upload-btn { font-size: 0.8em; padding: 6px 12px; }
-            .btn { padding: 8px 16px; font-size: 0.85em; margin: 3px; }
-            .form-group input, .form-group select, .form-group textarea {
-                font-size: 0.9em;
+            #main-content { 
+                padding: 60px 10px 10px 10px; 
+            }
+            
+            header { 
+                padding: 12px;
+            }
+            
+            header h1 { 
+                font-size: 1.3em; 
+            }
+            
+            .summary-cards .card p { 
+                font-size: 1.4em; 
+            }
+            
+            .logo-preview { 
+                width: 80px; 
+                height: 80px; 
+            }
+            
+            .logo-upload-btn { 
+                font-size: 0.85em; 
+                padding: 10px 15px; 
+                min-height: 44px;
+            }
+            
+            .btn { 
+                padding: 12px 18px; 
+                font-size: 0.9em; 
+                margin: 5px 0;
+                min-height: 44px;
+                width: 100%;
+            }
+            
+            .btn:not(.full-width) {
+                width: auto;
+            }
+            
+            .form-group input, 
+            .form-group select, 
+            .form-group textarea {
+                font-size: 16px; /* Previene zoom en iOS */
+                padding: 12px;
+                min-height: 44px;
+            }
+            
+            .modal-content {
+                width: 98%;
+                margin: 2vh auto;
+                padding: 15px;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .modal-actions .btn {
+                width: 100%;
+            }
+            
+            #expenseTable, #incomeTable, #supplierTable {
+                min-width: 600px;
+                font-size: 0.8em;
+            }
+            
+            #expenseTable th, #incomeTable th, #supplierTable th,
+            #expenseTable td, #incomeTable td, #supplierTable td {
+                padding: 8px 5px;
+            }
+            
+            .chart-box {
+                height: 250px;
             }
         }
         
         @media (max-width: 400px) {
-            .logo { font-size: 1.1em; }
-            .nav-item { padding: 8px 12px; font-size: 0.9em; }
-            .nav-item span { font-size: 1em; margin-right: 8px; }
+            .logo { 
+                font-size: 1em; 
+                padding: 10px 15px;
+            }
+            
+            .nav-item { 
+                padding: 10px 15px; 
+                font-size: 0.95em; 
+            }
+            
+            .nav-item span { 
+                font-size: 1.1em; 
+                margin-right: 10px; 
+            }
+            
+            .mobile-menu-toggle {
+                padding: 10px 12px;
+                font-size: 1.3em;
+            }
+            
+            header h1 {
+                font-size: 1.2em;
+            }
+            
+            .summary-cards .card p {
+                font-size: 1.3em;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Botón hamburguesa para móvil -->
+    <button class="mobile-menu-toggle" id="mobileMenuToggle" onclick="toggleMobileMenu()" aria-label="Abrir menú">
+        ☰
+    </button>
+    
+    <!-- Overlay para cerrar el menú en móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMobileMenu()"></div>
+    
     <div id="app">
         <!-- Panel Lateral de Navegación -->
         <aside id="sidebar">
@@ -970,14 +1240,19 @@
                     </div>
                     <div class="form-group">
                         <label for="gastoCategoria">Categoría del Gasto</label>
-                        <select id="gastoCategoria" required>
-                            <option value="Alimentos">Alimentos</option>
-                            <option value="Insumos">Insumos (Semillas, Químicos)</option>
-                            <option value="Veterinaria">Veterinaria / Medicamentos</option>
-                            <option value="ManoDeObra">Mano de Obra</option>
-                            <option value="Herramientas">Herramientas / Maquinaria</option>
-                            <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
-                        </select>
+                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                            <select id="gastoCategoria" required style="flex: 1;">
+                                <option value="Alimentos">Alimentos</option>
+                                <option value="Insumos">Insumos (Semillas, Químicos)</option>
+                                <option value="Veterinaria">Veterinaria / Medicamentos</option>
+                                <option value="ManoDeObra">Mano de Obra</option>
+                                <option value="Herramientas">Herramientas / Maquinaria</option>
+                                <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
+                            </select>
+                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 20px; white-space: nowrap;">
+                                <span>➕ Nueva</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="gastoMonto">Monto en Pesos (COP)</label>
@@ -1026,7 +1301,7 @@
                         <table id="expenseTable">
                             <thead>
                                 <tr>
-                                    <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Adjunto</th><th>Acciones</th>
+                                    <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Observaciones</th><th>Adjunto</th><th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="expenseTableBody"></tbody>
@@ -1219,14 +1494,19 @@
                 </div>
                 <div class="form-group">
                     <label for="editGastoCategoria">Categoría del Gasto</label>
-                    <select id="editGastoCategoria" required>
-                        <option value="Alimentos">Alimentos</option>
-                        <option value="Insumos">Insumos (Semillas, Químicos)</option>
-                        <option value="Veterinaria">Veterinaria / Medicamentos</option>
-                        <option value="ManoDeObra">Mano de Obra</option>
-                        <option value="Herramientas">Herramientas / Maquinaria</option>
-                        <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
-                    </select>
+                    <div class="categoria-select-container" style="display: flex; gap: 10px; align-items: flex-end;">
+                        <select id="editGastoCategoria" required style="flex: 1;">
+                            <option value="Alimentos">Alimentos</option>
+                            <option value="Insumos">Insumos (Semillas, Químicos)</option>
+                            <option value="Veterinaria">Veterinaria / Medicamentos</option>
+                            <option value="ManoDeObra">Mano de Obra</option>
+                            <option value="Herramientas">Herramientas / Maquinaria</option>
+                            <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
+                        </select>
+                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 20px; white-space: nowrap; min-width: auto;">
+                            <span>➕ Nueva</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="editGastoMonto">Monto en Pesos (COP)</label>
@@ -1354,6 +1634,54 @@
             </form>
         </div>
     </div>
+    
+    <!-- Modal para Agregar Nueva Categoría -->
+    <div id="modalNuevaCategoria" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Agregar Nueva Categoría</h3>
+                <button class="close-modal" onclick="cerrarModal('modalNuevaCategoria')">&times;</button>
+            </div>
+            <form id="formNuevaCategoria" class="form-container">
+                <div class="form-group full-width">
+                    <label for="nuevaCategoriaNombre">Nombre de la Categoría</label>
+                    <input type="text" id="nuevaCategoriaNombre" placeholder="Ej: Combustible, Fertilizantes, Semillas, etc." required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaCategoria')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Agregar Categoría</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal para Agregar Nueva Categoría -->
+    <div id="modalNuevaCategoria" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Agregar Nueva Categoría</h3>
+                <button class="close-modal" onclick="cerrarModal('modalNuevaCategoria')">&times;</button>
+            </div>
+            <form id="formNuevaCategoria" class="form-container">
+                <div class="form-group full-width">
+                    <label for="nuevaCategoriaNombre">Nombre de la Categoría</label>
+                    <input type="text" id="nuevaCategoriaNombre" placeholder="Ej: Combustible, Fertilizantes, Semillas, etc." required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaCategoria')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Agregar Categoría</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Lógica JavaScript (ES6+) con Integración Gemini y Supabase -->
     <script>
@@ -1380,6 +1708,95 @@
         const apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=" + apiKey;
 
         // ** Datos en memoria (cache local) **
+        // Categorías de gastos (se pueden agregar dinámicamente)
+        // Formato: { valor: 'valor', texto: 'Texto a mostrar' }
+        let CATEGORIAS_GASTOS = [
+            { valor: 'Alimentos', texto: 'Alimentos' },
+            { valor: 'Insumos', texto: 'Insumos (Semillas, Químicos)' },
+            { valor: 'Veterinaria', texto: 'Veterinaria / Medicamentos' },
+            { valor: 'ManoDeObra', texto: 'Mano de Obra' },
+            { valor: 'Herramientas', texto: 'Herramientas / Maquinaria' },
+            { valor: 'Servicios', texto: 'Servicios (Luz, Agua, Internet)' }
+        ];
+        
+        // Función para cargar categorías desde localStorage
+        function cargarCategorias() {
+            const categoriasGuardadas = localStorage.getItem('categoriasGastos');
+            if (categoriasGuardadas) {
+                CATEGORIAS_GASTOS = JSON.parse(categoriasGuardadas);
+            }
+            actualizarSelectsCategorias();
+        }
+        
+        // Función para guardar categorías en localStorage
+        function guardarCategorias() {
+            localStorage.setItem('categoriasGastos', JSON.stringify(CATEGORIAS_GASTOS));
+            actualizarSelectsCategorias();
+        }
+        
+        // Función para actualizar los selects de categorías
+        function actualizarSelectsCategorias() {
+            const selects = ['gastoCategoria', 'editGastoCategoria'];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                const valorActual = select.value;
+                select.innerHTML = '';
+                
+                CATEGORIAS_GASTOS.forEach(categoria => {
+                    const option = document.createElement('option');
+                    const valor = typeof categoria === 'string' ? categoria : categoria.valor;
+                    const texto = typeof categoria === 'string' ? categoria : categoria.texto;
+                    option.value = valor;
+                    option.textContent = texto;
+                    select.appendChild(option);
+                });
+                
+                if (valorActual) {
+                    const categoriaExiste = CATEGORIAS_GASTOS.some(c => {
+                        const valor = typeof c === 'string' ? c : c.valor;
+                        return valor === valorActual;
+                    });
+                    if (categoriaExiste) {
+                        select.value = valorActual;
+                    }
+                }
+            });
+        }
+        
+        // Función para abrir modal de nueva categoría
+        window.abrirModalNuevaCategoria = function() {
+            document.getElementById('modalNuevaCategoria').style.display = 'block';
+            document.getElementById('nuevaCategoriaNombre').focus();
+        };
+        
+        // Función para agregar nueva categoría
+        function agregarNuevaCategoria(nombre) {
+            const nombreLimpio = nombre.trim();
+            if (!nombreLimpio) {
+                alertMessage('Por favor ingrese un nombre para la categoría', 'danger');
+                return false;
+            }
+            
+            // Verificar si ya existe
+            const existe = CATEGORIAS_GASTOS.some(c => {
+                const valor = typeof c === 'string' ? c : c.valor;
+                return valor === nombreLimpio;
+            });
+            
+            if (existe) {
+                alertMessage('Esta categoría ya existe', 'warning');
+                return false;
+            }
+            
+            // Agregar nueva categoría (usar el mismo nombre para valor y texto)
+            CATEGORIAS_GASTOS.push({ valor: nombreLimpio, texto: nombreLimpio });
+            guardarCategorias();
+            alertMessage(`Categoría "${nombreLimpio}" agregada exitosamente`, 'success');
+            return true;
+        }
+        
         let MOCK_DATA = {
             GASTOS: [],
             INGRESOS: [],
@@ -1784,6 +2201,22 @@
         /**
          * 1. Manejo de la Navegación (SPA)
          */
+        // Función para toggle del menú móvil
+        window.toggleMobileMenu = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.contains('mobile-open');
+            
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            }
+        };
+        
+        // Cerrar menú móvil al hacer clic en un nav-item
         function setupNavigation() {
             const navItems = document.querySelectorAll('#navMenu .nav-item');
             const sections = document.querySelectorAll('.content-section');
@@ -1797,6 +2230,11 @@
                     const targetId = this.getAttribute('data-section');
                     document.getElementById(targetId).classList.remove('hidden');
                     this.classList.add('active');
+                    
+                    // Cerrar menú móvil si está abierto
+                    if (window.innerWidth <= 900) {
+                        toggleMobileMenu();
+                    }
                     
                     // Recargar datos específicos
                     if (targetId === 'dashboard') {
@@ -2529,7 +2967,7 @@
             if (data.length === 0) {
                 const row = tbody.insertRow();
                 const cell = row.insertCell();
-                cell.colSpan = 7;
+                cell.colSpan = 8;
                 cell.textContent = 'No hay gastos registrados.';
                 cell.style.textAlign = 'center';
                 cell.style.padding = '20px';
@@ -2544,6 +2982,20 @@
                 row.insertCell().textContent = item.categoria;
                 row.insertCell().textContent = item.produccion;
                 row.insertCell().textContent = MOCK_DATA.PROVEEDORES.find(p => p.id === item.proveedor)?.nombre || item.proveedor;
+                
+                // Celda de observaciones/nota
+                const observacionesCell = row.insertCell();
+                if (item.nota && item.nota.trim()) {
+                    observacionesCell.textContent = item.nota;
+                    observacionesCell.style.maxWidth = '250px';
+                    observacionesCell.style.wordWrap = 'break-word';
+                    observacionesCell.style.fontSize = '0.9em';
+                    observacionesCell.style.color = '#4a5568';
+                } else {
+                    observacionesCell.textContent = '-';
+                    observacionesCell.style.color = '#a0aec0';
+                    observacionesCell.style.fontStyle = 'italic';
+                }
                 
                 // Celda de adjuntos con descarga funcional (múltiples archivos)
                 const adjuntoCell = row.insertCell();
@@ -3683,11 +4135,27 @@
                 }
             });
             
+            // Formulario de nueva categoría
+            document.getElementById('formNuevaCategoria').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const nombre = document.getElementById('nuevaCategoriaNombre').value.trim();
+                if (agregarNuevaCategoria(nombre)) {
+                    cerrarModal('modalNuevaCategoria');
+                    // Actualizar el select que está abierto (si hay uno)
+                    const selectAbierto = document.activeElement;
+                    if (selectAbierto && (selectAbierto.id === 'gastoCategoria' || selectAbierto.id === 'editGastoCategoria')) {
+                        actualizarSelectsCategorias();
+                        selectAbierto.value = nombre;
+                    }
+                }
+            });
+            
             // Cerrar modal al hacer clic fuera de él
             window.onclick = function(event) {
                 const modalGasto = document.getElementById('modalEditarGasto');
                 const modalIngreso = document.getElementById('modalEditarIngreso');
                 const modalProveedor = document.getElementById('modalEditarProveedor');
+                const modalCategoria = document.getElementById('modalNuevaCategoria');
                 if (event.target === modalGasto) {
                     cerrarModal('modalEditarGasto');
                 }
@@ -3696,6 +4164,9 @@
                 }
                 if (event.target === modalProveedor) {
                     cerrarModal('modalEditarProveedor');
+                }
+                if (event.target === modalCategoria) {
+                    cerrarModal('modalNuevaCategoria');
                 }
             };
         }
@@ -3707,6 +4178,9 @@
             setupLogoUpload();
             setupSupplierForm();
             setupEditForms();
+            
+            // Cargar categorías personalizadas
+            cargarCategorias();
             
             // Cargar datos desde Supabase
             try {
