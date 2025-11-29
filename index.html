@@ -370,17 +370,67 @@
         }
 
         /* Responsive Design */
+        @media (max-width: 1200px) {
+            .charts-container { grid-template-columns: 1fr; }
+            .summary-cards { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+        }
+        
         @media (max-width: 900px) {
             #app { flex-direction: column; }
-            #sidebar { width: 100%; height: auto; position: relative; padding: 10px 0; }
-            .logo { margin-bottom: 10px; padding: 10px 20px; }
-            nav { display: flex; overflow-x: auto; padding-bottom: 10px; }
-            .nav-item { flex-shrink: 0; padding: 10px 15px; white-space: nowrap; }
+            #sidebar { 
+                width: 100%; 
+                height: auto; 
+                position: relative; 
+                padding: 10px 0; 
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            }
+            .logo { margin-bottom: 10px; padding: 10px 20px; font-size: 1.3em; }
+            .logo-upload-container { margin-bottom: 15px; }
+            .logo-preview { width: 120px; height: 120px; }
+            nav { display: flex; overflow-x: auto; padding-bottom: 10px; -webkit-overflow-scrolling: touch; }
+            .nav-item { flex-shrink: 0; padding: 10px 15px; white-space: nowrap; font-size: 0.95em; }
             .nav-item.active { border-left: none; border-bottom: 3px solid var(--color-secondary); }
             #main-content { padding: 15px; }
             header { flex-direction: column; align-items: flex-start; }
             header h1 { margin-bottom: 10px; font-size: 1.5em; }
             .charts-container { grid-template-columns: 1fr; }
+            .chart-box { height: 300px; }
+            .summary-cards { grid-template-columns: 1fr; gap: 15px; }
+            .summary-cards .card p { font-size: 1.8em; }
+            .form-container { grid-template-columns: 1fr; }
+            .table-responsive { 
+                overflow-x: auto; 
+                -webkit-overflow-scrolling: touch;
+                display: block;
+            }
+            #expenseTable, #incomeTable, #supplierTable {
+                min-width: 800px;
+                font-size: 0.9em;
+            }
+            #expenseTable th, #incomeTable th, #supplierTable th,
+            #expenseTable td, #incomeTable td, #supplierTable td {
+                padding: 8px 6px;
+            }
+            .btn { padding: 10px 20px; font-size: 0.9em; }
+            .card { padding: 15px; margin-bottom: 15px; }
+        }
+        
+        @media (max-width: 600px) {
+            #main-content { padding: 10px; }
+            header h1 { font-size: 1.3em; }
+            .summary-cards .card p { font-size: 1.5em; }
+            .logo-preview { width: 100px; height: 100px; }
+            .logo-upload-btn { font-size: 0.8em; padding: 6px 12px; }
+            .btn { padding: 8px 16px; font-size: 0.85em; margin: 3px; }
+            .form-group input, .form-group select, .form-group textarea {
+                font-size: 0.9em;
+            }
+        }
+        
+        @media (max-width: 400px) {
+            .logo { font-size: 1.1em; }
+            .nav-item { padding: 8px 12px; font-size: 0.9em; }
+            .nav-item span { font-size: 1em; margin-right: 8px; }
         }
     </style>
 </head>
@@ -530,7 +580,7 @@
                         <table id="expenseTable">
                             <thead>
                                 <tr>
-                                    <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Adjunto</th>
+                                    <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Adjunto</th><th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="expenseTableBody"></tbody>
@@ -566,7 +616,7 @@
                         <table id="incomeTable">
                             <thead>
                                 <tr>
-                                    <th>Fecha</th><th>Monto</th><th>Tipo</th><th>Comprador</th><th>Adjunto</th>
+                                    <th>Fecha</th><th>Monto</th><th>Tipo</th><th>Comprador</th><th>Adjunto</th><th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="incomeTableBody"></tbody>
@@ -1458,6 +1508,18 @@
         function renderExpenseTable(data) {
             const tbody = document.getElementById('expenseTableBody');
             tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 7;
+                cell.textContent = 'No hay gastos registrados.';
+                cell.style.textAlign = 'center';
+                cell.style.padding = '20px';
+                cell.style.color = '#6c757d';
+                return;
+            }
+            
             data.forEach(item => {
                 const row = tbody.insertRow();
                 row.insertCell().textContent = item.fecha;
@@ -1478,12 +1540,28 @@
                 } else {
                     adjuntoCell.textContent = 'Sin adjunto';
                 }
+                
+                // Celda de acciones con botón eliminar
+                const accionesCell = row.insertCell();
+                accionesCell.innerHTML = `<button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="eliminarGasto('${item.id}')"><span>🗑️ Eliminar</span></button>`;
             });
         }
         
         function renderIncomeTable(data) {
             const tbody = document.getElementById('incomeTableBody');
             tbody.innerHTML = '';
+            
+            if (data.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 6;
+                cell.textContent = 'No hay ingresos registrados.';
+                cell.style.textAlign = 'center';
+                cell.style.padding = '20px';
+                cell.style.color = '#6c757d';
+                return;
+            }
+            
             data.forEach(item => {
                 const row = tbody.insertRow();
                 row.insertCell().textContent = item.fecha;
@@ -1503,6 +1581,10 @@
                 } else {
                     adjuntoCell.textContent = 'Sin adjunto';
                 }
+                
+                // Celda de acciones con botón eliminar
+                const accionesCell = row.insertCell();
+                accionesCell.innerHTML = `<button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="eliminarIngreso('${item.id}')"><span>🗑️ Eliminar</span></button>`;
             });
         }
         
@@ -1591,6 +1673,80 @@
                 }
             }
         }
+        
+        // Función para eliminar un gasto
+        async function eliminarGasto(gastoId) {
+            if (confirm('¿Está seguro de que desea eliminar este gasto?')) {
+                try {
+                    await eliminarGastoDB(gastoId);
+                    // Eliminar archivo adjunto de localStorage
+                    localStorage.removeItem(`adjunto_gasto_${gastoId}`);
+                    await updateDashboard();
+                    alertMessage('Gasto eliminado correctamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al eliminar gasto: ' + error.message, 'danger');
+                }
+            }
+        }
+        
+        // Función para eliminar gasto de la base de datos
+        async function eliminarGastoDB(gastoId) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                MOCK_DATA.GASTOS = MOCK_DATA.GASTOS.filter(g => g.id !== gastoId);
+                return;
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('gastos')
+                    .delete()
+                    .eq('id', gastoId);
+                
+                if (error) throw error;
+                
+                MOCK_DATA.GASTOS = MOCK_DATA.GASTOS.filter(g => g.id !== gastoId);
+            } catch (error) {
+                console.error('Error eliminando gasto:', error);
+                throw error;
+            }
+        }
+        
+        // Función para eliminar un ingreso
+        async function eliminarIngreso(ingresoId) {
+            if (confirm('¿Está seguro de que desea eliminar este ingreso?')) {
+                try {
+                    await eliminarIngresoDB(ingresoId);
+                    // Eliminar archivo adjunto de localStorage
+                    localStorage.removeItem(`adjunto_ingreso_${ingresoId}`);
+                    await updateDashboard();
+                    alertMessage('Ingreso eliminado correctamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al eliminar ingreso: ' + error.message, 'danger');
+                }
+            }
+        }
+        
+        // Función para eliminar ingreso de la base de datos
+        async function eliminarIngresoDB(ingresoId) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                MOCK_DATA.INGRESOS = MOCK_DATA.INGRESOS.filter(i => i.id !== ingresoId);
+                return;
+            }
+            
+            try {
+                const { error } = await supabase
+                    .from('ingresos')
+                    .delete()
+                    .eq('id', ingresoId);
+                
+                if (error) throw error;
+                
+                MOCK_DATA.INGRESOS = MOCK_DATA.INGRESOS.filter(i => i.id !== ingresoId);
+            } catch (error) {
+                console.error('Error eliminando ingreso:', error);
+                throw error;
+            }
+        }
 
         // Función para manejar el formulario de proveedores
         function setupSupplierForm() {
@@ -1661,8 +1817,72 @@
             setTimeout(() => msgBox.classList.add('hidden'), 5000);
         }
 
+        // Función para subir logo a Supabase Storage
+        async function subirLogoASupabase(file) {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                return null;
+            }
+            
+            try {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `logo_ganaderia_tone.${fileExt}`;
+                const filePath = `logos/${fileName}`;
+                
+                // Subir archivo a Supabase Storage
+                const { data, error } = await supabase.storage
+                    .from('documentos')
+                    .upload(filePath, file, {
+                        upsert: true,
+                        contentType: file.type
+                    });
+                
+                if (error) throw error;
+                
+                // Obtener URL pública
+                const { data: urlData } = supabase.storage
+                    .from('documentos')
+                    .getPublicUrl(filePath);
+                
+                return urlData.publicUrl;
+            } catch (error) {
+                console.error('Error subiendo logo a Supabase:', error);
+                return null;
+            }
+        }
+        
+        // Función para cargar logo desde Supabase Storage
+        async function cargarLogoDesdeSupabase() {
+            if (!SUPABASE_CONFIGURADO || !supabase) {
+                return null;
+            }
+            
+            try {
+                // Intentar cargar logo desde storage
+                const { data, error } = await supabase.storage
+                    .from('documentos')
+                    .list('logos', {
+                        limit: 1,
+                        search: 'logo_ganaderia_tone'
+                    });
+                
+                if (error || !data || data.length === 0) {
+                    return null;
+                }
+                
+                const fileName = data[0].name;
+                const { data: urlData } = supabase.storage
+                    .from('documentos')
+                    .getPublicUrl(`logos/${fileName}`);
+                
+                return urlData.publicUrl;
+            } catch (error) {
+                console.error('Error cargando logo desde Supabase:', error);
+                return null;
+            }
+        }
+        
         // Función para manejar la carga del logo
-        function setupLogoUpload() {
+        async function setupLogoUpload() {
             const logoFileInput = document.getElementById('logoFileInput');
             const logoPreview = document.getElementById('logoPreview');
             const logoPlaceholder = document.getElementById('logoPlaceholder');
@@ -1676,52 +1896,109 @@
                     logoUploadBtn.style.display = 'block';
                 }
             }
-
-            logoFileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Ganadería Toné">`;
-                        // Guardar en localStorage para persistencia
-                        localStorage.setItem('ganaderiaToneLogo', e.target.result);
-                        // Ocultar el botón después de cargar
-                        logoUploadBtn.style.display = 'none';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
-
-            // Cargar logo guardado si existe
-            const savedLogo = localStorage.getItem('ganaderiaToneLogo');
-            if (savedLogo) {
-                logoPreview.innerHTML = `<img src="${savedLogo}" alt="Logo Ganadería Toné">`;
-            }
             
-            // Ocultar botón si ya hay logo
-            ocultarBotonSiHayLogo();
-            
-            // Agregar botón para eliminar logo (aparece cuando hay logo)
-            if (savedLogo) {
+            function agregarBotonEliminar() {
+                const container = document.querySelector('.logo-upload-container');
+                // Eliminar botón anterior si existe
+                const existingBtn = container.querySelector('button[style*="background: linear-gradient(135deg, #e74c3c"]');
+                if (existingBtn) existingBtn.remove();
+                
                 const removeBtn = document.createElement('button');
                 removeBtn.className = 'logo-upload-btn';
                 removeBtn.style.marginTop = '10px';
                 removeBtn.style.background = 'linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)';
                 removeBtn.textContent = '🗑️ Eliminar Logo';
-                removeBtn.onclick = function(e) {
+                removeBtn.onclick = async function(e) {
                     e.stopPropagation();
                     if (confirm('¿Desea eliminar el logo?')) {
+                        // Eliminar de localStorage
                         localStorage.removeItem('ganaderiaToneLogo');
+                        
+                        // Eliminar de Supabase Storage si está configurado
+                        if (SUPABASE_CONFIGURADO && supabase) {
+                            try {
+                                const { data } = await supabase.storage
+                                    .from('documentos')
+                                    .list('logos');
+                                
+                                if (data) {
+                                    for (const file of data) {
+                                        if (file.name.startsWith('logo_ganaderia_tone')) {
+                                            await supabase.storage
+                                                .from('documentos')
+                                                .remove([`logos/${file.name}`]);
+                                        }
+                                    }
+                                }
+                            } catch (error) {
+                                console.error('Error eliminando logo de Supabase:', error);
+                            }
+                        }
+                        
                         logoPreview.innerHTML = '<span id="logoPlaceholder">📷<br>Click para subir logo</span>';
                         logoUploadBtn.style.display = 'block';
                         removeBtn.remove();
                     }
                 };
-                const container = document.querySelector('.logo-upload-container');
-                if (!container.querySelector('button[style*="background: linear-gradient(135deg, #e74c3c"]')) {
-                    container.appendChild(removeBtn);
+                container.appendChild(removeBtn);
+            }
+
+            logoFileInput.addEventListener('change', async function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    // Mostrar preview inmediatamente
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Ganadería Toné">`;
+                        // Guardar en localStorage como fallback
+                        localStorage.setItem('ganaderiaToneLogo', e.target.result);
+                        // Ocultar el botón después de cargar
+                        logoUploadBtn.style.display = 'none';
+                        agregarBotonEliminar();
+                    };
+                    reader.readAsDataURL(file);
+                    
+                    // Intentar subir a Supabase Storage
+                    if (SUPABASE_CONFIGURADO && supabase) {
+                        try {
+                            const publicUrl = await subirLogoASupabase(file);
+                            if (publicUrl) {
+                                // Guardar URL de Supabase también
+                                localStorage.setItem('ganaderiaToneLogoUrl', publicUrl);
+                                console.log('Logo subido a Supabase Storage:', publicUrl);
+                            }
+                        } catch (error) {
+                            console.error('Error subiendo logo:', error);
+                        }
+                    }
+                }
+            });
+
+            // Cargar logo guardado
+            async function cargarLogo() {
+                // Primero intentar desde Supabase Storage
+                if (SUPABASE_CONFIGURADO && supabase) {
+                    const supabaseUrl = await cargarLogoDesdeSupabase();
+                    if (supabaseUrl) {
+                        logoPreview.innerHTML = `<img src="${supabaseUrl}" alt="Logo Ganadería Toné">`;
+                        localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
+                        localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
+                        ocultarBotonSiHayLogo();
+                        agregarBotonEliminar();
+                        return;
+                    }
+                }
+                
+                // Si no hay en Supabase, cargar desde localStorage
+                const savedLogo = localStorage.getItem('ganaderiaToneLogo');
+                if (savedLogo) {
+                    logoPreview.innerHTML = `<img src="${savedLogo}" alt="Logo Ganadería Toné">`;
+                    ocultarBotonSiHayLogo();
+                    agregarBotonEliminar();
                 }
             }
+            
+            await cargarLogo();
         }
 
         // Inicialización de la Aplicación
