@@ -1511,20 +1511,25 @@
                 document.getElementById('gastoPromedioProveedor').innerText = formatCurrency(gastoPromedio);
 
                 // Actualizar presupuesto
-                actualizarPresupuesto(totalGastos);
+            actualizarPresupuesto(totalGastos);
                 
                 // Renderizar tablas (mostrar todos los datos, no solo del mes)
-                renderExpenseTable(MOCK_DATA.GASTOS);
+            renderExpenseTable(MOCK_DATA.GASTOS);
             
                 // Renderizar gráficos
                 if (typeof Chart !== 'undefined') {
                     // Pequeño delay para asegurar que el DOM esté listo
                     setTimeout(() => {
-                        renderChartProduccion(gastosDelMes);
-                        renderChartProveedores(gastosPorProveedor);
-                        renderChartTendencia(mes, año);
-                        renderChartCategoria(gastosDelMes);
-                    }, 100);
+                        try {
+                            console.log('Renderizando gráficos...', { gastosDelMes: gastosDelMes.length, gastosPorProveedor });
+                            renderChartProduccion(gastosDelMes);
+                            renderChartProveedores(gastosPorProveedor);
+                            renderChartTendencia(mes, año);
+                            renderChartCategoria(gastosDelMes);
+                        } catch (error) {
+                            console.error('Error renderizando gráficos:', error);
+                        }
+                    }, 200);
                 } else {
                     // Si Chart.js no está cargado, limpiar gráficos
                     if (chartProduccionInstance) {
@@ -1894,14 +1899,20 @@
             if (!ctx) return;
             
             // Convertir objeto a array y ordenar por monto
-            const proveedoresArray = Object.entries(gastosPorProveedor)
+            const proveedoresArray = Object.entries(gastosPorProveedor || {})
                 .map(([proveedorId, monto]) => {
-                    const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === proveedorId);
+                    // Buscar proveedor por ID (puede ser string o número)
+                    const proveedor = MOCK_DATA.PROVEEDORES.find(p => 
+                        p.id === proveedorId || 
+                        p.id === String(proveedorId) || 
+                        String(p.id) === String(proveedorId)
+                    );
                     return {
-                        nombre: proveedor ? proveedor.nombre : 'Proveedor Desconocido',
+                        nombre: proveedor ? proveedor.nombre : `Proveedor ID: ${proveedorId}`,
                         monto: monto
                     };
                 })
+                .filter(p => p.monto > 0) // Solo mostrar proveedores con gastos
                 .sort((a, b) => b.monto - a.monto)
                 .slice(0, 5); // Top 5
             
@@ -2160,8 +2171,16 @@
                         const tipoMime = nombreArchivo.endsWith('.pdf') ? 'application/pdf' : 
                                          (nombreArchivo.endsWith('.jpg') || nombreArchivo.endsWith('.jpeg')) ? 'image/jpeg' :
                                          nombreArchivo.endsWith('.png') ? 'image/png' : 'application/octet-stream';
-                        const archivoDataEscaped = archivoData ? archivoData.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '') : 'null';
-                        htmlAdjuntos += `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer; font-size: 0.9em; word-break: break-word;" onclick="descargarAdjunto('${nombreArchivo.replace(/'/g, "\\'")}', ${archivoDataEscaped !== 'null' ? `'${archivoDataEscaped}'` : 'null'}, '${tipoMime}'); return false;">📄 ${nombreArchivo}</a>`;
+                        
+                        // Escapar correctamente para HTML y JavaScript
+                        const nombreArchivoEscaped = nombreArchivo.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+                        let archivoDataEscaped = 'null';
+                        if (archivoData && archivoData !== 'null' && archivoData !== 'undefined') {
+                            // Usar base64 directamente sin comillas adicionales
+                            archivoDataEscaped = `'${archivoData.replace(/'/g, "\\'").replace(/"/g, '&quot;').replace(/\n/g, '').replace(/\r/g, '')}'`;
+                        }
+                        
+                        htmlAdjuntos += `<a href="#" style="color: #007bff; text-decoration: underline; cursor: pointer; font-size: 0.9em; word-break: break-word;" onclick="descargarAdjunto('${nombreArchivoEscaped}', ${archivoDataEscaped}, '${tipoMime}'); return false;">📄 ${nombreArchivo}</a>`;
                     });
                     
                     htmlAdjuntos += `</div><small style="color: #6c757d; display: block; margin-top: 5px;">${adjuntos.length} archivo(s)</small>`;
@@ -2297,7 +2316,10 @@
         // Función para actualizar el select de proveedores en el formulario de gastos
         function updateSupplierSelect(selectId = 'gastoProveedor', selectedValue = null) {
             const select = document.getElementById(selectId);
-            if (!select) return;
+            if (!select) {
+                console.warn(`Select con ID ${selectId} no encontrado`);
+                return;
+            }
             
             // Guardar el valor actual si no se proporciona uno
             const currentValue = selectedValue !== null ? selectedValue : select.value;
@@ -2313,9 +2335,19 @@
                 select.appendChild(option);
             });
             
-            // Establecer el valor seleccionado
-            if (currentValue && MOCK_DATA.PROVEEDORES.find(p => p.id === currentValue)) {
-                select.value = currentValue;
+            // Establecer el valor seleccionado - intentar con string y número
+            if (currentValue) {
+                // Buscar por ID (puede ser string o número)
+                const proveedorEncontrado = MOCK_DATA.PROVEEDORES.find(p => 
+                    p.id === currentValue || 
+                    p.id === String(currentValue) || 
+                    String(p.id) === String(currentValue)
+                );
+                if (proveedorEncontrado) {
+                    select.value = proveedorEncontrado.id;
+                } else {
+                    console.warn(`Proveedor con ID ${currentValue} no encontrado en la lista`);
+                }
             }
         }
 
@@ -2402,16 +2434,21 @@
             // Cargar proveedores primero
             await cargarProveedores();
             
-            // Actualizar select de proveedores en el modal de edición con el valor del gasto
-            updateSupplierSelect('editGastoProveedor', gasto.proveedor || '');
-            
-            // Llenar formulario con datos del gasto
+            // Llenar formulario con datos del gasto PRIMERO
             document.getElementById('editGastoId').value = gasto.id;
             document.getElementById('editGastoFecha').value = gasto.fecha;
             document.getElementById('editGastoCategoria').value = gasto.categoria;
             document.getElementById('editGastoMonto').value = gasto.monto;
             document.getElementById('editGastoProduccion').value = gasto.produccion;
             document.getElementById('editGastoNota').value = gasto.nota || '';
+            
+            // Actualizar select de proveedores DESPUÉS de llenar el formulario
+            // Usar un pequeño delay para asegurar que el DOM esté listo
+            setTimeout(() => {
+                const proveedorId = gasto.proveedor || '';
+                console.log('Editando gasto, proveedor ID:', proveedorId);
+                updateSupplierSelect('editGastoProveedor', proveedorId);
+            }, 100);
             
             // Mostrar archivos adjuntos existentes
             const adjuntosExistentes = Array.isArray(gasto.adjuntos) ? gasto.adjuntos : 
@@ -3043,7 +3080,7 @@
                 }
             };
         }
-        
+
         // Inicialización de la Aplicación
         window.onload = async function() {
             setupNavigation();
@@ -3058,7 +3095,7 @@
                 updateSupplierSelect(); // Cargar proveedores en el select inicialmente
                 await updateDashboard();
                 await cargarPresupuesto();
-                document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+            document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
             } catch (error) {
                 console.error('Error cargando datos iniciales:', error);
                 if (SUPABASE_CONFIGURADO) {
