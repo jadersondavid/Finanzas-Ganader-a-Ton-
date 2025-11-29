@@ -9,28 +9,48 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Variables de Diseño (Campo + Innovación) */
+        /* Variables de Diseño Moderno y Vibrante */
         :root {
-            --color-primary: #38761d; /* Verde Oliva/Campo */
-            --color-secondary: #cc9900; /* Marrón/Tierra sutil */
-            --color-background: #f4f7f6; /* Gris muy claro, limpio */
+            --color-primary: #00d4aa; /* Verde esmeralda vibrante */
+            --color-primary-dark: #00b894;
+            --color-secondary: #ff6b6b; /* Coral vibrante */
+            --color-secondary-dark: #ee5a6f;
+            --color-accent: #4ecdc4; /* Turquesa */
+            --color-accent-2: #ffe66d; /* Amarillo dorado */
+            --color-background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #4facfe 75%, #00f2fe 100%);
+            --color-background-solid: #f0f4f8;
             --color-card-bg: #ffffff;
-            --color-text: #2c3e50;
-            --color-income: #27ae60; /* Verde ingreso */
-            --color-expense: #c0392b; /* Rojo gasto */
-            --color-alert-warn: #f39c12; /* Naranja alerta (80%) */
-            --color-alert-danger: #e74c3c; /* Rojo alerta (Excedido) */
-            --color-ai: #007bff; /* Azul para funcionalidades Gemini */
-            --font-family: 'Inter', sans-serif;
-            --border-radius: 8px;
+            --color-text: #2d3748;
+            --color-text-light: #718096;
+            --color-income: #48bb78; /* Verde éxito */
+            --color-expense: #f56565; /* Rojo coral */
+            --color-alert-warn: #ed8936; /* Naranja */
+            --color-alert-danger: #fc8181; /* Rojo claro */
+            --color-ai: #667eea; /* Púrpura azulado */
+            --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --border-radius: 16px;
+            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.2);
+            --shadow-3d: 0 10px 30px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
         body {
             margin: 0;
             font-family: var(--font-family);
-            background-color: var(--color-background);
+            background: var(--color-background);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             color: var(--color-text);
             line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         #app {
@@ -41,14 +61,19 @@
         /* 1. Panel Lateral de Navegación */
         #sidebar {
             width: 280px;
-            background-color: var(--color-primary);
+            background: linear-gradient(180deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             color: white;
             padding: 20px 0;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--shadow-3d);
             position: sticky;
             top: 0;
-            height: 100%;
-            transition: width 0.3s ease;
+            height: 100vh;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        #sidebar:hover {
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.4);
         }
 
         .logo {
@@ -74,24 +99,47 @@
         .logo-preview {
             width: 180px;
             height: 180px;
-            border-radius: 12px;
+            border-radius: 20px;
             object-fit: cover;
-            border: 3px solid var(--color-secondary);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border: 4px solid transparent;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-clip: padding-box;
+            border-image: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 4px rgba(102, 126, 234, 0.1);
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #999;
             font-size: 0.9em;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-preview::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            transition: all 0.6s;
         }
 
         .logo-preview:hover {
-            transform: scale(1.02);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.5), 0 0 0 4px rgba(102, 126, 234, 0.2);
+            border-image: linear-gradient(135deg, #7c8ff5 0%, #8b5fbf 50%, #f5a5d8 100%) 1;
+        }
+        
+        .logo-preview:hover::before {
+            top: 50%;
+            left: 50%;
         }
 
         .logo-preview img {
@@ -102,25 +150,46 @@
         }
 
         .logo-upload-btn {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, var(--color-secondary) 0%, #b8860b 100%);
-            color: white;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ffe66d 0%, #ffd93d 50%, #f6c23e 100%);
+            color: #2d3748;
             border: none;
-            border-radius: 6px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 0.85em;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 8px rgba(204, 153, 0, 0.3);
+            font-size: 0.9em;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 6px 20px rgba(255, 230, 109, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .logo-upload-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
         }
 
         .logo-upload-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(204, 153, 0, 0.4);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 12px 30px rgba(255, 230, 109, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #fff176 0%, #ffe66d 50%, #ffd93d 100%);
+        }
+        
+        .logo-upload-btn:hover::before {
+            width: 300px;
+            height: 300px;
         }
 
         .logo-upload-btn:active {
-            transform: translateY(0);
+            transform: translateY(-1px) scale(1.02);
         }
 
         #logoFileInput {
@@ -137,9 +206,32 @@
             font-size: 1.05em;
         }
 
+        .nav-item {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: linear-gradient(180deg, #ffe66d 0%, #ff6b6b 100%);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-item:hover::before,
+        .nav-item.active::before {
+            transform: scaleY(1);
+        }
+        
         .nav-item:hover, .nav-item.active {
-            background-color: #2b5c17; /* Tono de verde más oscuro */
-            border-left: 5px solid var(--color-secondary);
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.05) 100%);
+            transform: translateX(5px);
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
         }
         
         .nav-item span { margin-right: 15px; font-size: 1.2em; }
@@ -156,29 +248,69 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 15px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
+            padding-bottom: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
         }
 
         header h1 {
-            font-size: 2em;
-            font-weight: 600;
-            color: var(--color-text);
+            font-size: 2.2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(102, 126, 234, 0.2);
         }
 
         .user-info {
-            font-weight: 500;
-            color: var(--color-primary);
+            font-weight: 600;
+            background: linear-gradient(135deg, #00d4aa 0%, #00b894 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            padding: 8px 16px;
+            border-radius: 20px;
+            background-color: rgba(0, 212, 170, 0.1);
+            border: 2px solid rgba(0, 212, 170, 0.2);
         }
 
-        /* Estilo de Tarjetas */
+        /* Estilo de Tarjetas con Efecto 3D */
         .card {
-            background-color: var(--color-card-bg);
-            padding: 25px;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            padding: 30px;
             border-radius: var(--border-radius);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08); 
+            box-shadow: var(--shadow-lg);
             margin-bottom: 25px;
-            transition: transform 0.2s;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.8);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: left 0.5s;
+        }
+        
+        .card:hover::before {
+            left: 100%;
+        }
+        
+        .card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-xl);
         }
         
         .summary-cards {
@@ -190,12 +322,39 @@
 
         .summary-cards .card {
             text-align: center;
-            border-top: 5px solid;
+            border-top: 6px solid;
+            position: relative;
+            overflow: visible;
         }
         
-        .card.income { border-color: var(--color-income); }
-        .card.expense { border-color: var(--color-expense); }
-        .card.profit { border-color: var(--color-primary); }
+        .summary-cards .card::after {
+            content: '';
+            position: absolute;
+            top: -6px;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        .card.income { 
+            border-color: var(--color-income);
+            background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%);
+        }
+        .card.expense { 
+            border-color: var(--color-expense);
+            background: linear-gradient(135deg, #ffffff 0%, #fff5f5 100%);
+        }
+        .card.profit { 
+            border-color: var(--color-primary);
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdfa 100%);
+        }
 
         .summary-cards .card h3 {
             margin-top: 0;
@@ -204,31 +363,90 @@
         }
 
         .summary-cards .card p {
-            font-size: 2.2em;
-            font-weight: 700;
-            margin: 5px 0 0;
+            font-size: 2.5em;
+            font-weight: 800;
+            margin: 10px 0 0;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, currentColor 0%, currentColor 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
-        .card.income p { color: var(--color-income); }
-        .card.expense p { color: var(--color-expense); }
+        .card.income p { 
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card.expense p { 
+            background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
         
         .budget-bar-container {
-            height: 20px;
-            background-color: #e9ecef;
-            border-radius: 10px;
-            margin: 10px 0;
+            height: 28px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e0 100%);
+            border-radius: 14px;
+            margin: 15px 0;
             overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.05);
+            position: relative;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .budget-bar-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3) 0%, transparent 100%);
+            pointer-events: none;
         }
 
         .budget-bar {
             height: 100%;
-            background-color: var(--color-income);
-            transition: width 0.5s ease-in-out, background-color 0.5s;
+            background: linear-gradient(135deg, #00d4aa 0%, #00b894 50%, #00a085 100%);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
+            box-shadow: 0 0 20px rgba(0, 212, 170, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .budget-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmerBar 2s infinite;
+        }
+        
+        @keyframes shimmerBar {
+            0% { left: -100%; }
+            100% { left: 100%; }
         }
 
-        .budget-bar.danger { background-color: var(--color-alert-danger) !important; }
-        .budget-bar.warning { background-color: var(--color-alert-warn) !important; }
+        .budget-bar.danger { 
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%) !important;
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+        }
+        .budget-bar.warning { 
+            background: linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #f57c00 100%) !important;
+            box-shadow: 0 0 20px rgba(255, 167, 38, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3) !important;
+        }
 
         .alert {
             padding: 12px;
@@ -267,16 +485,18 @@
         }
         
         .modal-content {
-            background-color: var(--color-card-bg);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
             margin: 5% auto;
-            padding: 30px;
-            border-radius: var(--border-radius);
+            padding: 40px;
+            border-radius: 20px;
             width: 90%;
             max-width: 600px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-            animation: slideDown 0.3s;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+            animation: slideDown 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
             max-height: 90vh;
             overflow-y: auto;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
         }
         
         @keyframes slideDown {
@@ -294,15 +514,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid var(--color-primary);
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
         }
         
         .modal-header h3 {
             margin: 0;
-            color: var(--color-primary);
-            font-size: 1.5em;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 1.8em;
+            font-weight: 800;
         }
         
         .close-modal {
@@ -342,21 +567,23 @@
         .chart-box { height: 400px; display: flex; flex-direction: column; justify-content: center; }
         .chart-box canvas { max-height: 350px; }
 
-        /* Botones Modernos y Estéticos */
+        /* Botones Modernos con Efecto 3D */
         .btn {
-            padding: 14px 28px;
+            padding: 16px 32px;
             border: none;
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
             margin: 5px;
             font-size: 0.95em;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
             position: relative;
             overflow: hidden;
             text-transform: none;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .btn::before {
@@ -367,48 +594,90 @@
             width: 0;
             height: 0;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.3);
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
             transform: translate(-50%, -50%);
             transition: width 0.6s, height 0.6s;
         }
 
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
         .btn:hover::before {
-            width: 300px;
-            height: 300px;
+            width: 400px;
+            height: 400px;
+        }
+        
+        .btn:hover::after {
+            opacity: 1;
         }
 
         .btn-primary { 
-            background: linear-gradient(135deg, var(--color-primary) 0%, #2b5c17 100%);
+            background: linear-gradient(135deg, #00d4aa 0%, #00b894 50%, #00a085 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(56, 118, 29, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(56, 118, 29, 0.5);
-            background: linear-gradient(135deg, #4a8f2a 0%, #38761d 100%);
+            transform: translateY(-5px) rotateX(5deg) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 212, 170, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #00f5d4 0%, #00d4aa 50%, #00b894 100%);
         }
 
         .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(56, 118, 29, 0.4);
+            transform: translateY(-2px) rotateX(2deg) scale(1.02);
+            box-shadow: 0 5px 15px rgba(0, 212, 170, 0.4);
         }
 
         .btn-ai { 
-            background: linear-gradient(135deg, var(--color-ai) 0%, #0056b3 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             color: white;
-            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            position: relative;
+        }
+        
+        .btn-ai::before {
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.5) 0%, transparent 70%);
         }
 
         .btn-ai:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.5);
-            background: linear-gradient(135deg, #1a88ff 0%, #007bff 100%);
+            transform: translateY(-5px) rotateX(5deg) scale(1.05);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
+            background: linear-gradient(135deg, #7c8ff5 0%, #8b5fbf 50%, #f5a5d8 100%);
         }
 
         .btn-ai:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(0, 123, 255, 0.4);
+            transform: translateY(-2px) rotateX(2deg) scale(1.02);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Botones de acción (eliminar, editar) */
+        button[onclick*="eliminar"], button[onclick*="Eliminar"] {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #c44569 100%) !important;
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+        }
+        
+        button[onclick*="eliminar"]:hover, button[onclick*="Eliminar"]:hover {
+            transform: translateY(-5px) rotateX(5deg) scale(1.05) !important;
+            box-shadow: 0 15px 35px rgba(255, 107, 107, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
+        }
+        
+        button[onclick*="editar"], button[onclick*="Editar"] {
+            background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%) !important;
+            box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset !important;
+        }
+        
+        button[onclick*="editar"]:hover, button[onclick*="Editar"]:hover {
+            transform: translateY(-5px) rotateX(5deg) scale(1.05) !important;
+            box-shadow: 0 15px 35px rgba(78, 205, 196, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset !important;
         }
 
         .btn span {
@@ -422,7 +691,25 @@
         .form-group label { font-weight: 500; margin-bottom: 5px; color: var(--color-text); }
         
         .form-group input, .form-group select, .form-group textarea {
-            padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; transition: border-color 0.3s;
+            padding: 12px 16px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 10px; 
+            font-size: 1em; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #00d4aa;
+            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1), 0 4px 12px rgba(0, 212, 170, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        .form-group input:hover, .form-group select:hover, .form-group textarea:hover {
+            border-color: #4ecdc4;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         }
         
         .full-width { grid-column: 1 / -1; }
@@ -433,10 +720,38 @@
         #expenseTable, #incomeTable, #supplierTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
         
         #expenseTable th, #incomeTable th, #supplierTable th {
-            background-color: var(--color-primary); color: white; padding: 12px; text-align: left; border-bottom: 2px solid var(--color-secondary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            padding: 16px; 
+            text-align: left; 
+            border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         
-        #expenseTable td, #incomeTable td, #supplierTable td { padding: 10px; border-bottom: 1px solid #eee; }
+        #expenseTable th::after, #incomeTable th::after, #supplierTable th::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+        }
+        
+        #expenseTable td, #incomeTable td, #supplierTable td { 
+            padding: 14px 16px; 
+            border-bottom: 1px solid #e2e8f0; 
+            transition: all 0.2s;
+        }
+        
+        #expenseTable tr:hover td, #incomeTable tr:hover td, #supplierTable tr:hover td {
+            background: linear-gradient(90deg, rgba(0, 212, 170, 0.05) 0%, transparent 100%);
+            transform: scale(1.01);
+        }
 
         /* Estilo para el resultado del LLM */
         .llm-output {
@@ -956,6 +1271,47 @@
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalEditarIngreso')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Guardar Cambios</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal de Edición de Proveedor -->
+    <div id="modalEditarProveedor" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✏️ Editar Proveedor</h3>
+                <button class="close-modal" onclick="cerrarModal('modalEditarProveedor')">&times;</button>
+            </div>
+            <form id="formEditarProveedor" class="form-container">
+                <input type="hidden" id="editProveedorId">
+                <div class="form-group">
+                    <label for="editProveedorNombre">Nombre del Proveedor</label>
+                    <input type="text" id="editProveedorNombre" placeholder="Ej: Agro Colanta" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProveedorServicio">Tipo de Servicio</label>
+                    <input type="text" id="editProveedorServicio" placeholder="Ej: Insumos y Alimentos" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProveedorTelefono">Teléfono</label>
+                    <input type="text" id="editProveedorTelefono" placeholder="Ej: 324 3080495" required>
+                </div>
+                <div class="form-group">
+                    <label for="editProveedorEmail">Email (Opcional)</label>
+                    <input type="email" id="editProveedorEmail" placeholder="Ej: contacto@agrocolanta.com">
+                </div>
+                <div class="form-group full-width">
+                    <label for="editProveedorDireccion">Dirección (Opcional)</label>
+                    <input type="text" id="editProveedorDireccion" placeholder="Ej: Calle 123, Ciudad">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalEditarProveedor')">
                         <span>❌ Cancelar</span>
                     </button>
                     <button type="submit" class="btn btn-primary">
@@ -1517,7 +1873,7 @@
             renderExpenseTable(MOCK_DATA.GASTOS);
             
                 // Renderizar gráficos
-                if (typeof Chart !== 'undefined') {
+            if (typeof Chart !== 'undefined') {
                     // Pequeño delay para asegurar que el DOM esté listo
                     setTimeout(() => {
                         try {
@@ -2304,7 +2660,10 @@
                                             </button>`;
                 }
                 
-                actionCell.innerHTML += `<button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="deleteSupplier('${item.id}')">
+                actionCell.innerHTML += `<button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #4ecdc4 0%, #44a08d 100%); color: white; box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);" onclick="editarProveedor('${item.id}')">
+                                            <span>✏️ Editar</span>
+                                        </button>
+                                        <button class="btn" style="padding: 8px 15px; font-size: 0.85em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; box-shadow: 0 4px 15px rgba(231, 76, 60, 0.4);" onclick="deleteSupplier('${item.id}')">
                                             <span>🗑️ Eliminar</span>
                                         </button>`;
             });
@@ -2513,14 +2872,16 @@
                 document.getElementById('formEditarGasto').reset();
                 // Remover div de archivos existentes si existe
                 const adjuntoInput = document.getElementById('editGastoAdjunto');
-                const adjuntoInfo = adjuntoInput.parentNode.querySelector('div[style*="background-color: #f8f9fa"]');
+                const adjuntoInfo = adjuntoInput?.parentNode.querySelector('div[style*="background-color: #f8f9fa"]');
                 if (adjuntoInfo) adjuntoInfo.remove();
             } else if (modalId === 'modalEditarIngreso') {
                 document.getElementById('formEditarIngreso').reset();
                 // Remover div de archivos existentes si existe
                 const adjuntoInput = document.getElementById('editIngresoAdjunto');
-                const adjuntoInfo = adjuntoInput.parentNode.querySelector('div[style*="background-color: #f8f9fa"]');
+                const adjuntoInfo = adjuntoInput?.parentNode.querySelector('div[style*="background-color: #f8f9fa"]');
                 if (adjuntoInfo) adjuntoInfo.remove();
+            } else if (modalId === 'modalEditarProveedor') {
+                document.getElementById('formEditarProveedor').reset();
             }
         }
         
@@ -2909,6 +3270,52 @@
 
         // Configurar formularios de edición
         function setupEditForms() {
+            // Formulario de edición de proveedor
+            document.getElementById('formEditarProveedor').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const proveedorId = document.getElementById('editProveedorId').value;
+                const nombre = document.getElementById('editProveedorNombre').value.trim();
+                const servicio = document.getElementById('editProveedorServicio').value.trim();
+                const telefono = document.getElementById('editProveedorTelefono').value.trim();
+                const email = document.getElementById('editProveedorEmail').value.trim();
+                const direccion = document.getElementById('editProveedorDireccion').value.trim();
+                
+                if (!nombre || !servicio || !telefono) {
+                    alertMessage('Por favor complete todos los campos requeridos', 'danger');
+                    return;
+                }
+                
+                try {
+                    const datosActualizados = {
+                        nombre: nombre,
+                        servicio: servicio,
+                        telefono: telefono,
+                        email: email || null,
+                        direccion: direccion || null
+                    };
+                    
+                    await actualizarProveedor(proveedorId, datosActualizados);
+                    
+                    // Recargar proveedores desde la base de datos
+                    await cargarProveedores();
+                    
+                    // Cerrar modal
+                    cerrarModal('modalEditarProveedor');
+                    
+                    // Actualizar tabla
+                    renderSupplierTable(MOCK_DATA.PROVEEDORES);
+                    
+                    // Actualizar selects de proveedores
+                    updateSupplierSelect();
+                    updateSupplierSelect('editGastoProveedor');
+                    
+                    alertMessage('Proveedor actualizado exitosamente', 'success');
+                } catch (error) {
+                    alertMessage('Error al actualizar proveedor: ' + error.message, 'danger');
+                }
+            });
+            
             // Formulario de edición de gasto
             document.getElementById('formEditarGasto').addEventListener('submit', async function(e) {
                 e.preventDefault();
@@ -3072,11 +3479,15 @@
             window.onclick = function(event) {
                 const modalGasto = document.getElementById('modalEditarGasto');
                 const modalIngreso = document.getElementById('modalEditarIngreso');
+                const modalProveedor = document.getElementById('modalEditarProveedor');
                 if (event.target === modalGasto) {
                     cerrarModal('modalEditarGasto');
                 }
                 if (event.target === modalIngreso) {
                     cerrarModal('modalEditarIngreso');
+                }
+                if (event.target === modalProveedor) {
+                    cerrarModal('modalEditarProveedor');
                 }
             };
         }
