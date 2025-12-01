@@ -2,115 +2,56 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="format-detection" content="telephone=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard Financiero - GANADERÍA TONÉ</title>
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <!-- Supabase Client - Usar la versión UMD que expone globalmente -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" onload="console.log('✅ Script de Supabase cargado')" onerror="console.error('❌ Error cargando script de Supabase')"></script>
+    <!-- Supabase Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* ============================================
-           VARIABLES DE DISEÑO - ESTILO CORPORATIVO PROFESIONAL
-           Paleta: Campo Moderno + Corporativo Minimalista
-           ============================================ */
+        /* Variables de Diseño - Colores Profesionales y Modernos */
         :root {
-            /* Colores Principales - Verdes Naturales y Profesionales */
-            --color-primary: #2d5016; /* Verde bosque oscuro */
-            --color-primary-dark: #1a3009;
-            --color-primary-light: #4a7c2a;
-            --color-primary-hover: #3d6a1f;
-            
-            /* Colores Secundarios - Cafés y Beige */
-            --color-secondary: #8b6914; /* Café dorado */
-            --color-secondary-dark: #6b5010;
-            --color-secondary-light: #a8821a;
-            
-            /* Colores de Acento - Beige y Grises */
-            --color-accent: #d4c5a9; /* Beige claro */
-            --color-accent-2: #e8ddd0; /* Beige muy claro */
-            --color-accent-dark: #b8a68a;
-            
-            /* Colores de Fondo */
-            --color-background: #f5f3f0; /* Beige grisáceo suave */
-            --color-background-solid: #faf9f7;
+            --color-primary: #059669; /* Verde esmeralda profesional */
+            --color-primary-dark: #047857;
+            --color-primary-light: #10b981;
+            --color-secondary: #0284c7; /* Azul profesional */
+            --color-secondary-dark: #0369a1;
+            --color-accent: #0d9488; /* Verde turquesa */
+            --color-accent-2: #65a30d; /* Verde lima suave */
+            --color-background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%, #f8fafc 100%);
+            --color-background-solid: #f8fafc;
             --color-card-bg: #ffffff;
-            --color-card-hover: #fefefe;
-            
-            /* Colores de Texto */
-            --color-text: #2c2416; /* Café oscuro */
-            --color-text-light: #5a4a3a;
-            --color-text-muted: #8b7d6b;
-            --color-text-inverse: #ffffff;
-            
-            /* Colores Funcionales */
-            --color-income: #2d5016; /* Verde para ingresos */
-            --color-expense: #8b4513; /* Café para gastos */
-            --color-alert-warn: #b8860b; /* Dorado oscuro */
-            --color-alert-danger: #8b4513; /* Café rojizo */
-            --color-success: #4a7c2a; /* Verde éxito */
-            --color-info: #6b7c8b; /* Gris azulado */
-            
-            /* Grises Modernos */
-            --color-gray-50: #faf9f7;
-            --color-gray-100: #f5f3f0;
-            --color-gray-200: #e8e5e0;
-            --color-gray-300: #d4c5a9;
-            --color-gray-400: #b8a68a;
-            --color-gray-500: #8b7d6b;
-            --color-gray-600: #5a4a3a;
-            --color-gray-700: #3d3328;
-            --color-gray-800: #2c2416;
-            --color-gray-900: #1a1612;
-            
-            /* Tipografía */
-            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            --font-family-heading: 'Inter', var(--font-family);
-            
-            /* Espaciado y Tamaños */
-            --border-radius: 8px;
-            --border-radius-lg: 12px;
-            --border-radius-xl: 16px;
-            --spacing-xs: 4px;
-            --spacing-sm: 8px;
-            --spacing-md: 16px;
-            --spacing-lg: 24px;
-            --spacing-xl: 32px;
-            --spacing-2xl: 48px;
-            
-            /* Sombras Profesionales */
-            --shadow-xs: 0 1px 2px rgba(44, 36, 22, 0.05);
-            --shadow-sm: 0 2px 4px rgba(44, 36, 22, 0.08);
-            --shadow-md: 0 4px 8px rgba(44, 36, 22, 0.1);
-            --shadow-lg: 0 8px 16px rgba(44, 36, 22, 0.12);
-            --shadow-xl: 0 12px 24px rgba(44, 36, 22, 0.15);
-            --shadow-2xl: 0 16px 32px rgba(44, 36, 22, 0.18);
-            
-            /* Bordes */
-            --border-color: #e8e5e0;
-            --border-color-hover: #d4c5a9;
-            --border-width: 1px;
+            --color-text: #0f172a;
+            --color-text-light: #64748b;
+            --color-income: #059669; /* Verde esmeralda */
+            --color-expense: #dc2626; /* Rojo profesional */
+            --color-alert-warn: #d97706; /* Naranja ámbar */
+            --color-alert-danger: #b91c1c; /* Rojo intenso */
+            --color-ai: #0284c7; /* Azul profesional */
+            --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --border-radius: 16px;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.15);
+            --shadow-3d: 0 8px 25px rgba(5, 150, 105, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
         }
 
-        /* ============================================
-           RESET Y BASE
-           ============================================ */
-        * {
-            box-sizing: border-box;
-        }
-        
         body {
             margin: 0;
-            padding: 0;
             font-family: var(--font-family);
             background: var(--color-background);
+            background-size: 400% 400%;
+            animation: gradientShift 20s ease infinite;
             color: var(--color-text);
             line-height: 1.6;
             min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         #app {
@@ -118,27 +59,24 @@
             min-height: 100vh;
         }
 
-        /* ============================================
-           SIDEBAR - PANEL LATERAL PROFESIONAL
-           ============================================ */
+        /* 1. Panel Lateral de Navegación */
         #sidebar {
             width: 280px;
-            background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary) 50%, var(--color-primary-light) 100%);
-            color: var(--color-text-inverse);
+            background: linear-gradient(180deg, #047857 0%, #059669 50%, #10b981 100%);
+            color: white;
             padding: 0;
-            box-shadow: var(--shadow-xl);
+            box-shadow: var(--shadow-lg);
             position: sticky;
             top: 0;
             height: 100vh;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s ease;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            z-index: 100;
         }
         
         #sidebar:hover {
-            box-shadow: var(--shadow-2xl);
+            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
         }
         
         /* Contenedor del logo con scroll */
@@ -199,17 +137,14 @@
             height: 180px;
             border-radius: 20px;
             object-fit: cover;
-            border: 4px solid transparent;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
-            background-clip: padding-box;
-            border-image: linear-gradient(135deg, #22c55e 0%, #10b981 50%, #3b82f6 100%) 1;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4), 0 0 0 4px rgba(34, 197, 94, 0.15);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            box-shadow: 0 8px 25px rgba(5, 150, 105, 0.25), 0 0 0 2px rgba(255, 255, 255, 0.2);
             margin-bottom: 15px;
-            background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #1f2937;
+            color: #0f172a;
             font-size: 0.9em;
             cursor: pointer;
             transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -230,9 +165,9 @@
         }
 
         .logo-preview:hover {
-            transform: scale(1.08) rotate(2deg);
-            box-shadow: 0 15px 40px rgba(34, 197, 94, 0.5), 0 0 0 4px rgba(34, 197, 94, 0.25);
-            border-image: linear-gradient(135deg, #4ade80 0%, #3b82f6 50%, #60a5fa 100%) 1;
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(5, 150, 105, 0.35), 0 0 0 3px rgba(255, 255, 255, 0.4);
+            border-color: rgba(255, 255, 255, 0.5);
         }
         
         .logo-preview:hover::before {
@@ -249,17 +184,19 @@
 
         .logo-upload-btn {
             padding: 12px 24px;
-            background: linear-gradient(135deg, #84cc16 0%, #10b981 50%, #3b82f6 100%);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
             color: white;
             border: none;
             border-radius: 12px;
             cursor: pointer;
             font-size: 0.9em;
-            font-weight: 700;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 6px 20px rgba(132, 204, 22, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
             position: relative;
             overflow: hidden;
+            width: 100%;
+            max-width: 200px;
         }
         
         .logo-upload-btn::before {
@@ -276,9 +213,9 @@
         }
 
         .logo-upload-btn:hover {
-            transform: translateY(-4px) scale(1.05);
-            box-shadow: 0 12px 30px rgba(255, 230, 109, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #fff176 0%, #ffe66d 50%, #ffd93d 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
         
         .logo-upload-btn:hover::before {
@@ -316,7 +253,7 @@
             top: 0;
             height: 100%;
             width: 4px;
-            background: linear-gradient(180deg, #84cc16 0%, #3b82f6 100%);
+            background: linear-gradient(180deg, #10b981 0%, #0284c7 100%);
             transform: scaleY(0);
             transition: transform 0.3s ease;
         }
@@ -345,33 +282,34 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--spacing-xl);
-            padding: var(--spacing-lg) var(--spacing-xl);
-            background: var(--color-card-bg);
-            border-radius: var(--border-radius-lg);
-            box-shadow: var(--shadow-sm);
-            border: var(--border-width) solid var(--border-color);
+            margin-bottom: 30px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
+            padding-bottom: 20px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+            backdrop-filter: blur(10px);
         }
 
         header h1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            color: var(--color-text);
-            margin: 0;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
+            font-size: 2.2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #059669 0%, #047857 50%, #10b981 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            text-shadow: 0 2px 10px rgba(34, 197, 94, 0.2);
+            text-shadow: 0 2px 10px rgba(5, 150, 105, 0.15);
         }
 
         .user-info {
             font-weight: 600;
-            color: #16a34a;
+            color: #047857;
             padding: 8px 16px;
             border-radius: 20px;
-            background-color: rgba(34, 197, 94, 0.15);
-            border: 2px solid rgba(34, 197, 94, 0.3);
+            background-color: rgba(5, 150, 105, 0.12);
+            border: 2px solid rgba(5, 150, 105, 0.25);
         }
 
         /* Estilo de Tarjetas con Efecto 3D */
@@ -439,7 +377,7 @@
         
         .card.income { 
             border-color: var(--color-income);
-            background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
+            background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
         }
         .card.expense { 
             border-color: var(--color-expense);
@@ -510,9 +448,9 @@
 
         .budget-bar {
             height: 100%;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
+            background: linear-gradient(135deg, #059669 0%, #047857 50%, #10b981 100%);
             transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.5s;
-            box-shadow: 0 0 20px rgba(34, 197, 94, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 20px rgba(5, 150, 105, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.3);
             position: relative;
             overflow: hidden;
         }
@@ -661,32 +599,23 @@
         .chart-box { height: 400px; display: flex; flex-direction: column; justify-content: center; }
         .chart-box canvas { max-height: 350px; }
 
-        /* ============================================
-           BOTONES - ESTILO CORPORATIVO PROFESIONAL
-           ============================================ */
+        /* Botones Modernos con Efecto 3D */
         .btn {
-            padding: 12px 24px;
-            border: var(--border-width) solid transparent;
-            border-radius: var(--border-radius);
-            font-weight: 600;
-            font-size: 0.875rem;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-            margin: var(--spacing-xs);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin: 5px;
+            font-size: 0.95em;
+            letter-spacing: 0.8px;
             position: relative;
             overflow: hidden;
             text-transform: none;
-            box-shadow: var(--shadow-xs);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: var(--spacing-sm);
-            min-height: 44px;
-        }
-        
-        .btn:focus {
-            outline: 2px solid var(--color-primary);
-            outline-offset: 2px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            transform-style: preserve-3d;
+            perspective: 1000px;
         }
 
         .btn::before {
@@ -724,79 +653,34 @@
         }
 
         .btn-primary { 
-            background: var(--color-primary);
-            color: var(--color-text-inverse);
-            border-color: var(--color-primary);
-            box-shadow: var(--shadow-sm);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
         }
 
         .btn-primary:hover {
-            background: var(--color-primary-hover);
-            border-color: var(--color-primary-hover);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(5, 150, 105, 0.4);
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         }
 
         .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: var(--shadow-xs);
+            transform: translateY(-2px) rotateX(2deg) scale(1.02);
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
         }
 
         .btn-ai { 
-            background: var(--color-secondary);
-            color: var(--color-text-inverse);
-            border-color: var(--color-secondary);
-            box-shadow: var(--shadow-sm);
-        }
-        
-        .btn-ai:hover {
-            background: var(--color-secondary-light);
-            border-color: var(--color-secondary-light);
-            box-shadow: var(--shadow-md);
-            transform: translateY(-1px);
-        }
-        
-        .btn-ai::before {
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%);
-        }
-
-        .btn-ai:hover {
-            transform: translateY(-5px) rotateX(5deg) scale(1.05);
-            box-shadow: 0 15px 35px rgba(59, 130, 246, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
-        }
-
-        /* Botones compactos para agregar nuevas opciones */
-        .btn-nueva-categoria, .btn-nueva-produccion {
-            min-width: 48px;
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border-radius: 8px;
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
             color: white;
-            border: none;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+            position: relative;
         }
 
-        .btn-nueva-categoria:hover, .btn-nueva-produccion:hover {
-            transform: translateY(-2px) scale(1.1);
-            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
-            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        .btn-ai:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(2, 132, 199, 0.4);
+            background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
         }
-
-        .btn-nueva-categoria:active, .btn-nueva-produccion:active {
-            transform: translateY(0) scale(0.95);
-        }
-
-        /* Media query específico para botones compactos - se maneja en el media query principal de 600px */
 
         .btn-ai:active {
             transform: translateY(-2px) rotateX(2deg) scale(1.02);
@@ -846,9 +730,14 @@
         
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             outline: none;
-            border-color: #00d4aa;
-            box-shadow: 0 0 0 3px rgba(0, 212, 170, 0.1), 0 4px 12px rgba(0, 212, 170, 0.2);
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1), 0 4px 12px rgba(5, 150, 105, 0.15);
             transform: translateY(-2px);
+        }
+        
+        #filtroMesDashboard:focus {
+            border-color: #059669;
+            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.1), 0 4px 12px rgba(5, 150, 105, 0.15);
         }
         
         .form-group input:hover, .form-group select:hover, .form-group textarea:hover {
@@ -864,7 +753,7 @@
         #expenseTable, #incomeTable, #supplierTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
         
         #expenseTable th, #incomeTable th, #supplierTable th {
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            background: linear-gradient(135deg, #059669 0%, #047857 100%);
             color: white; 
             padding: 16px; 
             text-align: left; 
@@ -872,7 +761,7 @@
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            box-shadow: 0 4px 8px rgba(34, 197, 94, 0.3);
+            box-shadow: 0 4px 8px rgba(5, 150, 105, 0.25);
             position: relative;
         }
         
@@ -946,29 +835,7 @@
             .summary-cards { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
         }
         
-        /* Estilos para tablets y móviles grandes */
         @media (max-width: 900px) {
-            #main-content {
-                padding-left: 15px;
-                padding-right: 15px;
-            }
-            
-            .summary-cards {
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 15px;
-            }
-            
-            .form-container {
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            }
-            
-            .charts-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .card {
-                padding: 18px;
-            }
             .mobile-menu-toggle {
                 display: block;
             }
@@ -991,6 +858,28 @@
             
             #sidebar.mobile-open {
                 left: 0;
+            }
+            
+            /* Mejorar filtro de mes en móvil */
+            .dashboard-header {
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            .dashboard-filters {
+                width: 100%;
+                flex-direction: column;
+                align-items: stretch !important;
+            }
+            
+            .dashboard-filters > label {
+                width: 100%;
+                margin-bottom: 8px;
+            }
+            
+            #filtroMesDashboard {
+                width: 100% !important;
+                min-width: 100% !important;
             }
             
             /* Overlay para cerrar el menú */
@@ -1139,158 +1028,20 @@
             
             /* Botones en formularios móviles */
             .form-group > div[style*="display: flex"],
-            .categoria-select-container {
+            .categoria-select-container,
+            .produccion-select-container {
                 flex-direction: column;
                 gap: 10px;
             }
             
             .form-group > div[style*="display: flex"] > button,
-            .categoria-select-container > button {
+            .categoria-select-container > button,
+            .produccion-select-container > button {
                 width: 100%;
             }
             
-            /* Mejorar botones compactos en móvil */
-            .btn-nueva-categoria, .btn-nueva-produccion {
-                width: 100% !important;
-                min-width: auto !important;
-                height: 48px !important;
-                margin-top: 8px;
-            }
-            
-            /* Asegurar que los selects no se corten */
-            .form-group select {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-                -webkit-appearance: none;
-                -moz-appearance: none;
-                appearance: none;
-            }
-            
-            /* Mejorar inputs en móvil */
-            .form-group input,
-            .form-group textarea {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-                font-size: 16px; /* Prevenir zoom en iOS */
-            }
-            
-            /* Mejorar cards en móvil */
-            .card {
-                margin-left: 0;
-                margin-right: 0;
-                width: 100%;
-                box-sizing: border-box;
-            }
-            
-            /* Mejorar header */
-            header {
-                width: 100%;
-                box-sizing: border-box;
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-            
-            /* Asegurar que el contenido principal no se desborde */
-            #main-content {
-                width: 100%;
-                max-width: 100vw;
-                box-sizing: border-box;
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-            
-            /* Mejorar secciones de contenido */
-            .content-section {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-                padding: 0;
-            }
-            
-            /* Mejorar tablas - hacer scroll más suave */
-            .table-responsive {
-                -webkit-overflow-scrolling: touch;
-                margin-left: -10px;
-                margin-right: -10px;
-                padding-left: 10px;
-                padding-right: 10px;
-            }
-            
-            /* Mejorar modales */
-            .modal-content {
-                width: 98% !important;
-                max-width: 98% !important;
-                margin: 2vh auto !important;
-                padding: 15px !important;
-                box-sizing: border-box;
-            }
-            
-            .modal-actions {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .modal-actions .btn {
-                width: 100%;
-                margin: 0;
-            }
-            
-            /* Mejorar summary cards */
-            .summary-cards {
-                margin-left: 0;
-                margin-right: 0;
-                width: 100%;
-            }
-            
-            .summary-cards .card {
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            /* Mejorar gráficos */
-            .chart-box {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-            }
-            
-            canvas {
-                max-width: 100%;
-                height: auto !important;
-            }
-            
-            /* Mejorar botones de acción en tablas */
-            #expenseTable button,
-            #incomeTable button,
-            #supplierTable button {
-                min-width: 44px;
-                min-height: 44px;
-                padding: 8px 12px;
-                font-size: 0.85em;
-                white-space: nowrap;
-            }
-            
-            /* Mejorar formularios */
-            .form-container {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-            }
-            
-            /* Asegurar que los elementos flex no se desborden */
-            .form-group > div[style*="display: flex"] {
-                width: 100%;
-                max-width: 100%;
-            }
-            
-            .form-group > div[style*="display: flex"] > select {
-                flex: 1;
-                min-width: 0;
-            }
-            
-            .categoria-select-container > select {
+            .categoria-select-container > select,
+            .produccion-select-container > select {
                 width: 100%;
             }
         }
@@ -1339,50 +1090,46 @@
             .form-group select, 
             .form-group textarea {
                 font-size: 16px; /* Previene zoom en iOS */
-                padding: 12px;
-                min-height: 44px;
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
+                padding: 14px;
+                min-height: 48px;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
             }
             
-            /* Botones compactos en móvil - hacerlos de ancho completo */
-            .btn-nueva-categoria, 
-            .btn-nueva-produccion {
-                width: 100% !important;
-                min-width: auto !important;
-                height: 48px !important;
-                margin-top: 8px;
+            /* Mejorar botones en móvil */
+            .categoria-select-container > button,
+            .produccion-select-container > button {
+                min-height: 48px;
+                font-size: 1.1em;
+            }
+            
+            /* Mejorar espaciado en móvil */
+            .card {
+                padding: 20px;
+                margin-bottom: 20px;
+            }
+            
+            /* Mejorar tablas en móvil */
+            .table-responsive {
+                -webkit-overflow-scrolling: touch;
+                border-radius: 12px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             }
             
             .modal-content {
-                width: 98% !important;
-                max-width: 98% !important;
-                margin: 2vh auto !important;
-                padding: 15px !important;
-                box-sizing: border-box;
+                width: 98%;
+                margin: 2vh auto;
+                padding: 15px;
             }
             
             .modal-actions {
                 flex-direction: column;
                 gap: 10px;
-                width: 100%;
             }
             
             .modal-actions .btn {
                 width: 100%;
-                margin: 0;
-            }
-            
-            .table-responsive {
-                width: 100%;
-                max-width: 100vw;
-                margin-left: -10px;
-                margin-right: -10px;
-                padding-left: 10px;
-                padding-right: 10px;
-                box-sizing: border-box;
-                -webkit-overflow-scrolling: touch;
             }
             
             #expenseTable, #incomeTable, #supplierTable {
@@ -1395,47 +1142,8 @@
                 padding: 8px 5px;
             }
             
-            #expenseTable button,
-            #incomeTable button,
-            #supplierTable button {
-                min-width: 44px;
-                min-height: 44px;
-                padding: 8px 12px;
-                font-size: 0.85em;
-            }
-            
             .chart-box {
                 height: 250px;
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-            }
-            
-            canvas {
-                max-width: 100%;
-                height: auto !important;
-            }
-            
-            /* Asegurar que las cards no se desborden */
-            .card {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            .summary-cards {
-                width: 100%;
-                margin-left: 0;
-                margin-right: 0;
-            }
-            
-            .content-section {
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
-                padding: 0;
             }
         }
         
@@ -1469,24 +1177,6 @@
             }
         }
     </style>
-    <script>
-        // Función para toggle del menú móvil (debe estar antes del HTML)
-        function toggleMobileMenu() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            if (!sidebar || !overlay) return;
-            
-            const isOpen = sidebar.classList.contains('mobile-open');
-            
-            if (isOpen) {
-                sidebar.classList.remove('mobile-open');
-                overlay.classList.remove('active');
-            } else {
-                sidebar.classList.add('mobile-open');
-                overlay.classList.add('active');
-            }
-        }
-    </script>
 </head>
 <body>
     <!-- Botón hamburguesa para móvil -->
@@ -1535,77 +1225,39 @@
 
             <!-- Sección del Dashboard Financiero -->
             <section id="dashboard" class="content-section active">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
-                    <h2 id="dashboardTitle" style="margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--color-text);">Dashboard Financiero</h2>
-                    <div style="display: flex; gap: var(--spacing-sm);">
-                        <input type="month" id="dashboardMonthFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius); font-size: 0.875rem;">
+                <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
+                    <h2 id="dashboardTitle" style="margin: 0;">Dashboard de Gastos y Proveedores</h2>
+                    <div class="dashboard-filters" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                        <label for="filtroMesDashboard" style="font-weight: 600; color: var(--color-text); white-space: nowrap;">Filtrar por mes:</label>
+                        <select id="filtroMesDashboard" class="form-group select" style="padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1em; background: white; cursor: pointer; min-width: 200px; transition: all 0.3s;">
+                            <option value="">Todos los meses</option>
+                        </select>
                     </div>
                 </div>
                 
-                <!-- KPIs Principales -->
                 <div class="summary-cards">
                     <div class="card expense">
                         <h3>Total Gastos del Mes</h3>
                         <p id="totalGastos">Cargando...</p>
                     </div>
-                    <div class="card income">
-                        <h3>Total Ingresos del Mes</h3>
-                        <p id="totalIngresos">Cargando...</p>
-                    </div>
-                    <div class="card profit">
-                        <h3>Saldo Disponible</h3>
-                        <p id="saldoDisponible">Cargando...</p>
-                    </div>
-                    <div class="card" style="border-left-color: var(--color-secondary);">
+                    <div class="card expense" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
                         <h3>Total Proveedores</h3>
                         <p id="totalProveedores">Cargando...</p>
                     </div>
+                    <div class="card expense" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
+                        <h3>Gasto Promedio por Proveedor</h3>
+                        <p id="gastoPromedioProveedor">Cargando...</p>
+                    </div>
                 </div>
 
-                <!-- Presupuesto y Alertas -->
-                <div class="budget-section card" style="margin-bottom: var(--spacing-xl);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
-                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: var(--color-text);">Presupuesto Mensual</h2>
-                        <span style="font-size: 0.875rem; color: var(--color-text-muted);">Base: <span id="presupuestoBase"></span></span>
-                    </div>
+                <div class="budget-section card">
+                    <h2>Presupuesto Mensual</h2>
+                    <p class="text-sm text-gray-500">Presupuesto base: <span id="presupuestoBase"></span> (Modificable en la sección Presupuesto)</p>
                     <div class="budget-bar-container">
                         <div id="budgetProgressBar" class="budget-bar" style="width: 0%;"></div>
                     </div>
-                    <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-sm);">
-                        <p id="budgetStatus" style="margin: 0; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Gasto actual: $0 / Límite: $8.000.000</p>
-                        <p id="budgetPercentage" style="margin: 0; font-weight: 600; color: var(--color-text-muted); font-size: 0.875rem;">0%</p>
-                    </div>
-                    <div id="budgetAlert" class="alert hidden" style="margin-top: var(--spacing-md);"></div>
-                </div>
-                
-                <!-- Histórico Mensual Visible -->
-                <div class="card" style="margin-bottom: var(--spacing-xl);">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
-                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: var(--color-text);">Histórico del Mes</h2>
-                        <div style="display: flex; gap: var(--spacing-sm);">
-                            <button class="btn" onclick="filtrarHistorico('todos')" style="padding: 6px 12px; font-size: 0.75rem;">Todos</button>
-                            <button class="btn" onclick="filtrarHistorico('gastos')" style="padding: 6px 12px; font-size: 0.75rem;">Gastos</button>
-                            <button class="btn" onclick="filtrarHistorico('ingresos')" style="padding: 6px 12px; font-size: 0.75rem;">Ingresos</button>
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table id="historicoTable" style="width: 100%; border-collapse: collapse;">
-                            <thead>
-                                <tr style="border-bottom: 2px solid var(--border-color);">
-                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Fecha</th>
-                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Tipo</th>
-                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Descripción</th>
-                                    <th style="padding: 12px; text-align: right; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Monto</th>
-                                    <th style="padding: 12px; text-align: center; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Acciones</th>
-                                </tr>
-                            </thead>
-                            <tbody id="historicoTableBody">
-                                <tr>
-                                    <td colspan="5" style="padding: 24px; text-align: center; color: var(--color-text-muted);">Cargando histórico...</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <p id="budgetStatus" style="font-weight: 600;">Gasto actual: $0 / Límite: $8.000.000</p>
+                    <div id="budgetAlert" class="alert hidden"></div>
                 </div>
 
                 <div class="charts-container">
@@ -1653,8 +1305,8 @@
                                 <option value="Herramientas">Herramientas / Maquinaria</option>
                                 <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
                             </select>
-                            <button type="button" class="btn-nueva-categoria" onclick="abrirModalNuevaCategoria()" title="Agregar nueva categoría">
-                                <span>➕</span>
+                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 20px; white-space: nowrap;">
+                                <span>➕ Nueva</span>
                             </button>
                         </div>
                     </div>
@@ -1664,7 +1316,7 @@
                     </div>
                     <div class="form-group full-width">
                         <label for="gastoProduccion">Asignación a Producción</label>
-                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                        <div class="produccion-select-container" style="display: flex; gap: 10px; align-items: stretch;">
                             <select id="gastoProduccion" required style="flex: 1;">
                                 <option value="Ganado">Ganado Bovino</option>
                                 <option value="Pollos">Pollos de Engorde</option>
@@ -1674,7 +1326,7 @@
                                 <option value="Infraestructura">Infraestructura / Mantenimiento</option>
                                 <option value="Otro">Otro (Gastos Administrativos)</option>
                             </select>
-                            <button type="button" class="btn-nueva-produccion" onclick="abrirModalNuevaProduccion()" title="Agregar nueva producción">
+                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaProduccion()" style="padding: 12px 16px; min-width: 80px; display: flex; align-items: center; justify-content: center;">
                                 <span>➕</span>
                             </button>
                         </div>
@@ -1903,7 +1555,7 @@
                 </div>
                 <div class="form-group">
                     <label for="editGastoCategoria">Categoría del Gasto</label>
-                    <div class="categoria-select-container" style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div class="categoria-select-container" style="display: flex; gap: 10px; align-items: stretch;">
                         <select id="editGastoCategoria" required style="flex: 1;">
                             <option value="Alimentos">Alimentos</option>
                             <option value="Insumos">Insumos (Semillas, Químicos)</option>
@@ -1912,8 +1564,8 @@
                             <option value="Herramientas">Herramientas / Maquinaria</option>
                             <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
                         </select>
-                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 20px; white-space: nowrap; min-width: auto;">
-                            <span>➕ Nueva</span>
+                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 16px; min-width: 80px; display: flex; align-items: center; justify-content: center;">
+                            <span>➕</span>
                         </button>
                     </div>
                 </div>
@@ -1923,7 +1575,7 @@
                 </div>
                 <div class="form-group full-width">
                     <label for="editGastoProduccion">Asignación a Producción</label>
-                    <div style="display: flex; gap: 10px; align-items: flex-end;">
+                    <div class="produccion-select-container" style="display: flex; gap: 10px; align-items: stretch;">
                         <select id="editGastoProduccion" required style="flex: 1;">
                             <option value="Ganado">Ganado Bovino</option>
                             <option value="Pollos">Pollos de Engorde</option>
@@ -1933,7 +1585,7 @@
                             <option value="Infraestructura">Infraestructura / Mantenimiento</option>
                             <option value="Otro">Otro (Gastos Administrativos)</option>
                         </select>
-                        <button type="button" class="btn-nueva-produccion" onclick="abrirModalNuevaProduccion()" title="Agregar nueva producción">
+                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaProduccion()" style="padding: 12px 16px; min-width: 80px; display: flex; align-items: center; justify-content: center;">
                             <span>➕</span>
                         </button>
                     </div>
@@ -2049,6 +1701,30 @@
         </div>
     </div>
     
+    <!-- Modal para Agregar Nueva Categoría -->
+    <div id="modalNuevaCategoria" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Agregar Nueva Categoría</h3>
+                <button class="close-modal" onclick="cerrarModal('modalNuevaCategoria')">&times;</button>
+            </div>
+            <form id="formNuevaCategoria" class="form-container">
+                <div class="form-group full-width">
+                    <label for="nuevaCategoriaNombre">Nombre de la Categoría</label>
+                    <input type="text" id="nuevaCategoriaNombre" placeholder="Ej: Combustible, Fertilizantes, Semillas, etc." required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaCategoria')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Agregar Categoría</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <!-- Modal para Agregar Nueva Producción -->
     <div id="modalNuevaProduccion" class="modal">
         <div class="modal-content">
@@ -2059,7 +1735,7 @@
             <form id="formNuevaProduccion" class="form-container">
                 <div class="form-group full-width">
                     <label for="nuevaProduccionNombre">Nombre de la Producción</label>
-                    <input type="text" id="nuevaProduccionNombre" placeholder="Ej: Apicultura, Avicultura, Acuicultura, etc." required>
+                    <input type="text" id="nuevaProduccionNombre" placeholder="Ej: Aves de Corral, Porcinos, Cultivo de Maíz, etc." required>
                 </div>
                 <div class="modal-actions">
                     <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaProduccion')">
@@ -2067,54 +1743,6 @@
                     </button>
                     <button type="submit" class="btn btn-primary">
                         <span>💾 Agregar Producción</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal para Agregar Nueva Categoría -->
-    <div id="modalNuevaCategoria" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>➕ Agregar Nueva Categoría</h3>
-                <button class="close-modal" onclick="cerrarModal('modalNuevaCategoria')">&times;</button>
-            </div>
-            <form id="formNuevaCategoria" class="form-container">
-                <div class="form-group full-width">
-                    <label for="nuevaCategoriaNombre">Nombre de la Categoría</label>
-                    <input type="text" id="nuevaCategoriaNombre" placeholder="Ej: Combustible, Fertilizantes, Semillas, etc." required>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaCategoria')">
-                        <span>❌ Cancelar</span>
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <span>💾 Agregar Categoría</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-    
-    <!-- Modal para Agregar Nueva Categoría -->
-    <div id="modalNuevaCategoria" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>➕ Agregar Nueva Categoría</h3>
-                <button class="close-modal" onclick="cerrarModal('modalNuevaCategoria')">&times;</button>
-            </div>
-            <form id="formNuevaCategoria" class="form-container">
-                <div class="form-group full-width">
-                    <label for="nuevaCategoriaNombre">Nombre de la Categoría</label>
-                    <input type="text" id="nuevaCategoriaNombre" placeholder="Ej: Combustible, Fertilizantes, Semillas, etc." required>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaCategoria')">
-                        <span>❌ Cancelar</span>
-                    </button>
-                    <button type="submit" class="btn btn-primary">
-                        <span>💾 Agregar Categoría</span>
                     </button>
                 </div>
             </form>
@@ -2132,84 +1760,13 @@
         
         // Inicializar cliente de Supabase
         let supabase = null;
-        
-        // Función para inicializar Supabase (igual que en el test que funciona)
-        function inicializarSupabase() {
-            if (!SUPABASE_CONFIGURADO) {
-                console.warn('⚠️ Supabase no está configurado (URL o KEY no válidos)');
-                return false;
-            }
-            
+        if (SUPABASE_CONFIGURADO && typeof window.supabase !== 'undefined') {
             try {
-                if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
-                    console.warn('⚠️ El módulo de Supabase no está disponible. El script puede estar cargándose...');
-                    return false;
-                }
-                
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                console.log('✅ Supabase inicializado correctamente');
-                return true;
             } catch (error) {
-                console.error('❌ Error inicializando Supabase:', error);
+                console.error('Error inicializando Supabase:', error);
                 supabase = null;
-                return false;
             }
-        }
-        
-        // Función para intentar inicializar con retry
-        function intentarInicializarSupabase(intentos = 0) {
-            const maxIntentos = 15;
-            
-            if (inicializarSupabase()) {
-                console.log('✅ Supabase listo para usar');
-                return; // Éxito
-            }
-            
-            if (intentos < maxIntentos) {
-                setTimeout(function() {
-                    intentarInicializarSupabase(intentos + 1);
-                }, 300);
-            } else {
-                console.error('❌ No se pudo inicializar Supabase después de ' + maxIntentos + ' intentos');
-                if (SUPABASE_CONFIGURADO) {
-                    console.error('Verifica que el script de Supabase se haya cargado correctamente');
-                }
-            }
-        }
-        
-        // Esperar a que el script de Supabase se cargue completamente
-        // Usar window.onload para asegurar que todos los scripts estén cargados
-        if (window.addEventListener) {
-            window.addEventListener('load', function() {
-                setTimeout(function() {
-                    intentarInicializarSupabase();
-                }, 200);
-            });
-        } else {
-            // Fallback para navegadores antiguos
-            window.onload = function() {
-                setTimeout(function() {
-                    intentarInicializarSupabase();
-                }, 200);
-            };
-        }
-        
-        // También intentar cuando el DOM esté listo (por si el script ya se cargó)
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    if (!supabase) {
-                        intentarInicializarSupabase();
-                    }
-                }, 500);
-            });
-        } else {
-            // Si el DOM ya está listo, intentar después de un delay
-            setTimeout(function() {
-                if (!supabase) {
-                    intentarInicializarSupabase();
-                }
-            }, 500);
         }
 
         // ** CONFIGURACIÓN DE GEMINI API **
@@ -2219,20 +1776,6 @@
         // ** Datos en memoria (cache local) **
         // Categorías de gastos (se pueden agregar dinámicamente)
         // Formato: { valor: 'valor', texto: 'Texto a mostrar' }
-        // Array para almacenar producciones personalizadas
-        let PRODUCCIONES_PERSONALIZADAS = [];
-        
-        // Producciones por defecto
-        const PRODUCCIONES_DEFAULT = [
-            { valor: 'Ganado', texto: 'Ganado Bovino' },
-            { valor: 'Pollos', texto: 'Pollos de Engorde' },
-            { valor: 'Marranos', texto: 'Marranos' },
-            { valor: 'Cultivos', texto: 'Producciones Agrícolas' },
-            { valor: 'Piscicultura', texto: 'Piscicultura' },
-            { valor: 'Infraestructura', texto: 'Infraestructura / Mantenimiento' },
-            { valor: 'Otro', texto: 'Otro (Gastos Administrativos)' }
-        ];
-        
         let CATEGORIAS_GASTOS = [
             { valor: 'Alimentos', texto: 'Alimentos' },
             { valor: 'Insumos', texto: 'Insumos (Semillas, Químicos)' },
@@ -2240,6 +1783,17 @@
             { valor: 'ManoDeObra', texto: 'Mano de Obra' },
             { valor: 'Herramientas', texto: 'Herramientas / Maquinaria' },
             { valor: 'Servicios', texto: 'Servicios (Luz, Agua, Internet)' }
+        ];
+        
+        // Producciones (se pueden agregar dinámicamente)
+        let PRODUCCIONES_GASTOS = [
+            { valor: 'Ganado', texto: 'Ganado Bovino' },
+            { valor: 'Pollos', texto: 'Pollos de Engorde' },
+            { valor: 'Marranos', texto: 'Marranos' },
+            { valor: 'Cultivos', texto: 'Producciones Agrícolas' },
+            { valor: 'Piscicultura', texto: 'Piscicultura' },
+            { valor: 'Infraestructura', texto: 'Infraestructura / Mantenimiento' },
+            { valor: 'Otro', texto: 'Otro (Gastos Administrativos)' }
         ];
         
         // Función para cargar categorías desde localStorage
@@ -2320,48 +1874,45 @@
             return true;
         }
         
-        // Funciones para manejar producciones personalizadas
+        // Función para cargar producciones desde localStorage
         function cargarProducciones() {
-            const produccionesGuardadas = localStorage.getItem('produccionesPersonalizadas');
+            const produccionesGuardadas = localStorage.getItem('produccionesGastos');
             if (produccionesGuardadas) {
-                PRODUCCIONES_PERSONALIZADAS = JSON.parse(produccionesGuardadas);
+                PRODUCCIONES_GASTOS = JSON.parse(produccionesGuardadas);
             }
             actualizarSelectsProducciones();
         }
         
+        // Función para guardar producciones en localStorage
         function guardarProducciones() {
-            localStorage.setItem('produccionesPersonalizadas', JSON.stringify(PRODUCCIONES_PERSONALIZADAS));
+            localStorage.setItem('produccionesGastos', JSON.stringify(PRODUCCIONES_GASTOS));
             actualizarSelectsProducciones();
         }
         
+        // Función para actualizar los selects de producciones
         function actualizarSelectsProducciones() {
             const selects = ['gastoProduccion', 'editGastoProduccion'];
-            const todasProducciones = [...PRODUCCIONES_DEFAULT, ...PRODUCCIONES_PERSONALIZADAS];
-            
             selects.forEach(selectId => {
                 const select = document.getElementById(selectId);
                 if (!select) return;
                 
                 const valorActual = select.value;
+                select.innerHTML = '';
                 
-                // Limpiar opciones personalizadas (mantener las default)
-                const opcionesDefault = Array.from(select.options).filter(opt => 
-                    PRODUCCIONES_DEFAULT.some(p => p.valor === opt.value)
-                );
-                
-                // Agregar opciones personalizadas
-                PRODUCCIONES_PERSONALIZADAS.forEach(prod => {
-                    const existe = Array.from(select.options).some(opt => opt.value === prod.valor);
-                    if (!existe) {
-                        const option = document.createElement('option');
-                        option.value = prod.valor;
-                        option.textContent = prod.texto;
-                        select.appendChild(option);
-                    }
+                PRODUCCIONES_GASTOS.forEach(produccion => {
+                    const option = document.createElement('option');
+                    const valor = typeof produccion === 'string' ? produccion : produccion.valor;
+                    const texto = typeof produccion === 'string' ? produccion : produccion.texto;
+                    option.value = valor;
+                    option.textContent = texto;
+                    select.appendChild(option);
                 });
                 
                 if (valorActual) {
-                    const produccionExiste = todasProducciones.some(p => p.valor === valorActual);
+                    const produccionExiste = PRODUCCIONES_GASTOS.some(p => {
+                        const valor = typeof p === 'string' ? p : p.valor;
+                        return valor === valorActual;
+                    });
                     if (produccionExiste) {
                         select.value = valorActual;
                     }
@@ -2369,11 +1920,13 @@
             });
         }
         
+        // Función para abrir modal de nueva producción
         window.abrirModalNuevaProduccion = function() {
             document.getElementById('modalNuevaProduccion').style.display = 'block';
             document.getElementById('nuevaProduccionNombre').focus();
         };
         
+        // Función para agregar nueva producción
         function agregarNuevaProduccion(nombre) {
             const nombreLimpio = nombre.trim();
             if (!nombreLimpio) {
@@ -2381,17 +1934,19 @@
                 return false;
             }
             
-            // Verificar si ya existe en default o personalizadas
-            const existeDefault = PRODUCCIONES_DEFAULT.some(p => p.valor === nombreLimpio || p.texto.toLowerCase() === nombreLimpio.toLowerCase());
-            const existePersonalizada = PRODUCCIONES_PERSONALIZADAS.some(p => p.valor === nombreLimpio || p.texto.toLowerCase() === nombreLimpio.toLowerCase());
+            // Verificar si ya existe
+            const existe = PRODUCCIONES_GASTOS.some(p => {
+                const valor = typeof p === 'string' ? p : p.valor;
+                return valor === nombreLimpio;
+            });
             
-            if (existeDefault || existePersonalizada) {
+            if (existe) {
                 alertMessage('Esta producción ya existe', 'warning');
                 return false;
             }
             
-            // Agregar nueva producción
-            PRODUCCIONES_PERSONALIZADAS.push({ valor: nombreLimpio, texto: nombreLimpio });
+            // Agregar nueva producción (usar el mismo nombre para valor y texto)
+            PRODUCCIONES_GASTOS.push({ valor: nombreLimpio, texto: nombreLimpio });
             guardarProducciones();
             alertMessage(`Producción "${nombreLimpio}" agregada exitosamente`, 'success');
             return true;
@@ -2801,11 +2356,20 @@
         /**
          * 1. Manejo de la Navegación (SPA)
          */
-        // Función para toggle del menú móvil (ya está definida en el head)
-        // Se mantiene aquí para compatibilidad
-        if (typeof window.toggleMobileMenu === 'undefined') {
-            window.toggleMobileMenu = toggleMobileMenu;
-        }
+        // Función para toggle del menú móvil
+        window.toggleMobileMenu = function() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            const isOpen = sidebar.classList.contains('mobile-open');
+            
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            }
+        };
         
         // Cerrar menú móvil al hacer clic en un nav-item
         function setupNavigation() {
@@ -2872,29 +2436,79 @@
         /**
          * Filtrar datos del mes actual
          */
-        function filtrarDatosDelMes(datos) {
-            const { mes, año } = getMesActual();
+        function filtrarDatosDelMes(datos, mesFiltro = null, añoFiltro = null) {
+            const mes = mesFiltro || getMesActual().mes;
+            const año = añoFiltro || getMesActual().año;
             return datos.filter(item => {
                 const fechaItem = new Date(item.fecha);
                 return fechaItem.getMonth() + 1 === mes && fechaItem.getFullYear() === año;
             });
         }
+        
+        /**
+         * Obtener lista de meses disponibles con datos
+         */
+        function obtenerMesesDisponibles() {
+            const mesesConDatos = new Set();
+            MOCK_DATA.GASTOS.forEach(gasto => {
+                const fecha = new Date(gasto.fecha);
+                const mesAño = `${fecha.getFullYear()}-${String(fecha.getMonth() + 1).padStart(2, '0')}`;
+                mesesConDatos.add(mesAño);
+            });
+            
+            const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            const mesesArray = Array.from(mesesConDatos)
+                .map(mesAño => {
+                    const [año, mes] = mesAño.split('-');
+                    return {
+                        valor: mesAño,
+                        texto: `${mesesNombres[parseInt(mes) - 1]} ${año}`,
+                        mes: parseInt(mes),
+                        año: parseInt(año)
+                    };
+                })
+                .sort((a, b) => {
+                    if (a.año !== b.año) return b.año - a.año;
+                    return b.mes - a.mes;
+                });
+            
+            return mesesArray;
+        }
+        
+        /**
+         * Actualizar select de filtro por mes
+         */
+        function actualizarFiltroMes() {
+            const select = document.getElementById('filtroMesDashboard');
+            if (!select) return;
+            
+            const valorActual = select.value;
+            select.innerHTML = '<option value="">Todos los meses</option>';
+            
+            const mesesDisponibles = obtenerMesesDisponibles();
+            mesesDisponibles.forEach(mes => {
+                const option = document.createElement('option');
+                option.value = mes.valor;
+                option.textContent = mes.texto;
+                select.appendChild(option);
+            });
+            
+            if (valorActual) {
+                select.value = valorActual;
+            }
+        }
 
         /**
          * Lógica de Cálculos y Dashboard
          */
-        async function updateDashboard() {
+        async function updateDashboard(mesFiltro = null, añoFiltro = null) {
             try {
-                // Mostrar estado de carga (verificar que los elementos existan)
-                const totalGastosEl = document.getElementById('totalGastos');
-                const totalIngresosEl = document.getElementById('totalIngresos');
-                const saldoDisponibleEl = document.getElementById('saldoDisponible');
-                const totalProveedoresEl = document.getElementById('totalProveedores');
-                
-                if (totalGastosEl) totalGastosEl.innerText = 'Cargando...';
-                if (totalIngresosEl) totalIngresosEl.innerText = 'Cargando...';
-                if (saldoDisponibleEl) saldoDisponibleEl.innerText = 'Cargando...';
-                if (totalProveedoresEl) totalProveedoresEl.innerText = 'Cargando...';
+                // Mostrar estado de carga
+                document.getElementById('totalGastos').innerText = 'Cargando...';
+                document.getElementById('totalProveedores').innerText = 'Cargando...';
+                document.getElementById('gastoPromedioProveedor').innerText = 'Cargando...';
                 
                 // Cargar datos desde Supabase si está configurado
                 await Promise.all([
@@ -2903,15 +2517,28 @@
                     cargarPresupuesto()
                 ]);
                 
-                // Obtener datos del mes actual
-                const { mes, año, nombreMes } = getMesActual();
-                const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS);
-                const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS);
+                // Actualizar filtro de meses
+                actualizarFiltroMes();
+                
+                // Obtener datos del mes seleccionado o actual
+                let mes, año, nombreMes;
+                if (mesFiltro && añoFiltro) {
+                    mes = mesFiltro;
+                    año = añoFiltro;
+                    const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                         'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+                    nombreMes = mesesNombres[mes - 1];
+                } else {
+                    const mesActual = getMesActual();
+                    mes = mesActual.mes;
+                    año = mesActual.año;
+                    nombreMes = mesActual.nombreMes;
+                }
+                
+                const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS, mes, año);
                 
                 // Calcular totales del mes actual
                 totalGastos = gastosDelMes.reduce((sum, item) => sum + item.monto, 0);
-                totalIngresos = ingresosDelMes.reduce((sum, item) => sum + item.monto, 0);
-                const saldoDisponible = totalIngresos - totalGastos;
                 
                 // Calcular estadísticas de proveedores
                 const totalProveedores = MOCK_DATA.PROVEEDORES.length;
@@ -2927,30 +2554,25 @@
                     : 0;
             
                 // Actualizar título del dashboard
-                const dashboardTitle = document.querySelector('#dashboard h2');
+                const dashboardTitle = document.getElementById('dashboardTitle');
                 if (dashboardTitle) {
-                    dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                    if (mesFiltro && añoFiltro) {
+                        dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                    } else {
+                        dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                    }
                 }
                 
-                // Actualizar tarjetas de resumen (usar las variables ya declaradas)
-                if (totalGastosEl) totalGastosEl.innerText = formatCurrency(totalGastos);
-                if (totalIngresosEl) totalIngresosEl.innerText = formatCurrency(totalIngresos);
-                if (saldoDisponibleEl) {
-                    saldoDisponibleEl.innerText = formatCurrency(saldoDisponible);
-                    saldoDisponibleEl.style.color = saldoDisponible >= 0 ? 'var(--color-income)' : 'var(--color-expense)';
-                }
-                if (totalProveedoresEl) totalProveedoresEl.innerText = totalProveedores;
+                // Actualizar tarjetas de resumen
+                document.getElementById('totalGastos').innerText = formatCurrency(totalGastos);
+                document.getElementById('totalProveedores').innerText = totalProveedores;
+                document.getElementById('gastoPromedioProveedor').innerText = formatCurrency(gastoPromedio);
 
                 // Actualizar presupuesto
             actualizarPresupuesto(totalGastos);
                 
                 // Renderizar tablas (mostrar todos los datos, no solo del mes)
-                renderExpenseTable(MOCK_DATA.GASTOS);
-                
-                // Actualizar histórico mensual
-                if (typeof actualizarHistorico === 'function') {
-                    actualizarHistorico();
-                }
+            renderExpenseTable(MOCK_DATA.GASTOS);
             
                 // Renderizar gráficos
             if (typeof Chart !== 'undefined') {
@@ -2987,23 +2609,14 @@
                 }
             } catch (error) {
                 console.error('Error actualizando dashboard:', error);
-                const totalGastosEl = document.getElementById('totalGastos');
-                const totalIngresosEl = document.getElementById('totalIngresos');
-                const saldoDisponibleEl = document.getElementById('saldoDisponible');
-                const totalProveedoresEl = document.getElementById('totalProveedores');
-                
-                if (totalGastosEl) totalGastosEl.innerText = 'Error';
-                if (totalIngresosEl) totalIngresosEl.innerText = 'Error';
-                if (saldoDisponibleEl) saldoDisponibleEl.innerText = 'Error';
-                if (totalProveedoresEl) totalProveedoresEl.innerText = 'Error';
+                document.getElementById('totalGastos').innerText = 'Error';
+                document.getElementById('totalProveedores').innerText = 'Error';
+                document.getElementById('gastoPromedioProveedor').innerText = 'Error';
             }
         }
 
         // --- FUNCIONALIDAD GEMINI 1: ANÁLISIS DE COSTOS ---
-        const analyzeExpensesBtn = document.getElementById('analyzeExpensesBtn');
-        if (analyzeExpensesBtn) {
-            analyzeExpensesBtn.addEventListener('click', generateAnalysis);
-        }
+        document.getElementById('analyzeExpensesBtn').addEventListener('click', generateAnalysis);
 
         async function generateAnalysis() {
             const analysisResultDiv = document.getElementById('analysisResult');
@@ -3137,10 +2750,7 @@
         }
         
         function setupBudgetForm() {
-            const budgetForm = document.getElementById('budgetForm');
-            if (!budgetForm) return;
-            
-            budgetForm.addEventListener('submit', async function(e) {
+            document.getElementById('budgetForm').addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const newBudget = document.getElementById('newBudget').value;
                 if (newBudget && newBudget > 0) {
@@ -4059,6 +3669,8 @@
                 if (adjuntoInfo) adjuntoInfo.remove();
             } else if (modalId === 'modalEditarProveedor') {
                 document.getElementById('formEditarProveedor').reset();
+            } else if (modalId === 'modalNuevaProduccion') {
+                document.getElementById('formNuevaProduccion').reset();
             }
         }
         
@@ -4293,50 +3905,51 @@
                 alertMessage(`Reporte exportado a Excel (CSV) con ${gastosFiltrados.length} registros`, 'success');
             } else if (format === 'PDF') {
                 // Para PDF, crear una tabla HTML y usar window.print()
-                let html = '<!DOCTYPE html>' +
-                    '<html>' +
-                    '<head>' +
-                    '<title>Reporte de Gastos - Ganadería Toné</title>' +
-                    '<style>' +
-                    'body { font-family: Arial, sans-serif; padding: 20px; }' +
-                    'h1 { color: #2d8659; }' +
-                    'table { width: 100%; border-collapse: collapse; margin-top: 20px; }' +
-                    'th { background: #2d8659; color: white; padding: 10px; text-align: left; }' +
-                    'td { border: 1px solid #ddd; padding: 8px; }' +
-                    'tr:nth-child(even) { background: #f5f9f6; }' +
-                    '.summary { margin: 20px 0; padding: 15px; background: #f0f7f4; border-radius: 8px; }' +
-                    '</style>' +
-                    '</head>' +
-                    '<body>' +
-                    '<h1>Reporte de Gastos - Ganadería Toné</h1>' +
-                    '<div class="summary">' +
-                    '<p><strong>Período:</strong> ' + (fechaInicio || 'Desde el inicio') + ' a ' + (fechaFin || 'Hasta hoy') + '</p>' +
-                    '<p><strong>Total de registros:</strong> ' + gastosFiltrados.length + '</p>' +
-                    '<p><strong>Total gastado:</strong> ' + formatCurrency(gastosFiltrados.reduce((sum, g) => sum + g.monto, 0)) + '</p>' +
-                    '</div>' +
-                    '<table>' +
-                    '<thead>' +
-                    '<tr>' +
-                    '<th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Nota</th>' +
-                    '</tr>' +
-                    '</thead>' +
-                    '<tbody>';
+                let html = `
+                    <!DOCTYPE html>
+                    <html>
+                        <head>
+                            <title>Reporte de Gastos - Ganadería Toné</title>
+                            <style>
+                                body { font-family: Arial, sans-serif; padding: 20px; }
+                                h1 { color: #2d8659; }
+                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                                th { background: #2d8659; color: white; padding: 10px; text-align: left; }
+                                td { border: 1px solid #ddd; padding: 8px; }
+                                tr:nth-child(even) { background: #f5f9f6; }
+                                .summary { margin: 20px 0; padding: 15px; background: #f0f7f4; border-radius: 8px; }
+                            </style>
+                        </head>
+                        <body>
+                            <h1>Reporte de Gastos - Ganadería Toné</h1>
+                            <div class="summary">
+                                <p><strong>Período:</strong> ${fechaInicio || 'Desde el inicio'} a ${fechaFin || 'Hasta hoy'}</p>
+                                <p><strong>Total de registros:</strong> ${gastosFiltrados.length}</p>
+                                <p><strong>Total gastado:</strong> ${formatCurrency(gastosFiltrados.reduce((sum, g) => sum + g.monto, 0))}</p>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Nota</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                `;
                 
                 gastosFiltrados.forEach(gasto => {
                     const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === gasto.proveedor);
                     const nombreProveedor = proveedor ? proveedor.nombre : 'N/A';
-                    const nota = gasto.nota || '';
-                    html += '<tr>' +
-                        '<td>' + gasto.fecha + '</td>' +
-                        '<td>' + formatCurrency(gasto.monto) + '</td>' +
-                        '<td>' + gasto.categoria + '</td>' +
-                        '<td>' + gasto.produccion + '</td>' +
-                        '<td>' + nombreProveedor + '</td>' +
-                        '<td>' + nota + '</td>' +
-                    '</tr>';
+                    html += `<tr>
+                        <td>${gasto.fecha}</td>
+                        <td>${formatCurrency(gasto.monto)}</td>
+                        <td>${gasto.categoria}</td>
+                        <td>${gasto.produccion}</td>
+                        <td>${nombreProveedor}</td>
+                        <td>${gasto.nota || ''}</td>
+                    </tr>`;
                 });
                 
-                html += '</tbody></table></body></html>';
+                html += `</tbody></table></body></html>`;
                 
                 const ventana = window.open('', '_blank');
                 ventana.document.write(html);
@@ -4345,7 +3958,7 @@
                     ventana.print();
                 }, 250);
                 
-                alertMessage('Reporte generado en PDF con ' + gastosFiltrados.length + ' registros', 'success');
+                alertMessage(`Reporte generado en PDF con ${gastosFiltrados.length} registros`, 'success');
             }
         }
         
@@ -4359,7 +3972,7 @@
             else if (type === 'danger') { icon = '🛑'; msgBox.classList.add('danger'); }
             else { msgBox.classList.add('info'); }
 
-            msgBox.innerHTML = '<span>' + icon + '</span> ' + message;
+            msgBox.innerHTML = `<span>${icon}</span> ${message}`;
             
             setTimeout(() => msgBox.classList.add('hidden'), 5000);
         }
@@ -4372,8 +3985,8 @@
             
             try {
                 const fileExt = file.name.split('.').pop();
-                const fileName = 'logo_ganaderia_tone.' + fileExt;
-                const filePath = 'logos/' + fileName;
+                const fileName = `logo_ganaderia_tone.${fileExt}`;
+                const filePath = `logos/${fileName}`;
                 
                 // Subir archivo a Supabase Storage
                 const { data, error } = await supabase.storage
@@ -4419,7 +4032,7 @@
                 const fileName = data[0].name;
                 const { data: urlData } = supabase.storage
                     .from('documentos')
-                    .getPublicUrl('logos/' + fileName);
+                    .getPublicUrl(`logos/${fileName}`);
                 
                 return urlData.publicUrl;
             } catch (error) {
@@ -4495,19 +4108,13 @@
                 if (file) {
                     // Mostrar preview inmediatamente
                     const reader = new FileReader();
-                    reader.onload = function(event) {
-                        const result = event.target.result;
-                        if (result && typeof result === 'string' && logoPreview) {
-                            const logoUrl = result;
-                            logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
-                            // Guardar en localStorage como fallback
-                            localStorage.setItem('ganaderiaToneLogo', result);
-                            // Ocultar el botón después de cargar
-                            if (logoUploadBtn) {
-                                logoUploadBtn.style.display = 'none';
-                            }
-                            agregarBotonEliminar();
-                        }
+                    reader.onload = function(e) {
+                        logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Ganadería Toné">`;
+                        // Guardar en localStorage como fallback
+                        localStorage.setItem('ganaderiaToneLogo', e.target.result);
+                        // Ocultar el botón después de cargar
+                        logoUploadBtn.style.display = 'none';
+                        agregarBotonEliminar();
                     };
                     reader.readAsDataURL(file);
                     
@@ -4529,42 +4136,25 @@
 
             // Cargar logo guardado
             async function cargarLogo() {
-                if (!logoPreview) return;
-                
                 // Primero intentar desde Supabase Storage
                 if (SUPABASE_CONFIGURADO && supabase) {
-                    try {
-                        const supabaseUrl = await cargarLogoDesdeSupabase();
-                        if (supabaseUrl && typeof supabaseUrl === 'string' && supabaseUrl.startsWith('http')) {
-                            if (logoPreview) {
-                                const logoUrl = supabaseUrl;
-                                logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
-                                localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
-                                localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
-                                ocultarBotonSiHayLogo();
-                                agregarBotonEliminar();
-                                return;
-                            }
-                        }
-                    } catch (error) {
-                        console.error('Error cargando logo desde Supabase:', error);
+                    const supabaseUrl = await cargarLogoDesdeSupabase();
+                    if (supabaseUrl) {
+                        logoPreview.innerHTML = `<img src="${supabaseUrl}" alt="Logo Ganadería Toné">`;
+                        localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
+                        localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
+                        ocultarBotonSiHayLogo();
+                        agregarBotonEliminar();
+                        return;
                     }
                 }
                 
                 // Si no hay en Supabase, cargar desde localStorage
                 const savedLogo = localStorage.getItem('ganaderiaToneLogo');
-                if (savedLogo && typeof savedLogo === 'string' && (savedLogo.startsWith('http') || savedLogo.startsWith('data:'))) {
-                    if (logoPreview) {
-                        const logoUrl = savedLogo;
-                        logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
-                        ocultarBotonSiHayLogo();
-                        agregarBotonEliminar();
-                    }
-                } else if (savedLogo && (savedLogo.includes('+ logoUrl +') || savedLogo.includes('%20+%20'))) {
-                    // Limpiar valor corrupto de localStorage
-                    console.warn('Valor corrupto encontrado en localStorage para el logo, limpiando...');
-                    localStorage.removeItem('ganaderiaToneLogo');
-                    localStorage.removeItem('ganaderiaToneLogoUrl');
+                if (savedLogo) {
+                    logoPreview.innerHTML = `<img src="${savedLogo}" alt="Logo Ganadería Toné">`;
+                    ocultarBotonSiHayLogo();
+                    agregarBotonEliminar();
                 }
             }
             
@@ -4779,37 +4369,45 @@
             });
             
             // Formulario de nueva categoría
-            const formNuevaCategoria = document.getElementById('formNuevaCategoria');
-            if (formNuevaCategoria) {
-                formNuevaCategoria.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const nombre = document.getElementById('nuevaCategoriaNombre').value.trim();
-                    if (agregarNuevaCategoria(nombre)) {
-                        cerrarModal('modalNuevaCategoria');
-                        // Actualizar el select que está abierto (si hay uno)
-                        const selectAbierto = document.activeElement;
-                        if (selectAbierto && (selectAbierto.id === 'gastoCategoria' || selectAbierto.id === 'editGastoCategoria')) {
-                            actualizarSelectsCategorias();
-                            selectAbierto.value = nombre;
-                        }
+            document.getElementById('formNuevaCategoria').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const nombre = document.getElementById('nuevaCategoriaNombre').value.trim();
+                if (agregarNuevaCategoria(nombre)) {
+                    cerrarModal('modalNuevaCategoria');
+                    // Actualizar el select que está abierto (si hay uno)
+                    const selectAbierto = document.activeElement;
+                    if (selectAbierto && (selectAbierto.id === 'gastoCategoria' || selectAbierto.id === 'editGastoCategoria')) {
+                        actualizarSelectsCategorias();
+                        selectAbierto.value = nombre;
                     }
-                });
-            }
+                }
+            });
             
             // Formulario de nueva producción
-            const formNuevaProduccion = document.getElementById('formNuevaProduccion');
-            if (formNuevaProduccion) {
-                formNuevaProduccion.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    const nombre = document.getElementById('nuevaProduccionNombre').value.trim();
-                    if (agregarNuevaProduccion(nombre)) {
-                        cerrarModal('modalNuevaProduccion');
-                        // Actualizar el select que está abierto (si hay uno)
-                        const selectAbierto = document.activeElement;
-                        if (selectAbierto && (selectAbierto.id === 'gastoProduccion' || selectAbierto.id === 'editGastoProduccion')) {
-                            actualizarSelectsProducciones();
-                            selectAbierto.value = nombre;
-                        }
+            document.getElementById('formNuevaProduccion').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const nombre = document.getElementById('nuevaProduccionNombre').value.trim();
+                if (agregarNuevaProduccion(nombre)) {
+                    cerrarModal('modalNuevaProduccion');
+                    // Actualizar el select que está abierto (si hay uno)
+                    const selectAbierto = document.activeElement;
+                    if (selectAbierto && (selectAbierto.id === 'gastoProduccion' || selectAbierto.id === 'editGastoProduccion')) {
+                        actualizarSelectsProducciones();
+                        selectAbierto.value = nombre;
+                    }
+                }
+            });
+            
+            // Filtro por mes en dashboard
+            const filtroMesDashboard = document.getElementById('filtroMesDashboard');
+            if (filtroMesDashboard) {
+                filtroMesDashboard.addEventListener('change', function(e) {
+                    const valor = e.target.value;
+                    if (valor) {
+                        const [año, mes] = valor.split('-');
+                        updateDashboard(parseInt(mes), parseInt(año));
+                    } else {
+                        updateDashboard();
                     }
                 });
             }
@@ -4820,6 +4418,7 @@
                 const modalIngreso = document.getElementById('modalEditarIngreso');
                 const modalProveedor = document.getElementById('modalEditarProveedor');
                 const modalCategoria = document.getElementById('modalNuevaCategoria');
+                const modalProduccion = document.getElementById('modalNuevaProduccion');
                 if (event.target === modalGasto) {
                     cerrarModal('modalEditarGasto');
                 }
@@ -4832,105 +4431,10 @@
                 if (event.target === modalCategoria) {
                     cerrarModal('modalNuevaCategoria');
                 }
+                if (event.target === modalProduccion) {
+                    cerrarModal('modalNuevaProduccion');
+                }
             };
-        }
-
-        // Función para filtrar histórico mensual
-        window.filtrarHistorico = function(tipo) {
-            const tbody = document.getElementById('historicoTableBody');
-            if (!tbody) return;
-            
-            const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS);
-            const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS);
-            
-            tbody.innerHTML = '';
-            
-            let datosMostrar = [];
-            
-            if (tipo === 'gastos') {
-                datosMostrar = gastosDelMes.map(g => ({
-                    fecha: g.fecha,
-                    tipo: 'Gasto',
-                    descripcion: `${g.categoria} - ${g.produccion}`,
-                    monto: -g.monto,
-                    id: g.id,
-                    tipoRegistro: 'gasto'
-                }));
-            } else if (tipo === 'ingresos') {
-                datosMostrar = ingresosDelMes.map(i => ({
-                    fecha: i.fecha,
-                    tipo: 'Ingreso',
-                    descripcion: `${i.tipo} - ${i.comprador}`,
-                    monto: i.monto,
-                    id: i.id,
-                    tipoRegistro: 'ingreso'
-                }));
-            } else {
-                // Todos
-                const gastos = gastosDelMes.map(g => ({
-                    fecha: g.fecha,
-                    tipo: 'Gasto',
-                    descripcion: `${g.categoria} - ${g.produccion}`,
-                    monto: -g.monto,
-                    id: g.id,
-                    tipoRegistro: 'gasto'
-                }));
-                const ingresos = ingresosDelMes.map(i => ({
-                    fecha: i.fecha,
-                    tipo: 'Ingreso',
-                    descripcion: `${i.tipo} - ${i.comprador}`,
-                    monto: i.monto,
-                    id: i.id,
-                    tipoRegistro: 'ingreso'
-                }));
-                datosMostrar = [...gastos, ...ingresos].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-            }
-            
-            if (datosMostrar.length === 0) {
-                const row = tbody.insertRow();
-                const cell = row.insertCell();
-                cell.colSpan = 5;
-                cell.textContent = 'No hay registros para mostrar';
-                cell.style.textAlign = 'center';
-                cell.style.padding = '24px';
-                cell.style.color = 'var(--color-text-muted)';
-                return;
-            }
-            
-            datosMostrar.forEach(item => {
-                const row = tbody.insertRow();
-                row.insertCell().textContent = item.fecha;
-                const tipoCell = row.insertCell();
-                tipoCell.textContent = item.tipo;
-                tipoCell.style.color = item.tipo === 'Gasto' ? 'var(--color-expense)' : 'var(--color-income)';
-                tipoCell.style.fontWeight = '600';
-                row.insertCell().textContent = item.descripcion;
-                const montoCell = row.insertCell();
-                montoCell.textContent = formatCurrency(Math.abs(item.monto));
-                montoCell.style.textAlign = 'right';
-                montoCell.style.fontWeight = '600';
-                montoCell.style.color = item.monto < 0 ? 'var(--color-expense)' : 'var(--color-income)';
-                const accionesCell = row.insertCell();
-                accionesCell.style.textAlign = 'center';
-                const btn = document.createElement('button');
-                btn.className = 'btn';
-                btn.style.padding = '6px 12px';
-                btn.style.fontSize = '0.75rem';
-                btn.textContent = item.tipoRegistro === 'gasto' ? '✏️ Editar' : '✏️ Editar';
-                btn.onclick = () => {
-                    if (item.tipoRegistro === 'gasto') {
-                        window.editarGasto(item.id);
-                    } else {
-                        window.editarIngreso(item.id);
-                    }
-                };
-                accionesCell.appendChild(btn);
-            });
-        };
-        
-        // Función para actualizar histórico al cargar dashboard
-        function actualizarHistorico() {
-            filtrarHistorico('todos');
         }
 
         // Inicialización de la Aplicación
@@ -4940,11 +4444,10 @@
             setupLogoUpload();
             setupSupplierForm();
             setupEditForms();
-            setupExpenseForm();
-            setupIncomeForm();
             
-            // Cargar categorías personalizadas
+            // Cargar categorías y producciones personalizadas
             cargarCategorias();
+            cargarProducciones();
             
             // Cargar datos desde Supabase
             try {
@@ -4952,13 +4455,7 @@
                 updateSupplierSelect(); // Cargar proveedores en el select inicialmente
                 await updateDashboard();
                 await cargarPresupuesto();
-                const currentBudgetEl = document.getElementById('currentBudgetDisplay');
-                if (currentBudgetEl) {
-                    currentBudgetEl.innerText = formatCurrency(PRESUPUESTO_MENSUAL);
-                }
-                
-                // Actualizar histórico
-                actualizarHistorico();
+            document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
             } catch (error) {
                 console.error('Error cargando datos iniciales:', error);
                 if (SUPABASE_CONFIGURADO) {
@@ -4967,14 +4464,8 @@
             }
         };
         
-        // Manejo de formulario de gastos - Esperar a que el DOM esté listo
-        function setupExpenseForm() {
-            const expenseFormEl = document.getElementById('expenseForm');
-            if (!expenseFormEl) {
-                console.warn('expenseForm no encontrado');
-                return;
-            }
-            expenseFormEl.addEventListener('submit', async (e) => {
+        // Manejo de formulario de gastos
+        document.getElementById('expenseForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fecha = document.getElementById('gastoFecha').value;
@@ -5049,17 +4540,10 @@
             } catch (error) {
                 alertMessage('Error al registrar gasto: ' + error.message, 'danger');
             }
-            });
-        }
+        });
         
-        // Manejo de formulario de ingresos - Esperar a que el DOM esté listo
-        function setupIncomeForm() {
-            const incomeFormEl = document.getElementById('incomeForm');
-            if (!incomeFormEl) {
-                console.warn('incomeForm no encontrado');
-                return;
-            }
-            incomeFormEl.addEventListener('submit', async function(e) {
+        // Manejo de formulario de ingresos
+        document.getElementById('incomeForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fecha = document.getElementById('ingresoFecha').value;
@@ -5117,8 +4601,7 @@
             } catch (error) {
                 alertMessage('Error al registrar ingreso: ' + error.message, 'danger');
             }
-            });
-        }
+        });
 
     </script>
 </body>
