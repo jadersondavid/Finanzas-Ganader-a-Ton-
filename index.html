@@ -10,36 +10,7 @@
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <!-- Supabase Client - Usar la versión UMD que expone globalmente -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-    <script>
-        // Verificar que Supabase se cargó correctamente
-        (function() {
-            function verificarSupabase() {
-                console.log('🔍 Verificando Supabase...');
-                console.log('window.supabase:', typeof window.supabase);
-                if (typeof window.supabase !== 'undefined') {
-                    console.log('✅ window.supabase está disponible');
-                    if (window.supabase && typeof window.supabase.createClient === 'function') {
-                        console.log('✅ createClient está disponible');
-                    } else {
-                        console.warn('⚠️ createClient no está disponible');
-                    }
-                } else {
-                    console.warn('⚠️ window.supabase no está disponible');
-                }
-            }
-            
-            // Verificar cuando el script se carga
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', verificarSupabase);
-            } else {
-                setTimeout(verificarSupabase, 100);
-            }
-            
-            // También verificar cuando la ventana carga completamente
-            window.addEventListener('load', verificarSupabase);
-        })();
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" onload="console.log('✅ Script de Supabase cargado')" onerror="console.error('❌ Error cargando script de Supabase')"></script>
     <style>
         /* ============================================
            VARIABLES DE DISEÑO - ESTILO CORPORATIVO PROFESIONAL
@@ -2162,7 +2133,7 @@
         // Inicializar cliente de Supabase
         let supabase = null;
         
-        // Función para inicializar Supabase (se puede llamar múltiples veces)
+        // Función para inicializar Supabase (igual que en el test que funciona)
         function inicializarSupabase() {
             if (!SUPABASE_CONFIGURADO) {
                 console.warn('⚠️ Supabase no está configurado (URL o KEY no válidos)');
@@ -2170,38 +2141,14 @@
             }
             
             try {
-                // El módulo @supabase/supabase-js desde CDN expone 'supabase' globalmente
-                // Verificar si está disponible en window.supabase
-                if (typeof window.supabase !== 'undefined') {
-                    if (typeof window.supabase.createClient === 'function') {
-                        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                        console.log('✅ Supabase inicializado correctamente');
-                        return true;
-                    } else {
-                        console.warn('⚠️ window.supabase existe pero createClient no está disponible');
-                    }
+                if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+                    console.warn('⚠️ El módulo de Supabase no está disponible. El script puede estar cargándose...');
+                    return false;
                 }
                 
-                // El CDN de jsdelivr puede exponer el módulo de diferentes formas
-                // Intentar acceder a través de diferentes propiedades
-                const posiblesSupabase = [
-                    window.supabase,
-                    window.supabaseJs,
-                    window['@supabase/supabase-js']
-                ];
-                
-                for (let i = 0; i < posiblesSupabase.length; i++) {
-                    const mod = posiblesSupabase[i];
-                    if (mod && typeof mod.createClient === 'function') {
-                        supabase = mod.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                        console.log('✅ Supabase inicializado correctamente (método ' + (i + 1) + ')');
-                        return true;
-                    }
-                }
-                
-                console.warn('⚠️ Supabase no está disponible aún. El script puede estar cargándose...');
-                console.log('Verificando window.supabase:', typeof window.supabase);
-                return false;
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase inicializado correctamente');
+                return true;
             } catch (error) {
                 console.error('❌ Error inicializando Supabase:', error);
                 supabase = null;
@@ -2209,25 +2156,60 @@
             }
         }
         
-        // Intentar inicializar inmediatamente
-        inicializarSupabase();
-        
-        // Si no se pudo inicializar, intentar de nuevo cuando el DOM esté listo
-        if (!supabase && SUPABASE_CONFIGURADO) {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    if (!supabase) {
-                        inicializarSupabase();
-                    }
-                });
+        // Función para intentar inicializar con retry
+        function intentarInicializarSupabase(intentos = 0) {
+            const maxIntentos = 15;
+            
+            if (inicializarSupabase()) {
+                console.log('✅ Supabase listo para usar');
+                return; // Éxito
+            }
+            
+            if (intentos < maxIntentos) {
+                setTimeout(function() {
+                    intentarInicializarSupabase(intentos + 1);
+                }, 300);
             } else {
-                // DOM ya está listo, intentar de nuevo después de un pequeño delay
+                console.error('❌ No se pudo inicializar Supabase después de ' + maxIntentos + ' intentos');
+                if (SUPABASE_CONFIGURADO) {
+                    console.error('Verifica que el script de Supabase se haya cargado correctamente');
+                }
+            }
+        }
+        
+        // Esperar a que el script de Supabase se cargue completamente
+        // Usar window.onload para asegurar que todos los scripts estén cargados
+        if (window.addEventListener) {
+            window.addEventListener('load', function() {
+                setTimeout(function() {
+                    intentarInicializarSupabase();
+                }, 200);
+            });
+        } else {
+            // Fallback para navegadores antiguos
+            window.onload = function() {
+                setTimeout(function() {
+                    intentarInicializarSupabase();
+                }, 200);
+            };
+        }
+        
+        // También intentar cuando el DOM esté listo (por si el script ya se cargó)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', function() {
                 setTimeout(function() {
                     if (!supabase) {
-                        inicializarSupabase();
+                        intentarInicializarSupabase();
                     }
                 }, 500);
-            }
+            });
+        } else {
+            // Si el DOM ya está listo, intentar después de un delay
+            setTimeout(function() {
+                if (!supabase) {
+                    intentarInicializarSupabase();
+                }
+            }, 500);
         }
 
         // ** CONFIGURACIÓN DE GEMINI API **
@@ -4350,7 +4332,7 @@
                     ventana.print();
                 }, 250);
                 
-                alertMessage(`Reporte generado en PDF con ${gastosFiltrados.length} registros`, 'success');
+                alertMessage('Reporte generado en PDF con ' + gastosFiltrados.length + ' registros', 'success');
             }
         }
         
@@ -4424,7 +4406,7 @@
                 const fileName = data[0].name;
                 const { data: urlData } = supabase.storage
                     .from('documentos')
-                    .getPublicUrl(`logos/${fileName}`);
+                    .getPublicUrl('logos/' + fileName);
                 
                 return urlData.publicUrl;
             } catch (error) {
@@ -4502,7 +4484,7 @@
                     const reader = new FileReader();
                     reader.onload = function(event) {
                         const result = event.target.result;
-                        if (result && logoPreview) {
+                        if (result && typeof result === 'string' && logoPreview) {
                             const logoUrl = result;
                             logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
                             // Guardar en localStorage como fallback
@@ -4540,14 +4522,16 @@
                 if (SUPABASE_CONFIGURADO && supabase) {
                     try {
                         const supabaseUrl = await cargarLogoDesdeSupabase();
-                        if (supabaseUrl && logoPreview) {
-                            const logoUrl = supabaseUrl;
-                            logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
-                            localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
-                            localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
-                            ocultarBotonSiHayLogo();
-                            agregarBotonEliminar();
-                            return;
+                        if (supabaseUrl && typeof supabaseUrl === 'string' && supabaseUrl.startsWith('http')) {
+                            if (logoPreview) {
+                                const logoUrl = supabaseUrl;
+                                logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
+                                localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
+                                localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
+                                ocultarBotonSiHayLogo();
+                                agregarBotonEliminar();
+                                return;
+                            }
                         }
                     } catch (error) {
                         console.error('Error cargando logo desde Supabase:', error);
@@ -4556,11 +4540,18 @@
                 
                 // Si no hay en Supabase, cargar desde localStorage
                 const savedLogo = localStorage.getItem('ganaderiaToneLogo');
-                if (savedLogo && logoPreview) {
-                    const logoUrl = savedLogo;
-                    logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
-                    ocultarBotonSiHayLogo();
-                    agregarBotonEliminar();
+                if (savedLogo && typeof savedLogo === 'string' && (savedLogo.startsWith('http') || savedLogo.startsWith('data:'))) {
+                    if (logoPreview) {
+                        const logoUrl = savedLogo;
+                        logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
+                        ocultarBotonSiHayLogo();
+                        agregarBotonEliminar();
+                    }
+                } else if (savedLogo && (savedLogo.includes('+ logoUrl +') || savedLogo.includes('%20+%20'))) {
+                    // Limpiar valor corrupto de localStorage
+                    console.warn('Valor corrupto encontrado en localStorage para el logo, limpiando...');
+                    localStorage.removeItem('ganaderiaToneLogo');
+                    localStorage.removeItem('ganaderiaToneLogoUrl');
                 }
             }
             
