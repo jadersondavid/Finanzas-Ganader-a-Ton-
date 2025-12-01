@@ -820,8 +820,7 @@
         /* Estilos para contenedores de selects con botones - ESCRITORIO */
         .form-group > div[style*="display: flex"],
         .categoria-select-container,
-        .produccion-select-container,
-        .proveedor-select-container {
+        .produccion-select-container {
             display: flex !important;
             gap: 12px !important;
             align-items: center !important;
@@ -830,16 +829,14 @@
         
         .form-group > div[style*="display: flex"] > select,
         .categoria-select-container > select,
-        .produccion-select-container > select,
-        .proveedor-select-container > select {
+        .produccion-select-container > select {
             flex: 1 !important;
             min-width: 0 !important;
         }
         
         .form-group > div[style*="display: flex"] > button,
         .categoria-select-container > button,
-        .produccion-select-container > button,
-        .proveedor-select-container > button {
+        .produccion-select-container > button {
             flex-shrink: 0 !important;
             min-width: 50px !important;
             height: 50px !important;
@@ -1919,14 +1916,9 @@
                     <div class="form-group"> <label for="gastoFecha">Fecha del Gasto</label> <input type="date" id="gastoFecha" required> </div>
                     <div class="form-group"> 
                         <label for="gastoProveedor">Proveedor / Persona</label>
-                        <div class="proveedor-select-container" style="display: flex; gap: 12px; align-items: center;">
-                            <select id="gastoProveedor" required style="flex: 1;">
+                        <select id="gastoProveedor" required>
                             <option value="">Seleccione un proveedor</option>
                         </select>
-                            <button type="button" class="btn btn-ai" onclick="document.getElementById('supplierForm').scrollIntoView({ behavior: 'smooth', block: 'center' });" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
-                                <span>➕ Nuevo</span>
-                            </button>
-                        </div>
                     </div>
                     <div class="form-group">
                         <label for="gastoCategoria">Categoría del Gasto</label>
@@ -2183,14 +2175,9 @@
                 </div>
                 <div class="form-group">
                     <label for="editGastoProveedor">Proveedor / Persona</label>
-                    <div class="proveedor-select-container" style="display: flex; gap: 12px; align-items: center;">
-                        <select id="editGastoProveedor" required style="flex: 1;">
-                            <option value="">Seleccione un proveedor</option>
-                        </select>
-                        <button type="button" class="btn btn-ai" onclick="document.getElementById('supplierForm').scrollIntoView({ behavior: 'smooth', block: 'center' });" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
-                            <span>➕ Nuevo</span>
-                        </button>
-                    </div>
+                    <select id="editGastoProveedor" required>
+                        <option value="">Seleccione un proveedor</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="editGastoCategoria">Categoría del Gasto</label>
