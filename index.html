@@ -817,6 +817,40 @@
         .full-width { grid-column: 1 / -1; }
         .btn-submit-container { grid-column: 1 / -1; text-align: right; padding-top: 10px; }
         
+        /* Estilos para contenedores de selects con botones - ESCRITORIO */
+        .form-group > div[style*="display: flex"],
+        .categoria-select-container,
+        .produccion-select-container,
+        .proveedor-select-container {
+            display: flex !important;
+            gap: 12px !important;
+            align-items: center !important;
+            width: 100% !important;
+        }
+        
+        .form-group > div[style*="display: flex"] > select,
+        .categoria-select-container > select,
+        .produccion-select-container > select,
+        .proveedor-select-container > select {
+            flex: 1 !important;
+            min-width: 0 !important;
+        }
+        
+        .form-group > div[style*="display: flex"] > button,
+        .categoria-select-container > button,
+        .produccion-select-container > button,
+        .proveedor-select-container > button {
+            flex-shrink: 0 !important;
+            min-width: 50px !important;
+            height: 50px !important;
+            padding: 0 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            white-space: nowrap !important;
+            margin: 0 !important;
+        }
+        
         .table-responsive { overflow-x: auto; }
         
         #expenseTable, #incomeTable, #supplierTable { width: 100%; border-collapse: collapse; margin-top: 15px; }
@@ -850,6 +884,10 @@
             border-bottom: 1px solid var(--color-card-border); 
             transition: all 0.2s ease;
             color: var(--color-text-secondary);
+            word-wrap: break-word;
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.6;
         }
         
         #expenseTable tr:hover td, #incomeTable tr:hover td, #supplierTable tr:hover td {
@@ -1881,13 +1919,18 @@
                     <div class="form-group"> <label for="gastoFecha">Fecha del Gasto</label> <input type="date" id="gastoFecha" required> </div>
                     <div class="form-group"> 
                         <label for="gastoProveedor">Proveedor / Persona</label>
-                        <select id="gastoProveedor" required>
+                        <div class="proveedor-select-container" style="display: flex; gap: 12px; align-items: center;">
+                            <select id="gastoProveedor" required style="flex: 1;">
                             <option value="">Seleccione un proveedor</option>
                         </select>
+                            <button type="button" class="btn btn-ai" onclick="document.getElementById('supplierForm').scrollIntoView({ behavior: 'smooth', block: 'center' });" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                                <span>➕ Nuevo</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="gastoCategoria">Categoría del Gasto</label>
-                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                        <div class="categoria-select-container" style="display: flex; gap: 12px; align-items: center;">
                             <select id="gastoCategoria" required style="flex: 1;">
                                 <option value="Alimentos">Alimentos</option>
                                 <option value="Insumos">Insumos (Semillas, Químicos)</option>
@@ -1896,7 +1939,7 @@
                                 <option value="Herramientas">Herramientas / Maquinaria</option>
                                 <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
                             </select>
-                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 20px; white-space: nowrap;">
+                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
                                 <span>➕ Nueva</span>
                             </button>
                         </div>
@@ -1907,18 +1950,18 @@
                     </div>
                     <div class="form-group full-width">
                         <label for="gastoProduccion">Asignación a Producción</label>
-                        <div class="produccion-select-container" style="display: flex; gap: 10px; align-items: stretch;">
+                        <div class="produccion-select-container" style="display: flex; gap: 12px; align-items: center;">
                             <select id="gastoProduccion" required style="flex: 1;">
-                                <option value="Ganado">Ganado Bovino</option>
-                                <option value="Pollos">Pollos de Engorde</option>
-                                <option value="Marranos">Marranos</option>
-                                <option value="Cultivos">Producciones Agrícolas</option>
-                                <option value="Piscicultura">Piscicultura</option>
-                                <option value="Infraestructura">Infraestructura / Mantenimiento</option>
-                                <option value="Otro">Otro (Gastos Administrativos)</option>
-                            </select>
-                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaProduccion()" style="padding: 12px 16px; min-width: 80px; display: flex; align-items: center; justify-content: center;">
-                                <span>➕</span>
+                            <option value="Ganado">Ganado Bovino</option>
+                            <option value="Pollos">Pollos de Engorde</option>
+                            <option value="Marranos">Marranos</option>
+                            <option value="Cultivos">Producciones Agrícolas</option>
+                            <option value="Piscicultura">Piscicultura</option>
+                            <option value="Infraestructura">Infraestructura / Mantenimiento</option>
+                            <option value="Otro">Otro (Gastos Administrativos)</option>
+                        </select>
+                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaProduccion()" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                                <span>➕ Nueva</span>
                             </button>
                         </div>
                     </div>
@@ -1948,7 +1991,7 @@
                 </div>
 
                 <div class="card">
-                    <h3>Historial de Gastos y Filtros</h3>
+                    <h3 style="margin-bottom: 20px; padding-bottom: 12px; border-bottom: 2px solid var(--color-card-border);">Historial de Gastos y Filtros</h3>
                     <div class="table-responsive">
                         <table id="expenseTable">
                             <thead>
@@ -2140,13 +2183,18 @@
                 </div>
                 <div class="form-group">
                     <label for="editGastoProveedor">Proveedor / Persona</label>
-                    <select id="editGastoProveedor" required>
-                        <option value="">Seleccione un proveedor</option>
-                    </select>
+                    <div class="proveedor-select-container" style="display: flex; gap: 12px; align-items: center;">
+                        <select id="editGastoProveedor" required style="flex: 1;">
+                            <option value="">Seleccione un proveedor</option>
+                        </select>
+                        <button type="button" class="btn btn-ai" onclick="document.getElementById('supplierForm').scrollIntoView({ behavior: 'smooth', block: 'center' });" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                            <span>➕ Nuevo</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="editGastoCategoria">Categoría del Gasto</label>
-                    <div class="categoria-select-container" style="display: flex; gap: 10px; align-items: stretch;">
+                    <div class="categoria-select-container" style="display: flex; gap: 12px; align-items: center;">
                         <select id="editGastoCategoria" required style="flex: 1;">
                             <option value="Alimentos">Alimentos</option>
                             <option value="Insumos">Insumos (Semillas, Químicos)</option>
@@ -2155,8 +2203,8 @@
                             <option value="Herramientas">Herramientas / Maquinaria</option>
                             <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
                         </select>
-                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 16px; min-width: 80px; display: flex; align-items: center; justify-content: center;">
-                            <span>➕</span>
+                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                            <span>➕ Nueva</span>
                         </button>
                     </div>
                 </div>
@@ -2166,21 +2214,21 @@
                 </div>
                 <div class="form-group full-width">
                     <label for="editGastoProduccion">Asignación a Producción</label>
-                    <div class="produccion-select-container" style="display: flex; gap: 10px; align-items: stretch;">
+                    <div class="produccion-select-container" style="display: flex; gap: 12px; align-items: center;">
                         <select id="editGastoProduccion" required style="flex: 1;">
-                            <option value="Ganado">Ganado Bovino</option>
-                            <option value="Pollos">Pollos de Engorde</option>
-                            <option value="Marranos">Marranos</option>
-                            <option value="Cultivos">Producciones Agrícolas</option>
-                            <option value="Piscicultura">Piscicultura</option>
-                            <option value="Infraestructura">Infraestructura / Mantenimiento</option>
-                            <option value="Otro">Otro (Gastos Administrativos)</option>
-                        </select>
-                        <button type="button" class="btn btn-ai" onclick="abrirModalNuevaProduccion()" style="padding: 12px 16px; min-width: 80px; display: flex; align-items: center; justify-content: center;">
-                            <span>➕</span>
-                        </button>
+                        <option value="Ganado">Ganado Bovino</option>
+                        <option value="Pollos">Pollos de Engorde</option>
+                        <option value="Marranos">Marranos</option>
+                        <option value="Cultivos">Producciones Agrícolas</option>
+                        <option value="Piscicultura">Piscicultura</option>
+                        <option value="Infraestructura">Infraestructura / Mantenimiento</option>
+                        <option value="Otro">Otro (Gastos Administrativos)</option>
+                    </select>
+                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaProduccion()" style="padding: 0 16px; min-width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; white-space: nowrap;">
+                                <span>➕ Nueva</span>
+                            </button>
+                        </div>
                     </div>
-                </div>
                 <div class="form-group">
                     <label for="editGastoAdjunto">Cambiar Archivos Adjuntos (Opcional)</label>
                     <input type="file" id="editGastoAdjunto" accept=".pdf,.jpg,.png,.jpeg" multiple>
@@ -3150,7 +3198,7 @@
                     if (mesFiltro && añoFiltro) {
                         dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
                     } else {
-                        dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                    dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
                     }
                 }
                 
@@ -3782,6 +3830,36 @@
             localStorage.setItem(key, JSON.stringify(archivos));
         }
         
+        // Función para formatear el nombre de categoría
+        function formatearCategoria(categoria) {
+            if (!categoria) return '-';
+            // Buscar en CATEGORIAS_GASTOS el texto formateado
+            const categoriaObj = CATEGORIAS_GASTOS.find(c => c.valor === categoria);
+            if (categoriaObj) {
+                return categoriaObj.texto;
+            }
+            // Si no se encuentra, convertir camelCase a texto legible
+            return categoria
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^./, str => str.toUpperCase())
+                .trim();
+        }
+        
+        // Función para formatear el nombre de producción
+        function formatearProduccion(produccion) {
+            if (!produccion) return '-';
+            // Buscar en PRODUCCIONES_GASTOS el texto formateado
+            const produccionObj = PRODUCCIONES_GASTOS.find(p => p.valor === produccion);
+            if (produccionObj) {
+                return produccionObj.texto;
+            }
+            // Si no se encuentra, convertir camelCase a texto legible
+            return produccion
+                .replace(/([A-Z])/g, ' $1')
+                .replace(/^./, str => str.toUpperCase())
+                .trim();
+        }
+        
         function renderExpenseTable(data) {
             const tbody = document.getElementById('expenseTableBody');
             tbody.innerHTML = '';
@@ -3801,9 +3879,30 @@
                 const row = tbody.insertRow();
                 row.insertCell().textContent = item.fecha;
                 row.insertCell().textContent = formatCurrency(item.monto);
-                row.insertCell().textContent = item.categoria;
-                row.insertCell().textContent = item.produccion;
-                row.insertCell().textContent = MOCK_DATA.PROVEEDORES.find(p => p.id === item.proveedor)?.nombre || item.proveedor;
+                
+                // Celda de categoría con formato mejorado
+                const categoriaCell = row.insertCell();
+                categoriaCell.textContent = formatearCategoria(item.categoria);
+                categoriaCell.style.wordWrap = 'break-word';
+                categoriaCell.style.whiteSpace = 'normal';
+                categoriaCell.style.lineHeight = '1.6';
+                categoriaCell.style.padding = '16px 20px';
+                
+                // Celda de producción con formato mejorado
+                const produccionCell = row.insertCell();
+                produccionCell.textContent = formatearProduccion(item.produccion);
+                produccionCell.style.wordWrap = 'break-word';
+                produccionCell.style.whiteSpace = 'normal';
+                produccionCell.style.lineHeight = '1.6';
+                produccionCell.style.padding = '16px 20px';
+                
+                // Celda de proveedor con formato mejorado
+                const proveedorCell = row.insertCell();
+                const nombreProveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === item.proveedor)?.nombre || item.proveedor;
+                proveedorCell.textContent = nombreProveedor;
+                proveedorCell.style.wordWrap = 'break-word';
+                proveedorCell.style.whiteSpace = 'normal';
+                proveedorCell.style.lineHeight = '1.6';
                 
                 // Celda de observaciones/nota
                 const observacionesCell = row.insertCell();
@@ -3811,12 +3910,16 @@
                     observacionesCell.textContent = item.nota;
                     observacionesCell.style.maxWidth = '250px';
                     observacionesCell.style.wordWrap = 'break-word';
+                    observacionesCell.style.whiteSpace = 'normal';
+                    observacionesCell.style.lineHeight = '1.6';
                     observacionesCell.style.fontSize = '0.9em';
                     observacionesCell.style.color = '#4a5568';
+                    observacionesCell.style.padding = '16px 20px';
                 } else {
                     observacionesCell.textContent = '-';
                     observacionesCell.style.color = '#a0aec0';
                     observacionesCell.style.fontStyle = 'italic';
+                    observacionesCell.style.lineHeight = '1.6';
                 }
                 
                 // Celda de adjuntos con descarga funcional (múltiples archivos)
