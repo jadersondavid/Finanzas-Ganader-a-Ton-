@@ -9,8 +9,37 @@
     <title>Dashboard Financiero - GANADERÍA TONÉ</title>
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Supabase Client - Usar la versión UMD que expone globalmente -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script>
+        // Verificar que Supabase se cargó correctamente
+        (function() {
+            function verificarSupabase() {
+                console.log('🔍 Verificando Supabase...');
+                console.log('window.supabase:', typeof window.supabase);
+                if (typeof window.supabase !== 'undefined') {
+                    console.log('✅ window.supabase está disponible');
+                    if (window.supabase && typeof window.supabase.createClient === 'function') {
+                        console.log('✅ createClient está disponible');
+                    } else {
+                        console.warn('⚠️ createClient no está disponible');
+                    }
+                } else {
+                    console.warn('⚠️ window.supabase no está disponible');
+                }
+            }
+            
+            // Verificar cuando el script se carga
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', verificarSupabase);
+            } else {
+                setTimeout(verificarSupabase, 100);
+            }
+            
+            // También verificar cuando la ventana carga completamente
+            window.addEventListener('load', verificarSupabase);
+        })();
+    </script>
     <style>
         /* ============================================
            VARIABLES DE DISEÑO - ESTILO CORPORATIVO PROFESIONAL
@@ -2132,28 +2161,72 @@
         
         // Inicializar cliente de Supabase
         let supabase = null;
-        if (SUPABASE_CONFIGURADO) {
+        
+        // Función para inicializar Supabase (se puede llamar múltiples veces)
+        function inicializarSupabase() {
+            if (!SUPABASE_CONFIGURADO) {
+                console.warn('⚠️ Supabase no está configurado (URL o KEY no válidos)');
+                return false;
+            }
+            
             try {
                 // El módulo @supabase/supabase-js desde CDN expone 'supabase' globalmente
-                // El script se carga antes de este código, así que debería estar disponible
-                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
-                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('✅ Supabase inicializado correctamente');
-                } else {
-                    // Intentar acceder directamente al objeto global
-                    // A veces el módulo se expone de diferentes formas
-                    const supabaseModule = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
-                    if (supabaseModule && typeof supabaseModule.createClient === 'function') {
-                        supabase = supabaseModule.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                        console.log('✅ Supabase inicializado correctamente (método alternativo)');
+                // Verificar si está disponible en window.supabase
+                if (typeof window.supabase !== 'undefined') {
+                    if (typeof window.supabase.createClient === 'function') {
+                        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log('✅ Supabase inicializado correctamente');
+                        return true;
                     } else {
-                        console.warn('⚠️ Supabase no está disponible. Verifica que el script esté cargado correctamente.');
-                        console.warn('   Tip: Asegúrate de que el script de Supabase se carga antes de este código.');
+                        console.warn('⚠️ window.supabase existe pero createClient no está disponible');
                     }
                 }
+                
+                // El CDN de jsdelivr puede exponer el módulo de diferentes formas
+                // Intentar acceder a través de diferentes propiedades
+                const posiblesSupabase = [
+                    window.supabase,
+                    window.supabaseJs,
+                    window['@supabase/supabase-js']
+                ];
+                
+                for (let i = 0; i < posiblesSupabase.length; i++) {
+                    const mod = posiblesSupabase[i];
+                    if (mod && typeof mod.createClient === 'function') {
+                        supabase = mod.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log('✅ Supabase inicializado correctamente (método ' + (i + 1) + ')');
+                        return true;
+                    }
+                }
+                
+                console.warn('⚠️ Supabase no está disponible aún. El script puede estar cargándose...');
+                console.log('Verificando window.supabase:', typeof window.supabase);
+                return false;
             } catch (error) {
                 console.error('❌ Error inicializando Supabase:', error);
                 supabase = null;
+                return false;
+            }
+        }
+        
+        // Intentar inicializar inmediatamente
+        inicializarSupabase();
+        
+        // Si no se pudo inicializar, intentar de nuevo cuando el DOM esté listo
+        if (!supabase && SUPABASE_CONFIGURADO) {
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', function() {
+                    if (!supabase) {
+                        inicializarSupabase();
+                    }
+                });
+            } else {
+                // DOM ya está listo, intentar de nuevo después de un pequeño delay
+                setTimeout(function() {
+                    if (!supabase) {
+                        inicializarSupabase();
+                    }
+                }, 500);
             }
         }
 
