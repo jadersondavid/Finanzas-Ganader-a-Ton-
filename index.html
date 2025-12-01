@@ -9,49 +9,105 @@
     <!-- Supabase Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
-        /* Variables de Diseño - Colores Vivos y Naturales de Ganadería */
+        /* ============================================
+           VARIABLES DE DISEÑO - ESTILO CORPORATIVO PROFESIONAL
+           Paleta: Campo Moderno + Corporativo Minimalista
+           ============================================ */
         :root {
-            --color-primary: #22c55e; /* Verde esmeralda vivo */
-            --color-primary-dark: #16a34a;
-            --color-primary-light: #4ade80;
-            --color-secondary: #3b82f6; /* Azul cielo vibrante */
-            --color-secondary-dark: #2563eb;
-            --color-accent: #10b981; /* Verde turquesa */
-            --color-accent-2: #84cc16; /* Verde lima */
-            --color-background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 25%, #e0f2fe 50%, #ecfdf5 75%, #f0fdf4 100%);
-            --color-background-solid: #f0fdf4;
+            /* Colores Principales - Verdes Naturales y Profesionales */
+            --color-primary: #2d5016; /* Verde bosque oscuro */
+            --color-primary-dark: #1a3009;
+            --color-primary-light: #4a7c2a;
+            --color-primary-hover: #3d6a1f;
+            
+            /* Colores Secundarios - Cafés y Beige */
+            --color-secondary: #8b6914; /* Café dorado */
+            --color-secondary-dark: #6b5010;
+            --color-secondary-light: #a8821a;
+            
+            /* Colores de Acento - Beige y Grises */
+            --color-accent: #d4c5a9; /* Beige claro */
+            --color-accent-2: #e8ddd0; /* Beige muy claro */
+            --color-accent-dark: #b8a68a;
+            
+            /* Colores de Fondo */
+            --color-background: #f5f3f0; /* Beige grisáceo suave */
+            --color-background-solid: #faf9f7;
             --color-card-bg: #ffffff;
-            --color-text: #1f2937;
-            --color-text-light: #6b7280;
-            --color-income: #10b981; /* Verde esmeralda */
-            --color-expense: #ef4444; /* Rojo coral */
-            --color-alert-warn: #f59e0b; /* Naranja ámbar */
-            --color-alert-danger: #dc2626; /* Rojo intenso */
-            --color-ai: #3b82f6; /* Azul brillante */
-            --font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            --border-radius: 12px;
-            --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.12);
-            --shadow-lg: 0 8px 20px rgba(34, 197, 94, 0.15);
-            --shadow-xl: 0 15px 35px rgba(34, 197, 94, 0.2);
-            --shadow-3d: 0 8px 25px rgba(34, 197, 94, 0.25), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            --color-card-hover: #fefefe;
+            
+            /* Colores de Texto */
+            --color-text: #2c2416; /* Café oscuro */
+            --color-text-light: #5a4a3a;
+            --color-text-muted: #8b7d6b;
+            --color-text-inverse: #ffffff;
+            
+            /* Colores Funcionales */
+            --color-income: #2d5016; /* Verde para ingresos */
+            --color-expense: #8b4513; /* Café para gastos */
+            --color-alert-warn: #b8860b; /* Dorado oscuro */
+            --color-alert-danger: #8b4513; /* Café rojizo */
+            --color-success: #4a7c2a; /* Verde éxito */
+            --color-info: #6b7c8b; /* Gris azulado */
+            
+            /* Grises Modernos */
+            --color-gray-50: #faf9f7;
+            --color-gray-100: #f5f3f0;
+            --color-gray-200: #e8e5e0;
+            --color-gray-300: #d4c5a9;
+            --color-gray-400: #b8a68a;
+            --color-gray-500: #8b7d6b;
+            --color-gray-600: #5a4a3a;
+            --color-gray-700: #3d3328;
+            --color-gray-800: #2c2416;
+            --color-gray-900: #1a1612;
+            
+            /* Tipografía */
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            --font-family-heading: 'Inter', var(--font-family);
+            
+            /* Espaciado y Tamaños */
+            --border-radius: 8px;
+            --border-radius-lg: 12px;
+            --border-radius-xl: 16px;
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            
+            /* Sombras Profesionales */
+            --shadow-xs: 0 1px 2px rgba(44, 36, 22, 0.05);
+            --shadow-sm: 0 2px 4px rgba(44, 36, 22, 0.08);
+            --shadow-md: 0 4px 8px rgba(44, 36, 22, 0.1);
+            --shadow-lg: 0 8px 16px rgba(44, 36, 22, 0.12);
+            --shadow-xl: 0 12px 24px rgba(44, 36, 22, 0.15);
+            --shadow-2xl: 0 16px 32px rgba(44, 36, 22, 0.18);
+            
+            /* Bordes */
+            --border-color: #e8e5e0;
+            --border-color-hover: #d4c5a9;
+            --border-width: 1px;
         }
 
+        /* ============================================
+           RESET Y BASE
+           ============================================ */
+        * {
+            box-sizing: border-box;
+        }
+        
         body {
             margin: 0;
+            padding: 0;
             font-family: var(--font-family);
             background: var(--color-background);
-            background-size: 400% 400%;
-            animation: gradientShift 20s ease infinite;
             color: var(--color-text);
             line-height: 1.6;
             min-height: 100vh;
-        }
-        
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         #app {
@@ -59,24 +115,27 @@
             min-height: 100vh;
         }
 
-        /* 1. Panel Lateral de Navegación */
+        /* ============================================
+           SIDEBAR - PANEL LATERAL PROFESIONAL
+           ============================================ */
         #sidebar {
             width: 280px;
-            background: linear-gradient(180deg, #16a34a 0%, #22c55e 50%, #4ade80 100%);
-            color: white;
+            background: linear-gradient(180deg, var(--color-primary-dark) 0%, var(--color-primary) 50%, var(--color-primary-light) 100%);
+            color: var(--color-text-inverse);
             padding: 0;
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-xl);
             position: sticky;
             top: 0;
             height: 100vh;
-            transition: all 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            z-index: 100;
         }
         
         #sidebar:hover {
-            box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+            box-shadow: var(--shadow-2xl);
         }
         
         /* Contenedor del logo con scroll */
@@ -283,20 +342,19 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            border-bottom: 3px solid transparent;
-            border-image: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%) 1;
-            padding-bottom: 20px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
-            padding: 20px 30px;
-            border-radius: 12px;
-            box-shadow: var(--shadow-md);
-            backdrop-filter: blur(10px);
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-lg) var(--spacing-xl);
+            background: var(--color-card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-sm);
+            border: var(--border-width) solid var(--border-color);
         }
 
         header h1 {
-            font-size: 2.2em;
-            font-weight: 800;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin: 0;
             background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
@@ -600,23 +658,32 @@
         .chart-box { height: 400px; display: flex; flex-direction: column; justify-content: center; }
         .chart-box canvas { max-height: 350px; }
 
-        /* Botones Modernos con Efecto 3D */
+        /* ============================================
+           BOTONES - ESTILO CORPORATIVO PROFESIONAL
+           ============================================ */
         .btn {
-            padding: 16px 32px;
-            border: none;
-            border-radius: 12px;
-            font-weight: 700;
+            padding: 12px 24px;
+            border: var(--border-width) solid transparent;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            font-size: 0.875rem;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            margin: 5px;
-            font-size: 0.95em;
-            letter-spacing: 0.8px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: var(--spacing-xs);
             position: relative;
             overflow: hidden;
             text-transform: none;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-            transform-style: preserve-3d;
-            perspective: 1000px;
+            box-shadow: var(--shadow-xs);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: var(--spacing-sm);
+            min-height: 44px;
+        }
+        
+        .btn:focus {
+            outline: 2px solid var(--color-primary);
+            outline-offset: 2px;
         }
 
         .btn::before {
@@ -654,27 +721,36 @@
         }
 
         .btn-primary { 
-            background: linear-gradient(135deg, #22c55e 0%, #16a34a 50%, #10b981 100%);
-            color: white;
-            box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            background: var(--color-primary);
+            color: var(--color-text-inverse);
+            border-color: var(--color-primary);
+            box-shadow: var(--shadow-sm);
         }
 
         .btn-primary:hover {
-            transform: translateY(-5px) rotateX(5deg) scale(1.05);
-            box-shadow: 0 15px 35px rgba(34, 197, 94, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.2) inset;
-            background: linear-gradient(135deg, #4ade80 0%, #22c55e 50%, #16a34a 100%);
+            background: var(--color-primary-hover);
+            border-color: var(--color-primary-hover);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
         }
 
         .btn-primary:active {
-            transform: translateY(-2px) rotateX(2deg) scale(1.02);
-            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+            transform: translateY(0);
+            box-shadow: var(--shadow-xs);
         }
 
         .btn-ai { 
-            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
-            color: white;
-            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.1) inset;
-            position: relative;
+            background: var(--color-secondary);
+            color: var(--color-text-inverse);
+            border-color: var(--color-secondary);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .btn-ai:hover {
+            background: var(--color-secondary-light);
+            border-color: var(--color-secondary-light);
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
         }
         
         .btn-ai::before {
@@ -1129,6 +1205,24 @@
             }
         }
     </style>
+    <script>
+        // Función para toggle del menú móvil (debe estar antes del HTML)
+        function toggleMobileMenu() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            if (!sidebar || !overlay) return;
+            
+            const isOpen = sidebar.classList.contains('mobile-open');
+            
+            if (isOpen) {
+                sidebar.classList.remove('mobile-open');
+                overlay.classList.remove('active');
+            } else {
+                sidebar.classList.add('mobile-open');
+                overlay.classList.add('active');
+            }
+        }
+    </script>
 </head>
 <body>
     <!-- Botón hamburguesa para móvil -->
@@ -1177,31 +1271,77 @@
 
             <!-- Sección del Dashboard Financiero -->
             <section id="dashboard" class="content-section active">
-                <h2 id="dashboardTitle">Dashboard de Gastos y Proveedores</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-xl);">
+                    <h2 id="dashboardTitle" style="margin: 0; font-size: 1.5rem; font-weight: 700; color: var(--color-text);">Dashboard Financiero</h2>
+                    <div style="display: flex; gap: var(--spacing-sm);">
+                        <input type="month" id="dashboardMonthFilter" style="padding: 8px 12px; border: 1px solid var(--border-color); border-radius: var(--border-radius); font-size: 0.875rem;">
+                    </div>
+                </div>
                 
+                <!-- KPIs Principales -->
                 <div class="summary-cards">
                     <div class="card expense">
                         <h3>Total Gastos del Mes</h3>
                         <p id="totalGastos">Cargando...</p>
                     </div>
-                    <div class="card expense" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);">
+                    <div class="card income">
+                        <h3>Total Ingresos del Mes</h3>
+                        <p id="totalIngresos">Cargando...</p>
+                    </div>
+                    <div class="card profit">
+                        <h3>Saldo Disponible</h3>
+                        <p id="saldoDisponible">Cargando...</p>
+                    </div>
+                    <div class="card" style="border-left-color: var(--color-secondary);">
                         <h3>Total Proveedores</h3>
                         <p id="totalProveedores">Cargando...</p>
                     </div>
-                    <div class="card expense" style="background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);">
-                        <h3>Gasto Promedio por Proveedor</h3>
-                        <p id="gastoPromedioProveedor">Cargando...</p>
-                    </div>
                 </div>
 
-                <div class="budget-section card">
-                    <h2>Presupuesto Mensual</h2>
-                    <p class="text-sm text-gray-500">Presupuesto base: <span id="presupuestoBase"></span> (Modificable en la sección Presupuesto)</p>
+                <!-- Presupuesto y Alertas -->
+                <div class="budget-section card" style="margin-bottom: var(--spacing-xl);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-md);">
+                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: var(--color-text);">Presupuesto Mensual</h2>
+                        <span style="font-size: 0.875rem; color: var(--color-text-muted);">Base: <span id="presupuestoBase"></span></span>
+                    </div>
                     <div class="budget-bar-container">
                         <div id="budgetProgressBar" class="budget-bar" style="width: 0%;"></div>
                     </div>
-                    <p id="budgetStatus" style="font-weight: 600;">Gasto actual: $0 / Límite: $8.000.000</p>
-                    <div id="budgetAlert" class="alert hidden"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: var(--spacing-sm);">
+                        <p id="budgetStatus" style="margin: 0; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Gasto actual: $0 / Límite: $8.000.000</p>
+                        <p id="budgetPercentage" style="margin: 0; font-weight: 600; color: var(--color-text-muted); font-size: 0.875rem;">0%</p>
+                    </div>
+                    <div id="budgetAlert" class="alert hidden" style="margin-top: var(--spacing-md);"></div>
+                </div>
+                
+                <!-- Histórico Mensual Visible -->
+                <div class="card" style="margin-bottom: var(--spacing-xl);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--spacing-lg);">
+                        <h2 style="margin: 0; font-size: 1.25rem; font-weight: 600; color: var(--color-text);">Histórico del Mes</h2>
+                        <div style="display: flex; gap: var(--spacing-sm);">
+                            <button class="btn" onclick="filtrarHistorico('todos')" style="padding: 6px 12px; font-size: 0.75rem;">Todos</button>
+                            <button class="btn" onclick="filtrarHistorico('gastos')" style="padding: 6px 12px; font-size: 0.75rem;">Gastos</button>
+                            <button class="btn" onclick="filtrarHistorico('ingresos')" style="padding: 6px 12px; font-size: 0.75rem;">Ingresos</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="historicoTable" style="width: 100%; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-color);">
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Fecha</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Tipo</th>
+                                    <th style="padding: 12px; text-align: left; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Descripción</th>
+                                    <th style="padding: 12px; text-align: right; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Monto</th>
+                                    <th style="padding: 12px; text-align: center; font-weight: 600; color: var(--color-text); font-size: 0.875rem;">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="historicoTableBody">
+                                <tr>
+                                    <td colspan="5" style="padding: 24px; text-align: center; color: var(--color-text-muted);">Cargando histórico...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <div class="charts-container">
@@ -2201,20 +2341,11 @@
         /**
          * 1. Manejo de la Navegación (SPA)
          */
-        // Función para toggle del menú móvil
-        window.toggleMobileMenu = function() {
-            const sidebar = document.getElementById('sidebar');
-            const overlay = document.getElementById('sidebarOverlay');
-            const isOpen = sidebar.classList.contains('mobile-open');
-            
-            if (isOpen) {
-                sidebar.classList.remove('mobile-open');
-                overlay.classList.remove('active');
-            } else {
-                sidebar.classList.add('mobile-open');
-                overlay.classList.add('active');
-            }
-        };
+        // Función para toggle del menú móvil (ya está definida en el head)
+        // Se mantiene aquí para compatibilidad
+        if (typeof window.toggleMobileMenu === 'undefined') {
+            window.toggleMobileMenu = toggleMobileMenu;
+        }
         
         // Cerrar menú móvil al hacer clic en un nav-item
         function setupNavigation() {
@@ -2309,9 +2440,12 @@
                 // Obtener datos del mes actual
                 const { mes, año, nombreMes } = getMesActual();
                 const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS);
+                const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS);
                 
                 // Calcular totales del mes actual
                 totalGastos = gastosDelMes.reduce((sum, item) => sum + item.monto, 0);
+                totalIngresos = ingresosDelMes.reduce((sum, item) => sum + item.monto, 0);
+                const saldoDisponible = totalIngresos - totalGastos;
                 
                 // Calcular estadísticas de proveedores
                 const totalProveedores = MOCK_DATA.PROVEEDORES.length;
@@ -2333,15 +2467,29 @@
                 }
                 
                 // Actualizar tarjetas de resumen
-                document.getElementById('totalGastos').innerText = formatCurrency(totalGastos);
-                document.getElementById('totalProveedores').innerText = totalProveedores;
-                document.getElementById('gastoPromedioProveedor').innerText = formatCurrency(gastoPromedio);
+                const totalGastosEl = document.getElementById('totalGastos');
+                const totalIngresosEl = document.getElementById('totalIngresos');
+                const saldoDisponibleEl = document.getElementById('saldoDisponible');
+                const totalProveedoresEl = document.getElementById('totalProveedores');
+                
+                if (totalGastosEl) totalGastosEl.innerText = formatCurrency(totalGastos);
+                if (totalIngresosEl) totalIngresosEl.innerText = formatCurrency(totalIngresos);
+                if (saldoDisponibleEl) {
+                    saldoDisponibleEl.innerText = formatCurrency(saldoDisponible);
+                    saldoDisponibleEl.style.color = saldoDisponible >= 0 ? 'var(--color-income)' : 'var(--color-expense)';
+                }
+                if (totalProveedoresEl) totalProveedoresEl.innerText = totalProveedores;
 
                 // Actualizar presupuesto
             actualizarPresupuesto(totalGastos);
                 
                 // Renderizar tablas (mostrar todos los datos, no solo del mes)
-            renderExpenseTable(MOCK_DATA.GASTOS);
+                renderExpenseTable(MOCK_DATA.GASTOS);
+                
+                // Actualizar histórico mensual
+                if (typeof actualizarHistorico === 'function') {
+                    actualizarHistorico();
+                }
             
                 // Renderizar gráficos
             if (typeof Chart !== 'undefined') {
@@ -3672,51 +3820,50 @@
                 alertMessage(`Reporte exportado a Excel (CSV) con ${gastosFiltrados.length} registros`, 'success');
             } else if (format === 'PDF') {
                 // Para PDF, crear una tabla HTML y usar window.print()
-                let html = `
-                    <!DOCTYPE html>
-                    <html>
-                        <head>
-                            <title>Reporte de Gastos - Ganadería Toné</title>
-                            <style>
-                                body { font-family: Arial, sans-serif; padding: 20px; }
-                                h1 { color: #2d8659; }
-                                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-                                th { background: #2d8659; color: white; padding: 10px; text-align: left; }
-                                td { border: 1px solid #ddd; padding: 8px; }
-                                tr:nth-child(even) { background: #f5f9f6; }
-                                .summary { margin: 20px 0; padding: 15px; background: #f0f7f4; border-radius: 8px; }
-                            </style>
-                        </head>
-                        <body>
-                            <h1>Reporte de Gastos - Ganadería Toné</h1>
-                            <div class="summary">
-                                <p><strong>Período:</strong> ${fechaInicio || 'Desde el inicio'} a ${fechaFin || 'Hasta hoy'}</p>
-                                <p><strong>Total de registros:</strong> ${gastosFiltrados.length}</p>
-                                <p><strong>Total gastado:</strong> ${formatCurrency(gastosFiltrados.reduce((sum, g) => sum + g.monto, 0))}</p>
-                            </div>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Nota</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                `;
+                let html = '<!DOCTYPE html>' +
+                    '<html>' +
+                    '<head>' +
+                    '<title>Reporte de Gastos - Ganadería Toné</title>' +
+                    '<style>' +
+                    'body { font-family: Arial, sans-serif; padding: 20px; }' +
+                    'h1 { color: #2d8659; }' +
+                    'table { width: 100%; border-collapse: collapse; margin-top: 20px; }' +
+                    'th { background: #2d8659; color: white; padding: 10px; text-align: left; }' +
+                    'td { border: 1px solid #ddd; padding: 8px; }' +
+                    'tr:nth-child(even) { background: #f5f9f6; }' +
+                    '.summary { margin: 20px 0; padding: 15px; background: #f0f7f4; border-radius: 8px; }' +
+                    '</style>' +
+                    '</head>' +
+                    '<body>' +
+                    '<h1>Reporte de Gastos - Ganadería Toné</h1>' +
+                    '<div class="summary">' +
+                    '<p><strong>Período:</strong> ' + (fechaInicio || 'Desde el inicio') + ' a ' + (fechaFin || 'Hasta hoy') + '</p>' +
+                    '<p><strong>Total de registros:</strong> ' + gastosFiltrados.length + '</p>' +
+                    '<p><strong>Total gastado:</strong> ' + formatCurrency(gastosFiltrados.reduce((sum, g) => sum + g.monto, 0)) + '</p>' +
+                    '</div>' +
+                    '<table>' +
+                    '<thead>' +
+                    '<tr>' +
+                    '<th>Fecha</th><th>Monto</th><th>Categoría</th><th>Producción</th><th>Proveedor</th><th>Nota</th>' +
+                    '</tr>' +
+                    '</thead>' +
+                    '<tbody>';
                 
                 gastosFiltrados.forEach(gasto => {
                     const proveedor = MOCK_DATA.PROVEEDORES.find(p => p.id === gasto.proveedor);
                     const nombreProveedor = proveedor ? proveedor.nombre : 'N/A';
-                    html += `<tr>
-                        <td>${gasto.fecha}</td>
-                        <td>${formatCurrency(gasto.monto)}</td>
-                        <td>${gasto.categoria}</td>
-                        <td>${gasto.produccion}</td>
-                        <td>${nombreProveedor}</td>
-                        <td>${gasto.nota || ''}</td>
-                    </tr>`;
+                    const nota = gasto.nota || '';
+                    html += '<tr>' +
+                        '<td>' + gasto.fecha + '</td>' +
+                        '<td>' + formatCurrency(gasto.monto) + '</td>' +
+                        '<td>' + gasto.categoria + '</td>' +
+                        '<td>' + gasto.produccion + '</td>' +
+                        '<td>' + nombreProveedor + '</td>' +
+                        '<td>' + nota + '</td>' +
+                    '</tr>';
                 });
                 
-                html += `</tbody></table></body></html>`;
+                html += '</tbody></table></body></html>';
                 
                 const ventana = window.open('', '_blank');
                 ventana.document.write(html);
@@ -3739,7 +3886,7 @@
             else if (type === 'danger') { icon = '🛑'; msgBox.classList.add('danger'); }
             else { msgBox.classList.add('info'); }
 
-            msgBox.innerHTML = `<span>${icon}</span> ${message}`;
+            msgBox.innerHTML = '<span>' + icon + '</span> ' + message;
             
             setTimeout(() => msgBox.classList.add('hidden'), 5000);
         }
@@ -3752,8 +3899,8 @@
             
             try {
                 const fileExt = file.name.split('.').pop();
-                const fileName = `logo_ganaderia_tone.${fileExt}`;
-                const filePath = `logos/${fileName}`;
+                const fileName = 'logo_ganaderia_tone.' + fileExt;
+                const filePath = 'logos/' + fileName;
                 
                 // Subir archivo a Supabase Storage
                 const { data, error } = await supabase.storage
@@ -3875,13 +4022,19 @@
                 if (file) {
                     // Mostrar preview inmediatamente
                     const reader = new FileReader();
-                    reader.onload = function(e) {
-                        logoPreview.innerHTML = `<img src="${e.target.result}" alt="Logo Ganadería Toné">`;
-                        // Guardar en localStorage como fallback
-                        localStorage.setItem('ganaderiaToneLogo', e.target.result);
-                        // Ocultar el botón después de cargar
-                        logoUploadBtn.style.display = 'none';
-                        agregarBotonEliminar();
+                    reader.onload = function(event) {
+                        const result = event.target.result;
+                        if (result && logoPreview) {
+                            const logoUrl = result;
+                            logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
+                            // Guardar en localStorage como fallback
+                            localStorage.setItem('ganaderiaToneLogo', result);
+                            // Ocultar el botón después de cargar
+                            if (logoUploadBtn) {
+                                logoUploadBtn.style.display = 'none';
+                            }
+                            agregarBotonEliminar();
+                        }
                     };
                     reader.readAsDataURL(file);
                     
@@ -3903,23 +4056,31 @@
 
             // Cargar logo guardado
             async function cargarLogo() {
+                if (!logoPreview) return;
+                
                 // Primero intentar desde Supabase Storage
                 if (SUPABASE_CONFIGURADO && supabase) {
-                    const supabaseUrl = await cargarLogoDesdeSupabase();
-                    if (supabaseUrl) {
-                        logoPreview.innerHTML = `<img src="${supabaseUrl}" alt="Logo Ganadería Toné">`;
-                        localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
-                        localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
-                        ocultarBotonSiHayLogo();
-                        agregarBotonEliminar();
-                        return;
+                    try {
+                        const supabaseUrl = await cargarLogoDesdeSupabase();
+                        if (supabaseUrl && logoPreview) {
+                            const logoUrl = supabaseUrl;
+                            logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
+                            localStorage.setItem('ganaderiaToneLogo', supabaseUrl);
+                            localStorage.setItem('ganaderiaToneLogoUrl', supabaseUrl);
+                            ocultarBotonSiHayLogo();
+                            agregarBotonEliminar();
+                            return;
+                        }
+                    } catch (error) {
+                        console.error('Error cargando logo desde Supabase:', error);
                     }
                 }
                 
                 // Si no hay en Supabase, cargar desde localStorage
                 const savedLogo = localStorage.getItem('ganaderiaToneLogo');
-                if (savedLogo) {
-                    logoPreview.innerHTML = `<img src="${savedLogo}" alt="Logo Ganadería Toné">`;
+                if (savedLogo && logoPreview) {
+                    const logoUrl = savedLogo;
+                    logoPreview.innerHTML = '<img src="' + logoUrl + '" alt="Logo Ganadería Toné">';
                     ocultarBotonSiHayLogo();
                     agregarBotonEliminar();
                 }
@@ -4171,6 +4332,104 @@
             };
         }
 
+        // Función para filtrar histórico mensual
+        window.filtrarHistorico = function(tipo) {
+            const tbody = document.getElementById('historicoTableBody');
+            if (!tbody) return;
+            
+            const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS);
+            const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS);
+            
+            tbody.innerHTML = '';
+            
+            let datosMostrar = [];
+            
+            if (tipo === 'gastos') {
+                datosMostrar = gastosDelMes.map(g => ({
+                    fecha: g.fecha,
+                    tipo: 'Gasto',
+                    descripcion: `${g.categoria} - ${g.produccion}`,
+                    monto: -g.monto,
+                    id: g.id,
+                    tipoRegistro: 'gasto'
+                }));
+            } else if (tipo === 'ingresos') {
+                datosMostrar = ingresosDelMes.map(i => ({
+                    fecha: i.fecha,
+                    tipo: 'Ingreso',
+                    descripcion: `${i.tipo} - ${i.comprador}`,
+                    monto: i.monto,
+                    id: i.id,
+                    tipoRegistro: 'ingreso'
+                }));
+            } else {
+                // Todos
+                const gastos = gastosDelMes.map(g => ({
+                    fecha: g.fecha,
+                    tipo: 'Gasto',
+                    descripcion: `${g.categoria} - ${g.produccion}`,
+                    monto: -g.monto,
+                    id: g.id,
+                    tipoRegistro: 'gasto'
+                }));
+                const ingresos = ingresosDelMes.map(i => ({
+                    fecha: i.fecha,
+                    tipo: 'Ingreso',
+                    descripcion: `${i.tipo} - ${i.comprador}`,
+                    monto: i.monto,
+                    id: i.id,
+                    tipoRegistro: 'ingreso'
+                }));
+                datosMostrar = [...gastos, ...ingresos].sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            }
+            
+            if (datosMostrar.length === 0) {
+                const row = tbody.insertRow();
+                const cell = row.insertCell();
+                cell.colSpan = 5;
+                cell.textContent = 'No hay registros para mostrar';
+                cell.style.textAlign = 'center';
+                cell.style.padding = '24px';
+                cell.style.color = 'var(--color-text-muted)';
+                return;
+            }
+            
+            datosMostrar.forEach(item => {
+                const row = tbody.insertRow();
+                row.insertCell().textContent = item.fecha;
+                const tipoCell = row.insertCell();
+                tipoCell.textContent = item.tipo;
+                tipoCell.style.color = item.tipo === 'Gasto' ? 'var(--color-expense)' : 'var(--color-income)';
+                tipoCell.style.fontWeight = '600';
+                row.insertCell().textContent = item.descripcion;
+                const montoCell = row.insertCell();
+                montoCell.textContent = formatCurrency(Math.abs(item.monto));
+                montoCell.style.textAlign = 'right';
+                montoCell.style.fontWeight = '600';
+                montoCell.style.color = item.monto < 0 ? 'var(--color-expense)' : 'var(--color-income)';
+                const accionesCell = row.insertCell();
+                accionesCell.style.textAlign = 'center';
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.style.padding = '6px 12px';
+                btn.style.fontSize = '0.75rem';
+                btn.textContent = item.tipoRegistro === 'gasto' ? '✏️ Editar' : '✏️ Editar';
+                btn.onclick = () => {
+                    if (item.tipoRegistro === 'gasto') {
+                        window.editarGasto(item.id);
+                    } else {
+                        window.editarIngreso(item.id);
+                    }
+                };
+                accionesCell.appendChild(btn);
+            });
+        };
+        
+        // Función para actualizar histórico al cargar dashboard
+        function actualizarHistorico() {
+            filtrarHistorico('todos');
+        }
+
         // Inicialización de la Aplicación
         window.onload = async function() {
             setupNavigation();
@@ -4178,6 +4437,8 @@
             setupLogoUpload();
             setupSupplierForm();
             setupEditForms();
+            setupExpenseForm();
+            setupIncomeForm();
             
             // Cargar categorías personalizadas
             cargarCategorias();
@@ -4188,7 +4449,13 @@
                 updateSupplierSelect(); // Cargar proveedores en el select inicialmente
                 await updateDashboard();
                 await cargarPresupuesto();
-            document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+                const currentBudgetEl = document.getElementById('currentBudgetDisplay');
+                if (currentBudgetEl) {
+                    currentBudgetEl.innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+                }
+                
+                // Actualizar histórico
+                actualizarHistorico();
             } catch (error) {
                 console.error('Error cargando datos iniciales:', error);
                 if (SUPABASE_CONFIGURADO) {
@@ -4197,8 +4464,14 @@
             }
         };
         
-        // Manejo de formulario de gastos
-        document.getElementById('expenseForm').addEventListener('submit', async (e) => {
+        // Manejo de formulario de gastos - Esperar a que el DOM esté listo
+        function setupExpenseForm() {
+            const expenseFormEl = document.getElementById('expenseForm');
+            if (!expenseFormEl) {
+                console.warn('expenseForm no encontrado');
+                return;
+            }
+            expenseFormEl.addEventListener('submit', async (e) => {
             e.preventDefault();
             
             const fecha = document.getElementById('gastoFecha').value;
@@ -4273,10 +4546,17 @@
             } catch (error) {
                 alertMessage('Error al registrar gasto: ' + error.message, 'danger');
             }
-        });
+            });
+        }
         
-        // Manejo de formulario de ingresos
-        document.getElementById('incomeForm').addEventListener('submit', async (e) => {
+        // Manejo de formulario de ingresos - Esperar a que el DOM esté listo
+        function setupIncomeForm() {
+            const incomeFormEl = document.getElementById('incomeForm');
+            if (!incomeFormEl) {
+                console.warn('incomeForm no encontrado');
+                return;
+            }
+            incomeFormEl.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const fecha = document.getElementById('ingresoFecha').value;
@@ -4334,7 +4614,8 @@
             } catch (error) {
                 alertMessage('Error al registrar ingreso: ' + error.message, 'danger');
             }
-        });
+            });
+        }
 
     </script>
 </body>
