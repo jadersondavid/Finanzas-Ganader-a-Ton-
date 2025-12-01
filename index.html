@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
     <title>Dashboard Financiero - GANADERÍA TONÉ</title>
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
@@ -763,6 +766,38 @@
             background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
         }
 
+        /* Botones compactos para agregar nuevas opciones */
+        .btn-nueva-categoria, .btn-nueva-produccion {
+            min-width: 48px;
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2em;
+            flex-shrink: 0;
+        }
+
+        .btn-nueva-categoria:hover, .btn-nueva-produccion:hover {
+            transform: translateY(-2px) scale(1.1);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.5);
+            background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        }
+
+        .btn-nueva-categoria:active, .btn-nueva-produccion:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        /* Media query específico para botones compactos - se maneja en el media query principal de 600px */
+
         .btn-ai:active {
             transform: translateY(-2px) rotateX(2deg) scale(1.02);
             box-shadow: 0 5px 15px rgba(59, 130, 246, 0.4);
@@ -911,7 +946,29 @@
             .summary-cards { grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
         }
         
+        /* Estilos para tablets y móviles grandes */
         @media (max-width: 900px) {
+            #main-content {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+            
+            .summary-cards {
+                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+                gap: 15px;
+            }
+            
+            .form-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .card {
+                padding: 18px;
+            }
             .mobile-menu-toggle {
                 display: block;
             }
@@ -1092,6 +1149,147 @@
                 width: 100%;
             }
             
+            /* Mejorar botones compactos en móvil */
+            .btn-nueva-categoria, .btn-nueva-produccion {
+                width: 100% !important;
+                min-width: auto !important;
+                height: 48px !important;
+                margin-top: 8px;
+            }
+            
+            /* Asegurar que los selects no se corten */
+            .form-group select {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+            }
+            
+            /* Mejorar inputs en móvil */
+            .form-group input,
+            .form-group textarea {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                font-size: 16px; /* Prevenir zoom en iOS */
+            }
+            
+            /* Mejorar cards en móvil */
+            .card {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* Mejorar header */
+            header {
+                width: 100%;
+                box-sizing: border-box;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            /* Asegurar que el contenido principal no se desborde */
+            #main-content {
+                width: 100%;
+                max-width: 100vw;
+                box-sizing: border-box;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            /* Mejorar secciones de contenido */
+            .content-section {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                padding: 0;
+            }
+            
+            /* Mejorar tablas - hacer scroll más suave */
+            .table-responsive {
+                -webkit-overflow-scrolling: touch;
+                margin-left: -10px;
+                margin-right: -10px;
+                padding-left: 10px;
+                padding-right: 10px;
+            }
+            
+            /* Mejorar modales */
+            .modal-content {
+                width: 98% !important;
+                max-width: 98% !important;
+                margin: 2vh auto !important;
+                padding: 15px !important;
+                box-sizing: border-box;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .modal-actions .btn {
+                width: 100%;
+                margin: 0;
+            }
+            
+            /* Mejorar summary cards */
+            .summary-cards {
+                margin-left: 0;
+                margin-right: 0;
+                width: 100%;
+            }
+            
+            .summary-cards .card {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            /* Mejorar gráficos */
+            .chart-box {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            canvas {
+                max-width: 100%;
+                height: auto !important;
+            }
+            
+            /* Mejorar botones de acción en tablas */
+            #expenseTable button,
+            #incomeTable button,
+            #supplierTable button {
+                min-width: 44px;
+                min-height: 44px;
+                padding: 8px 12px;
+                font-size: 0.85em;
+                white-space: nowrap;
+            }
+            
+            /* Mejorar formularios */
+            .form-container {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* Asegurar que los elementos flex no se desborden */
+            .form-group > div[style*="display: flex"] {
+                width: 100%;
+                max-width: 100%;
+            }
+            
+            .form-group > div[style*="display: flex"] > select {
+                flex: 1;
+                min-width: 0;
+            }
+            
             .categoria-select-container > select {
                 width: 100%;
             }
@@ -1143,21 +1341,48 @@
                 font-size: 16px; /* Previene zoom en iOS */
                 padding: 12px;
                 min-height: 44px;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            /* Botones compactos en móvil - hacerlos de ancho completo */
+            .btn-nueva-categoria, 
+            .btn-nueva-produccion {
+                width: 100% !important;
+                min-width: auto !important;
+                height: 48px !important;
+                margin-top: 8px;
             }
             
             .modal-content {
-                width: 98%;
-                margin: 2vh auto;
-                padding: 15px;
+                width: 98% !important;
+                max-width: 98% !important;
+                margin: 2vh auto !important;
+                padding: 15px !important;
+                box-sizing: border-box;
             }
             
             .modal-actions {
                 flex-direction: column;
                 gap: 10px;
+                width: 100%;
             }
             
             .modal-actions .btn {
                 width: 100%;
+                margin: 0;
+            }
+            
+            .table-responsive {
+                width: 100%;
+                max-width: 100vw;
+                margin-left: -10px;
+                margin-right: -10px;
+                padding-left: 10px;
+                padding-right: 10px;
+                box-sizing: border-box;
+                -webkit-overflow-scrolling: touch;
             }
             
             #expenseTable, #incomeTable, #supplierTable {
@@ -1170,8 +1395,47 @@
                 padding: 8px 5px;
             }
             
+            #expenseTable button,
+            #incomeTable button,
+            #supplierTable button {
+                min-width: 44px;
+                min-height: 44px;
+                padding: 8px 12px;
+                font-size: 0.85em;
+            }
+            
             .chart-box {
                 height: 250px;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+            }
+            
+            canvas {
+                max-width: 100%;
+                height: auto !important;
+            }
+            
+            /* Asegurar que las cards no se desborden */
+            .card {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .summary-cards {
+                width: 100%;
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .content-section {
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
+                padding: 0;
             }
         }
         
@@ -1389,8 +1653,8 @@
                                 <option value="Herramientas">Herramientas / Maquinaria</option>
                                 <option value="Servicios">Servicios (Luz, Agua, Internet)</option>
                             </select>
-                            <button type="button" class="btn btn-ai" onclick="abrirModalNuevaCategoria()" style="padding: 12px 20px; white-space: nowrap;">
-                                <span>➕ Nueva</span>
+                            <button type="button" class="btn-nueva-categoria" onclick="abrirModalNuevaCategoria()" title="Agregar nueva categoría">
+                                <span>➕</span>
                             </button>
                         </div>
                     </div>
@@ -1400,15 +1664,20 @@
                     </div>
                     <div class="form-group full-width">
                         <label for="gastoProduccion">Asignación a Producción</label>
-                        <select id="gastoProduccion" required>
-                            <option value="Ganado">Ganado Bovino</option>
-                            <option value="Pollos">Pollos de Engorde</option>
-                            <option value="Marranos">Marranos</option>
-                            <option value="Cultivos">Producciones Agrícolas</option>
-                            <option value="Piscicultura">Piscicultura</option>
-                            <option value="Infraestructura">Infraestructura / Mantenimiento</option>
-                            <option value="Otro">Otro (Gastos Administrativos)</option>
-                        </select>
+                        <div style="display: flex; gap: 10px; align-items: flex-end;">
+                            <select id="gastoProduccion" required style="flex: 1;">
+                                <option value="Ganado">Ganado Bovino</option>
+                                <option value="Pollos">Pollos de Engorde</option>
+                                <option value="Marranos">Marranos</option>
+                                <option value="Cultivos">Producciones Agrícolas</option>
+                                <option value="Piscicultura">Piscicultura</option>
+                                <option value="Infraestructura">Infraestructura / Mantenimiento</option>
+                                <option value="Otro">Otro (Gastos Administrativos)</option>
+                            </select>
+                            <button type="button" class="btn-nueva-produccion" onclick="abrirModalNuevaProduccion()" title="Agregar nueva producción">
+                                <span>➕</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="gastoAdjunto">Adjuntar Facturas/Recibos (Múltiples archivos permitidos)</label>
@@ -1654,15 +1923,20 @@
                 </div>
                 <div class="form-group full-width">
                     <label for="editGastoProduccion">Asignación a Producción</label>
-                    <select id="editGastoProduccion" required>
-                        <option value="Ganado">Ganado Bovino</option>
-                        <option value="Pollos">Pollos de Engorde</option>
-                        <option value="Marranos">Marranos</option>
-                        <option value="Cultivos">Producciones Agrícolas</option>
-                        <option value="Piscicultura">Piscicultura</option>
-                        <option value="Infraestructura">Infraestructura / Mantenimiento</option>
-                        <option value="Otro">Otro (Gastos Administrativos)</option>
-                    </select>
+                    <div style="display: flex; gap: 10px; align-items: flex-end;">
+                        <select id="editGastoProduccion" required style="flex: 1;">
+                            <option value="Ganado">Ganado Bovino</option>
+                            <option value="Pollos">Pollos de Engorde</option>
+                            <option value="Marranos">Marranos</option>
+                            <option value="Cultivos">Producciones Agrícolas</option>
+                            <option value="Piscicultura">Piscicultura</option>
+                            <option value="Infraestructura">Infraestructura / Mantenimiento</option>
+                            <option value="Otro">Otro (Gastos Administrativos)</option>
+                        </select>
+                        <button type="button" class="btn-nueva-produccion" onclick="abrirModalNuevaProduccion()" title="Agregar nueva producción">
+                            <span>➕</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="editGastoAdjunto">Cambiar Archivos Adjuntos (Opcional)</label>
@@ -1775,6 +2049,30 @@
         </div>
     </div>
     
+    <!-- Modal para Agregar Nueva Producción -->
+    <div id="modalNuevaProduccion" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>➕ Agregar Nueva Producción</h3>
+                <button class="close-modal" onclick="cerrarModal('modalNuevaProduccion')">&times;</button>
+            </div>
+            <form id="formNuevaProduccion" class="form-container">
+                <div class="form-group full-width">
+                    <label for="nuevaProduccionNombre">Nombre de la Producción</label>
+                    <input type="text" id="nuevaProduccionNombre" placeholder="Ej: Apicultura, Avicultura, Acuicultura, etc." required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn" style="background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%); color: white;" onclick="cerrarModal('modalNuevaProduccion')">
+                        <span>❌ Cancelar</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <span>💾 Agregar Producción</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
     <!-- Modal para Agregar Nueva Categoría -->
     <div id="modalNuevaCategoria" class="modal">
         <div class="modal-content">
@@ -1834,11 +2132,27 @@
         
         // Inicializar cliente de Supabase
         let supabase = null;
-        if (SUPABASE_CONFIGURADO && typeof window.supabase !== 'undefined') {
+        if (SUPABASE_CONFIGURADO) {
             try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                // El módulo @supabase/supabase-js desde CDN expone 'supabase' globalmente
+                // El script se carga antes de este código, así que debería estar disponible
+                if (typeof window.supabase !== 'undefined' && window.supabase.createClient) {
+                    supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('✅ Supabase inicializado correctamente');
+                } else {
+                    // Intentar acceder directamente al objeto global
+                    // A veces el módulo se expone de diferentes formas
+                    const supabaseModule = window.supabase || (typeof supabase !== 'undefined' ? supabase : null);
+                    if (supabaseModule && typeof supabaseModule.createClient === 'function') {
+                        supabase = supabaseModule.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                        console.log('✅ Supabase inicializado correctamente (método alternativo)');
+                    } else {
+                        console.warn('⚠️ Supabase no está disponible. Verifica que el script esté cargado correctamente.');
+                        console.warn('   Tip: Asegúrate de que el script de Supabase se carga antes de este código.');
+                    }
+                }
             } catch (error) {
-                console.error('Error inicializando Supabase:', error);
+                console.error('❌ Error inicializando Supabase:', error);
                 supabase = null;
             }
         }
@@ -1850,6 +2164,20 @@
         // ** Datos en memoria (cache local) **
         // Categorías de gastos (se pueden agregar dinámicamente)
         // Formato: { valor: 'valor', texto: 'Texto a mostrar' }
+        // Array para almacenar producciones personalizadas
+        let PRODUCCIONES_PERSONALIZADAS = [];
+        
+        // Producciones por defecto
+        const PRODUCCIONES_DEFAULT = [
+            { valor: 'Ganado', texto: 'Ganado Bovino' },
+            { valor: 'Pollos', texto: 'Pollos de Engorde' },
+            { valor: 'Marranos', texto: 'Marranos' },
+            { valor: 'Cultivos', texto: 'Producciones Agrícolas' },
+            { valor: 'Piscicultura', texto: 'Piscicultura' },
+            { valor: 'Infraestructura', texto: 'Infraestructura / Mantenimiento' },
+            { valor: 'Otro', texto: 'Otro (Gastos Administrativos)' }
+        ];
+        
         let CATEGORIAS_GASTOS = [
             { valor: 'Alimentos', texto: 'Alimentos' },
             { valor: 'Insumos', texto: 'Insumos (Semillas, Químicos)' },
@@ -1934,6 +2262,83 @@
             CATEGORIAS_GASTOS.push({ valor: nombreLimpio, texto: nombreLimpio });
             guardarCategorias();
             alertMessage(`Categoría "${nombreLimpio}" agregada exitosamente`, 'success');
+            return true;
+        }
+        
+        // Funciones para manejar producciones personalizadas
+        function cargarProducciones() {
+            const produccionesGuardadas = localStorage.getItem('produccionesPersonalizadas');
+            if (produccionesGuardadas) {
+                PRODUCCIONES_PERSONALIZADAS = JSON.parse(produccionesGuardadas);
+            }
+            actualizarSelectsProducciones();
+        }
+        
+        function guardarProducciones() {
+            localStorage.setItem('produccionesPersonalizadas', JSON.stringify(PRODUCCIONES_PERSONALIZADAS));
+            actualizarSelectsProducciones();
+        }
+        
+        function actualizarSelectsProducciones() {
+            const selects = ['gastoProduccion', 'editGastoProduccion'];
+            const todasProducciones = [...PRODUCCIONES_DEFAULT, ...PRODUCCIONES_PERSONALIZADAS];
+            
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                if (!select) return;
+                
+                const valorActual = select.value;
+                
+                // Limpiar opciones personalizadas (mantener las default)
+                const opcionesDefault = Array.from(select.options).filter(opt => 
+                    PRODUCCIONES_DEFAULT.some(p => p.valor === opt.value)
+                );
+                
+                // Agregar opciones personalizadas
+                PRODUCCIONES_PERSONALIZADAS.forEach(prod => {
+                    const existe = Array.from(select.options).some(opt => opt.value === prod.valor);
+                    if (!existe) {
+                        const option = document.createElement('option');
+                        option.value = prod.valor;
+                        option.textContent = prod.texto;
+                        select.appendChild(option);
+                    }
+                });
+                
+                if (valorActual) {
+                    const produccionExiste = todasProducciones.some(p => p.valor === valorActual);
+                    if (produccionExiste) {
+                        select.value = valorActual;
+                    }
+                }
+            });
+        }
+        
+        window.abrirModalNuevaProduccion = function() {
+            document.getElementById('modalNuevaProduccion').style.display = 'block';
+            document.getElementById('nuevaProduccionNombre').focus();
+        };
+        
+        function agregarNuevaProduccion(nombre) {
+            const nombreLimpio = nombre.trim();
+            if (!nombreLimpio) {
+                alertMessage('Por favor ingrese un nombre para la producción', 'danger');
+                return false;
+            }
+            
+            // Verificar si ya existe en default o personalizadas
+            const existeDefault = PRODUCCIONES_DEFAULT.some(p => p.valor === nombreLimpio || p.texto.toLowerCase() === nombreLimpio.toLowerCase());
+            const existePersonalizada = PRODUCCIONES_PERSONALIZADAS.some(p => p.valor === nombreLimpio || p.texto.toLowerCase() === nombreLimpio.toLowerCase());
+            
+            if (existeDefault || existePersonalizada) {
+                alertMessage('Esta producción ya existe', 'warning');
+                return false;
+            }
+            
+            // Agregar nueva producción
+            PRODUCCIONES_PERSONALIZADAS.push({ valor: nombreLimpio, texto: nombreLimpio });
+            guardarProducciones();
+            alertMessage(`Producción "${nombreLimpio}" agregada exitosamente`, 'success');
             return true;
         }
         
@@ -4297,19 +4702,40 @@
             });
             
             // Formulario de nueva categoría
-            document.getElementById('formNuevaCategoria').addEventListener('submit', function(e) {
-                e.preventDefault();
-                const nombre = document.getElementById('nuevaCategoriaNombre').value.trim();
-                if (agregarNuevaCategoria(nombre)) {
-                    cerrarModal('modalNuevaCategoria');
-                    // Actualizar el select que está abierto (si hay uno)
-                    const selectAbierto = document.activeElement;
-                    if (selectAbierto && (selectAbierto.id === 'gastoCategoria' || selectAbierto.id === 'editGastoCategoria')) {
-                        actualizarSelectsCategorias();
-                        selectAbierto.value = nombre;
+            const formNuevaCategoria = document.getElementById('formNuevaCategoria');
+            if (formNuevaCategoria) {
+                formNuevaCategoria.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const nombre = document.getElementById('nuevaCategoriaNombre').value.trim();
+                    if (agregarNuevaCategoria(nombre)) {
+                        cerrarModal('modalNuevaCategoria');
+                        // Actualizar el select que está abierto (si hay uno)
+                        const selectAbierto = document.activeElement;
+                        if (selectAbierto && (selectAbierto.id === 'gastoCategoria' || selectAbierto.id === 'editGastoCategoria')) {
+                            actualizarSelectsCategorias();
+                            selectAbierto.value = nombre;
+                        }
                     }
-                }
-            });
+                });
+            }
+            
+            // Formulario de nueva producción
+            const formNuevaProduccion = document.getElementById('formNuevaProduccion');
+            if (formNuevaProduccion) {
+                formNuevaProduccion.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const nombre = document.getElementById('nuevaProduccionNombre').value.trim();
+                    if (agregarNuevaProduccion(nombre)) {
+                        cerrarModal('modalNuevaProduccion');
+                        // Actualizar el select que está abierto (si hay uno)
+                        const selectAbierto = document.activeElement;
+                        if (selectAbierto && (selectAbierto.id === 'gastoProduccion' || selectAbierto.id === 'editGastoProduccion')) {
+                            actualizarSelectsProducciones();
+                            selectAbierto.value = nombre;
+                        }
+                    }
+                });
+            }
             
             // Cerrar modal al hacer clic fuera de él
             window.onclick = function(event) {
