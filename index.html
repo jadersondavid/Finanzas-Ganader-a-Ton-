@@ -2885,10 +2885,16 @@
          */
         async function updateDashboard() {
             try {
-                // Mostrar estado de carga
-                document.getElementById('totalGastos').innerText = 'Cargando...';
-                document.getElementById('totalProveedores').innerText = 'Cargando...';
-                document.getElementById('gastoPromedioProveedor').innerText = 'Cargando...';
+                // Mostrar estado de carga (verificar que los elementos existan)
+                const totalGastosEl = document.getElementById('totalGastos');
+                const totalIngresosEl = document.getElementById('totalIngresos');
+                const saldoDisponibleEl = document.getElementById('saldoDisponible');
+                const totalProveedoresEl = document.getElementById('totalProveedores');
+                
+                if (totalGastosEl) totalGastosEl.innerText = 'Cargando...';
+                if (totalIngresosEl) totalIngresosEl.innerText = 'Cargando...';
+                if (saldoDisponibleEl) saldoDisponibleEl.innerText = 'Cargando...';
+                if (totalProveedoresEl) totalProveedoresEl.innerText = 'Cargando...';
                 
                 // Cargar datos desde Supabase si está configurado
                 await Promise.all([
@@ -2926,12 +2932,7 @@
                     dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
                 }
                 
-                // Actualizar tarjetas de resumen
-                const totalGastosEl = document.getElementById('totalGastos');
-                const totalIngresosEl = document.getElementById('totalIngresos');
-                const saldoDisponibleEl = document.getElementById('saldoDisponible');
-                const totalProveedoresEl = document.getElementById('totalProveedores');
-                
+                // Actualizar tarjetas de resumen (usar las variables ya declaradas)
                 if (totalGastosEl) totalGastosEl.innerText = formatCurrency(totalGastos);
                 if (totalIngresosEl) totalIngresosEl.innerText = formatCurrency(totalIngresos);
                 if (saldoDisponibleEl) {
@@ -2986,14 +2987,23 @@
                 }
             } catch (error) {
                 console.error('Error actualizando dashboard:', error);
-                document.getElementById('totalGastos').innerText = 'Error';
-                document.getElementById('totalProveedores').innerText = 'Error';
-                document.getElementById('gastoPromedioProveedor').innerText = 'Error';
+                const totalGastosEl = document.getElementById('totalGastos');
+                const totalIngresosEl = document.getElementById('totalIngresos');
+                const saldoDisponibleEl = document.getElementById('saldoDisponible');
+                const totalProveedoresEl = document.getElementById('totalProveedores');
+                
+                if (totalGastosEl) totalGastosEl.innerText = 'Error';
+                if (totalIngresosEl) totalIngresosEl.innerText = 'Error';
+                if (saldoDisponibleEl) saldoDisponibleEl.innerText = 'Error';
+                if (totalProveedoresEl) totalProveedoresEl.innerText = 'Error';
             }
         }
 
         // --- FUNCIONALIDAD GEMINI 1: ANÁLISIS DE COSTOS ---
-        document.getElementById('analyzeExpensesBtn').addEventListener('click', generateAnalysis);
+        const analyzeExpensesBtn = document.getElementById('analyzeExpensesBtn');
+        if (analyzeExpensesBtn) {
+            analyzeExpensesBtn.addEventListener('click', generateAnalysis);
+        }
 
         async function generateAnalysis() {
             const analysisResultDiv = document.getElementById('analysisResult');
@@ -3127,7 +3137,10 @@
         }
         
         function setupBudgetForm() {
-            document.getElementById('budgetForm').addEventListener('submit', async function(e) {
+            const budgetForm = document.getElementById('budgetForm');
+            if (!budgetForm) return;
+            
+            budgetForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 const newBudget = document.getElementById('newBudget').value;
                 if (newBudget && newBudget > 0) {
