@@ -1852,7 +1852,7 @@
             <!-- Sección del Dashboard Financiero -->
             <section id="dashboard" class="content-section active">
                 <div class="dashboard-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px;">
-                    <h2 id="dashboardTitle" style="margin: 0;">Dashboard de Gastos y Proveedores</h2>
+                    <h2 id="dashboardTitle" style="margin: 0;">Dashboard Financiero</h2>
                     <div class="dashboard-filters" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                         <label for="filtroMesDashboard" style="font-weight: 600; color: var(--color-text); white-space: nowrap;">Filtrar por mes:</label>
                         <select id="filtroMesDashboard" class="form-group select" style="padding: 10px 16px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1em; background: white; cursor: pointer; min-width: 200px; transition: all 0.3s;">
@@ -1865,6 +1865,14 @@
                     <div class="card expense">
                         <h3>Total Gastos del Mes</h3>
                         <p id="totalGastos">Cargando...</p>
+                    </div>
+                    <div class="card income">
+                        <h3>Total Ingresos del Mes</h3>
+                        <p id="totalIngresos">Cargando...</p>
+                    </div>
+                    <div class="card profit" id="saldoNetoCard">
+                        <h3>Saldo Neto (Ingresos - Gastos)</h3>
+                        <p id="saldoNeto">Cargando...</p>
                     </div>
                     <div class="card expense" style="background: linear-gradient(135deg, #6c757d 0%, #dee2e4 100%);">
                         <h3>Total Proveedores</h3>
@@ -1905,6 +1913,17 @@
                     <div class="chart-box card">
                         <h3>Gastos por Categoría</h3>
                         <canvas id="chartCategoria"></canvas>
+                    </div>
+                </div>
+                
+                <div class="charts-container">
+                    <div class="chart-box card">
+                        <h3>Ingresos por Tipo</h3>
+                        <canvas id="chartIngresosTipo"></canvas>
+                    </div>
+                    <div class="chart-box card">
+                        <h3>Ingresos vs Gastos (Últimos 3 Meses)</h3>
+                        <canvas id="chartIngresosVsGastos"></canvas>
                     </div>
                 </div>
             </section>
@@ -3139,12 +3158,15 @@
             try {
                 // Mostrar estado de carga
                 document.getElementById('totalGastos').innerText = 'Cargando...';
+                document.getElementById('totalIngresos').innerText = 'Cargando...';
+                document.getElementById('saldoNeto').innerText = 'Cargando...';
                 document.getElementById('totalProveedores').innerText = 'Cargando...';
                 document.getElementById('gastoPromedioProveedor').innerText = 'Cargando...';
                 
                 // Cargar datos desde Supabase si está configurado
                 await Promise.all([
                     cargarGastos(),
+                    cargarIngresos(),
                     cargarProveedores(),
                     cargarPresupuesto()
                 ]);
@@ -3168,9 +3190,12 @@
                 }
                 
                 const gastosDelMes = filtrarDatosDelMes(MOCK_DATA.GASTOS, mes, año);
+                const ingresosDelMes = filtrarDatosDelMes(MOCK_DATA.INGRESOS, mes, año);
                 
                 // Calcular totales del mes actual
                 totalGastos = gastosDelMes.reduce((sum, item) => sum + item.monto, 0);
+                totalIngresos = ingresosDelMes.reduce((sum, item) => sum + item.monto, 0);
+                const saldoNeto = totalIngresos - totalGastos;
                 
                 // Calcular estadísticas de proveedores
                 const totalProveedores = MOCK_DATA.PROVEEDORES.length;
@@ -3189,14 +3214,30 @@
                 const dashboardTitle = document.getElementById('dashboardTitle');
                 if (dashboardTitle) {
                     if (mesFiltro && añoFiltro) {
-                        dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                        dashboardTitle.textContent = `Dashboard Financiero - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
                     } else {
-                    dashboardTitle.textContent = `Dashboard de Gastos y Proveedores - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
+                    dashboardTitle.textContent = `Dashboard Financiero - ${nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1)} ${año}`;
                     }
                 }
                 
                 // Actualizar tarjetas de resumen
                 document.getElementById('totalGastos').innerText = formatCurrency(totalGastos);
+                document.getElementById('totalIngresos').innerText = formatCurrency(totalIngresos);
+                
+                // Actualizar saldo neto con color según sea positivo o negativo
+                const saldoNetoEl = document.getElementById('saldoNeto');
+                saldoNetoEl.innerText = formatCurrency(saldoNeto);
+                const saldoNetoCard = document.getElementById('saldoNetoCard');
+                if (saldoNeto >= 0) {
+                    saldoNetoCard.classList.remove('expense');
+                    saldoNetoCard.classList.add('profit');
+                    saldoNetoCard.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)';
+                } else {
+                    saldoNetoCard.classList.remove('profit');
+                    saldoNetoCard.classList.add('expense');
+                    saldoNetoCard.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)';
+                }
+                
                 document.getElementById('totalProveedores').innerText = totalProveedores;
                 document.getElementById('gastoPromedioProveedor').innerText = formatCurrency(gastoPromedio);
 
@@ -3211,11 +3252,13 @@
                     // Pequeño delay para asegurar que el DOM esté listo
                     setTimeout(() => {
                         try {
-                            console.log('Renderizando gráficos...', { gastosDelMes: gastosDelMes.length, gastosPorProveedor });
+                            console.log('Renderizando gráficos...', { gastosDelMes: gastosDelMes.length, gastosPorProveedor, ingresosDelMes: ingresosDelMes.length });
                             renderChartProduccion(gastosDelMes);
                             renderChartProveedores(gastosPorProveedor);
                             renderChartTendencia(mes, año);
                             renderChartCategoria(gastosDelMes);
+                            renderChartIngresosPorTipo(ingresosDelMes);
+                            renderChartIngresosVsGastos(mes, año);
                         } catch (error) {
                             console.error('Error renderizando gráficos:', error);
                         }
@@ -3238,10 +3281,20 @@
                         chartCategoriaInstance.destroy();
                         chartCategoriaInstance = null;
                     }
+                    if (chartIngresosTipoInstance) {
+                        chartIngresosTipoInstance.destroy();
+                        chartIngresosTipoInstance = null;
+                    }
+                    if (chartIngresosVsGastosInstance) {
+                        chartIngresosVsGastosInstance.destroy();
+                        chartIngresosVsGastosInstance = null;
+                    }
                 }
             } catch (error) {
                 console.error('Error actualizando dashboard:', error);
                 document.getElementById('totalGastos').innerText = 'Error';
+                document.getElementById('totalIngresos').innerText = 'Error';
+                document.getElementById('saldoNeto').innerText = 'Error';
                 document.getElementById('totalProveedores').innerText = 'Error';
                 document.getElementById('gastoPromedioProveedor').innerText = 'Error';
             }
@@ -3748,6 +3801,204 @@
                                     const total = context.dataset.data.reduce((a, b) => a + b, 0);
                                     const percentage = ((value / total) * 100).toFixed(1);
                                     return label + ': ' + formatCurrency(value) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Ingresos por Tipo
+        let chartIngresosTipoInstance = null;
+        function renderChartIngresosPorTipo(ingresosDelMes) {
+            const ctx = document.getElementById('chartIngresosTipo');
+            if (!ctx) return;
+            
+            // Agrupar ingresos por tipo
+            const ingresosPorTipo = {};
+            ingresosDelMes.forEach(ingreso => {
+                const tipo = ingreso.tipo || 'Otro';
+                ingresosPorTipo[tipo] = (ingresosPorTipo[tipo] || 0) + ingreso.monto;
+            });
+            
+            const tipos = Object.keys(ingresosPorTipo);
+            const montos = Object.values(ingresosPorTipo);
+            
+            // Formatear nombres de tipos para mejor visualización
+            const tiposFormateados = tipos.map(tipo => {
+                const nombres = {
+                    'GanadoVenta': 'Venta de Ganado',
+                    'Leche': 'Venta de Leche',
+                    'Pollos': 'Venta de Pollos',
+                    'Marranos': 'Venta de Marranos',
+                    'Agricultura': 'Productos Agrícolas',
+                    'Servicios': 'Servicios Prestados'
+                };
+                return nombres[tipo] || tipo;
+            });
+            
+            if (tipos.length === 0) {
+                if (chartIngresosTipoInstance) {
+                    chartIngresosTipoInstance.destroy();
+                    chartIngresosTipoInstance = null;
+                }
+                const canvas = ctx;
+                const context = canvas.getContext('2d');
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.font = '16px Arial';
+                context.fillStyle = '#6c757d';
+                context.textAlign = 'center';
+                context.fillText('No hay ingresos para mostrar', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            if (chartIngresosTipoInstance) {
+                chartIngresosTipoInstance.destroy();
+                chartIngresosTipoInstance = null;
+            }
+            
+            chartIngresosTipoInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: tiposFormateados,
+                    datasets: [{
+                        label: 'Ingresos por Tipo',
+                        data: montos,
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(34, 197, 94, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(139, 92, 246, 0.8)',
+                            'rgba(236, 72, 153, 0.8)',
+                            'rgba(251, 146, 60, 0.8)'
+                        ],
+                        borderWidth: 2,
+                        borderColor: '#ffffff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return label + ': ' + formatCurrency(value) + ' (' + percentage + '%)';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico Comparativo Ingresos vs Gastos
+        let chartIngresosVsGastosInstance = null;
+        function renderChartIngresosVsGastos(mesActual, añoActual) {
+            const ctx = document.getElementById('chartIngresosVsGastos');
+            if (!ctx) return;
+            
+            const mesesNombres = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                                 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+            
+            const meses = [];
+            const gastosMensuales = [];
+            const ingresosMensuales = [];
+            
+            // Calcular datos de los últimos 3 meses
+            for (let i = 2; i >= 0; i--) {
+                const fecha = new Date(añoActual, mesActual - 1 - i, 1);
+                const mes = fecha.getMonth() + 1;
+                const año = fecha.getFullYear();
+                const nombreMes = mesesNombres[mes - 1];
+                
+                meses.push(nombreMes);
+                
+                // Calcular gastos del mes
+                const gastosMes = MOCK_DATA.GASTOS.filter(g => {
+                    const fechaGasto = new Date(g.fecha);
+                    return fechaGasto.getMonth() + 1 === mes && fechaGasto.getFullYear() === año;
+                }).reduce((sum, g) => sum + g.monto, 0);
+                
+                // Calcular ingresos del mes
+                const ingresosMes = MOCK_DATA.INGRESOS.filter(i => {
+                    const fechaIngreso = new Date(i.fecha);
+                    return fechaIngreso.getMonth() + 1 === mes && fechaIngreso.getFullYear() === año;
+                }).reduce((sum, i) => sum + i.monto, 0);
+                
+                gastosMensuales.push(gastosMes);
+                ingresosMensuales.push(ingresosMes);
+            }
+            
+            if (chartIngresosVsGastosInstance) {
+                chartIngresosVsGastosInstance.destroy();
+                chartIngresosVsGastosInstance = null;
+            }
+            
+            chartIngresosVsGastosInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: meses,
+                    datasets: [
+                        {
+                            label: 'Ingresos',
+                            data: ingresosMensuales,
+                            backgroundColor: 'rgba(16, 185, 129, 0.7)',
+                            borderColor: '#10b981',
+                            borderWidth: 2
+                        },
+                        {
+                            label: 'Gastos',
+                            data: gastosMensuales,
+                            backgroundColor: 'rgba(239, 68, 68, 0.7)',
+                            borderColor: '#ef4444',
+                            borderWidth: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 15,
+                                font: {
+                                    size: 12
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y || 0;
+                                    return label + ': ' + formatCurrency(value);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return formatCurrency(value);
                                 }
                             }
                         }
