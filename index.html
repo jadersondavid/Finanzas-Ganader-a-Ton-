@@ -3022,6 +3022,12 @@
                         // Actualizar dashboard cuando se navega a él
                         updateDashboard();
                     }
+                    if (targetId === 'ingresos') {
+                        // Cargar y mostrar ingresos cuando se navega a la sección
+                        cargarIngresos().then(() => {
+                            renderIncomeTable(MOCK_DATA.INGRESOS);
+                        });
+                    }
                     if (targetId === 'proveedores') {
                         cargarProveedores().then(() => {
                         renderSupplierTable(MOCK_DATA.PROVEEDORES);
@@ -5134,6 +5140,8 @@
             try {
                 await cargarProveedores();
                 updateSupplierSelect(); // Cargar proveedores en el select inicialmente
+                await cargarIngresos(); // Cargar ingresos
+                renderIncomeTable(MOCK_DATA.INGRESOS); // Renderizar tabla de ingresos
                 await updateDashboard();
                 await cargarPresupuesto();
             document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
@@ -5274,6 +5282,9 @@
                 
                 // Limpiar formulario
                 document.getElementById('incomeForm').reset();
+                
+                // Actualizar tabla de ingresos
+                renderIncomeTable(MOCK_DATA.INGRESOS);
                 
                 // Actualizar dashboard
                 await updateDashboard();
