@@ -2404,7 +2404,7 @@
         const SUPABASE_CONFIGURADO = SUPABASE_URL !== 'TU_SUPABASE_URL_AQUI' && SUPABASE_ANON_KEY !== 'TU_SUPABASE_ANON_KEY_AQUI';
         
         // Inicializar cliente de Supabase
-        let supabase = null;
+        var supabase = null;
         if (SUPABASE_CONFIGURADO && typeof window.supabase !== 'undefined') {
             try {
                 supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
