@@ -2450,146 +2450,83 @@
         // Inicializar cliente de Supabase
         var supabaseClient = null;
         
-        // Función para inicializar Supabase cuando esté disponible
+        // Función para inicializar Supabase - MÉTODO QUE FUNCIONA (igual que en el test)
         function inicializarSupabase() {
             if (supabaseClient !== null) {
                 return supabaseClient; // Ya está inicializado
             }
             
             if (!SUPABASE_CONFIGURADO) {
-                console.log('Supabase no configurado: URL o KEY no están configurados');
                 return null;
             }
             
-            // El CDN de Supabase expone la librería. Intentar acceder de múltiples formas
+            // Método exacto que funciona en el test
             var supabaseLib = null;
-            
             try {
-                // Forma 1: Acceder a la variable global 'supabase' usando Function constructor
-                // Esto nos permite acceder al scope global sin conflictos con variables locales
                 var getGlobalSupabase = new Function('return typeof supabase !== "undefined" ? supabase : null');
-                var globalSupabase = getGlobalSupabase();
+                supabaseLib = getGlobalSupabase();
                 
-                if (globalSupabase && typeof globalSupabase.createClient === 'function') {
-                    supabaseLib = globalSupabase;
-                    console.log('✅ Encontrada librería Supabase (método 1: Function constructor)');
-                }
-                // Forma 2: window.supabase (algunos CDNs lo exponen así)
-                else if (window.supabase && typeof window.supabase.createClient === 'function') {
+                if (!supabaseLib && window.supabase && typeof window.supabase.createClient === 'function') {
                     supabaseLib = window.supabase;
-                    console.log('✅ Encontrada librería Supabase (método 2: window.supabase)');
                 }
                 
-                // Debug: mostrar qué encontramos
-                if (!supabaseLib) {
-                    console.log('🔍 Debug - Verificando disponibilidad de Supabase:');
-                    console.log('   typeof supabase:', typeof supabase);
-                    console.log('   window.supabase:', window.supabase);
-                    console.log('   globalSupabase:', globalSupabase);
-                }
-            } catch (e) {
-                console.warn('Error accediendo a Supabase:', e);
-            }
-            
-            // Si Supabase está disponible, crear el cliente
-            if (supabaseLib && typeof supabaseLib.createClient === 'function') {
-                try {
-                    supabaseClient = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('✅ Supabase inicializado correctamente');
-                    console.log('   URL:', SUPABASE_URL);
-                    console.log('   Cliente creado:', !!supabaseClient);
-                    return supabaseClient;
-                } catch (error) {
-                    console.error('❌ Error inicializando Supabase:', error);
-                    supabaseClient = null;
+                if (!supabaseLib || typeof supabaseLib.createClient !== 'function') {
                     return null;
                 }
-            } else {
-                // Supabase aún no está disponible - el script del CDN podría no haberse cargado
-                console.log('⚠️ Supabase library no disponible aún en este momento');
+                
+                // Crear el cliente
+                supabaseClient = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                console.log('✅ Supabase inicializado correctamente');
+                return supabaseClient;
+            } catch (e) {
+                console.error('Error inicializando Supabase:', e);
                 return null;
             }
         }
         
         // Función helper para obtener el cliente de Supabase
-        // Esta función siempre devuelve el cliente actualizado
         function getSupabase() {
-            // Asegurar que esté inicializado
             if (SUPABASE_CONFIGURADO && !supabaseClient) {
                 inicializarSupabase();
             }
             return supabaseClient;
         }
         
-        // Crear variable 'supabase' como alias para compatibilidad con código existente
-        // Usamos Object.defineProperty para crear un getter que siempre devuelva el valor actualizado
-        try {
-            Object.defineProperty(window, 'supabase', {
-                get: function() {
-                    return getSupabase();
-                },
-                configurable: true
-            });
-        } catch (e) {
-            // Si no se puede definir, crear una variable simple
-            window.supabase = null;
-        }
-        
-        // Función para intentar inicializar Supabase con reintentos
-        function inicializarSupabaseConReintentos(intentosMaximos, delay) {
-            intentosMaximos = intentosMaximos || 10;
-            delay = delay || 300;
+        // Inicializar cuando el script del CDN esté listo
+        (function() {
+            function intentarInicializar() {
+                if (supabaseClient) return; // Ya está inicializado
+                
+                var resultado = inicializarSupabase();
+                if (resultado) {
+                    console.log('✅ Supabase listo para usar');
+                }
+                return resultado;
+            }
             
+            // Esperar a que window.load se complete
+            if (document.readyState === 'complete') {
+                // Ya cargado, esperar un momento y intentar
+                setTimeout(intentarInicializar, 500);
+            } else {
+                window.addEventListener('load', function() {
+                    setTimeout(intentarInicializar, 500);
+                });
+            }
+            
+            // También intentar con reintentos por si acaso
             var intentos = 0;
+            var maxIntentos = 20;
             var intervalo = setInterval(function() {
                 intentos++;
-                var resultado = inicializarSupabase();
-                
-                if (resultado !== null) {
+                if (intentarInicializar() || intentos >= maxIntentos) {
                     clearInterval(intervalo);
-                    console.log('✅ Supabase inicializado exitosamente en el intento ' + intentos);
-                } else if (intentos >= intentosMaximos) {
-                    clearInterval(intervalo);
-                    console.warn('⚠️ No se pudo inicializar Supabase después de ' + intentosMaximos + ' intentos. Usando datos locales.');
-                    console.warn('   Verifica que el script de Supabase se haya cargado correctamente.');
-                }
-            }, delay);
-        }
-        
-        // Esperar a que el DOM y los scripts estén completamente cargados
-        // Usar window.onload para asegurar que todos los scripts se hayan cargado
-        window.addEventListener('load', function() {
-            console.log('📦 Window loaded, intentando inicializar Supabase...');
-            // Esperar un poco más para que el script del CDN se cargue completamente
-            setTimeout(function() {
-                console.log('🔄 Intentando inicializar Supabase después de window.load...');
-                var resultado = inicializarSupabase();
-                if (!resultado) {
-                    console.log('🔄 Iniciando sistema de reintentos...');
-                    inicializarSupabaseConReintentos(15, 400);
-                }
-            }, 1000);
-        });
-        
-        // También intentar cuando el DOM esté listo (por si window.load ya pasó)
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    if (!supabaseClient) {
-                        console.log('🔄 Intentando desde DOMContentLoaded...');
-                        inicializarSupabase();
+                    if (intentos >= maxIntentos && !supabaseClient) {
+                        console.warn('⚠️ Supabase no se pudo inicializar después de ' + maxIntentos + ' intentos. Usando datos locales.');
                     }
-                }, 800);
-            });
-        } else {
-            // El DOM ya está cargado, pero esperar un poco más
-            setTimeout(function() {
-                if (!supabaseClient) {
-                    console.log('🔄 Intentando desde readyState...');
-                    inicializarSupabase();
                 }
-            }, 800);
-        }
+            }, 500);
+        })();
 
         // ** CONFIGURACIÓN DE GEMINI API **
         const apiKey = ""; // La clave se provee en tiempo de ejecución en Canvas
