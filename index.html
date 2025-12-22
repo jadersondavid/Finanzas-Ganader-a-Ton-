@@ -7,7 +7,7 @@
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="console.log('✅ Script de Supabase cargado')" onerror="console.error('❌ Error cargando script de Supabase')"></script>
     <style>
         /* Variables de Diseño - Colores Premium y Modernos */
         :root {
@@ -2413,43 +2413,71 @@
             }
             
             if (!SUPABASE_CONFIGURADO) {
+                console.log('Supabase no configurado: URL o KEY no están configurados');
                 return null;
             }
             
             // Verificar diferentes formas en que Supabase podría estar disponible
             var supabaseLib = null;
-            if (typeof window.supabase !== 'undefined' && window.supabase && typeof window.supabase.createClient === 'function') {
-                supabaseLib = window.supabase;
-            } else if (typeof window.supabase !== 'undefined' && window.supabase) {
-                // Intentar acceder a la propiedad createClient de manera segura
-                try {
-                    if (window.supabase.createClient) {
-                        supabaseLib = window.supabase;
-                    }
-                } catch (e) {
-                    // Ignorar error
+            
+            // Verificar window.supabase (forma estándar del CDN v2)
+            if (typeof window.supabase !== 'undefined' && window.supabase) {
+                if (typeof window.supabase.createClient === 'function') {
+                    supabaseLib = window.supabase;
+                } else {
+                    console.warn('window.supabase existe pero no tiene createClient. Tipo:', typeof window.supabase);
+                    // Intentar verificar si es un objeto con métodos
+                    console.log('window.supabase keys:', Object.keys(window.supabase || {}));
                 }
+            } else {
+                // Verificar si está disponible de otra forma (algunos CDNs lo exponen diferente)
+                console.log('Verificando disponibilidad de Supabase...');
+                console.log('window.supabase type:', typeof window.supabase);
+                console.log('window.supabase value:', window.supabase);
             }
             
             // Si Supabase está disponible, crear el cliente
             if (supabaseLib && typeof supabaseLib.createClient === 'function') {
                 try {
                     supabase = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    console.log('Supabase inicializado correctamente');
+                    console.log('✅ Supabase inicializado correctamente');
                     return supabase;
                 } catch (error) {
-                    console.error('Error inicializando Supabase:', error);
+                    console.error('❌ Error inicializando Supabase:', error);
                     supabase = null;
                     return null;
                 }
             } else {
-                // Supabase aún no está disponible
+                // Supabase aún no está disponible - el script del CDN podría no haberse cargado
+                console.warn('⚠️ Supabase library no está disponible aún. window.supabase:', typeof window.supabase);
                 return null;
             }
         }
         
+        // Función para intentar inicializar Supabase con reintentos
+        function inicializarSupabaseConReintentos(intentosMaximos, delay) {
+            intentosMaximos = intentosMaximos || 5;
+            delay = delay || 200;
+            
+            var intentos = 0;
+            var intervalo = setInterval(function() {
+                intentos++;
+                var resultado = inicializarSupabase();
+                
+                if (resultado !== null || intentos >= intentosMaximos) {
+                    clearInterval(intervalo);
+                    if (resultado === null && intentos >= intentosMaximos) {
+                        console.warn('⚠️ No se pudo inicializar Supabase después de ' + intentosMaximos + ' intentos. Usando datos locales.');
+                    }
+                }
+            }, delay);
+        }
+        
         // Intentar inicializar inmediatamente
         inicializarSupabase();
+        
+        // También intentar con reintentos por si el script del CDN se carga después
+        inicializarSupabaseConReintentos(5, 200);
 
         // ** CONFIGURACIÓN DE GEMINI API **
         const apiKey = ""; // La clave se provee en tiempo de ejecución en Canvas
