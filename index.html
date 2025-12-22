@@ -7,7 +7,20 @@
     <!-- Librería de Gráficos: Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <!-- Supabase Client -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" onload="console.log('✅ Script de Supabase cargado')" onerror="console.error('❌ Error cargando script de Supabase')"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Verificar que Supabase se haya cargado correctamente
+        window.addEventListener('load', function() {
+            console.log('Verificando carga de Supabase...');
+            console.log('window.supabase:', window.supabase);
+            console.log('typeof window.supabase:', typeof window.supabase);
+            if (window.supabase && typeof window.supabase.createClient === 'function') {
+                console.log('✅ Supabase está disponible');
+            } else {
+                console.error('❌ Supabase no está disponible correctamente');
+            }
+        });
+    </script>
     <style>
         /* Variables de Diseño - Colores Premium y Modernos */
         :root {
@@ -2404,12 +2417,12 @@
         const SUPABASE_CONFIGURADO = SUPABASE_URL !== 'TU_SUPABASE_URL_AQUI' && SUPABASE_ANON_KEY !== 'TU_SUPABASE_ANON_KEY_AQUI';
         
         // Inicializar cliente de Supabase
-        var supabase = null;
+        var supabaseClient = null;
         
         // Función para inicializar Supabase cuando esté disponible
         function inicializarSupabase() {
-            if (supabase !== null) {
-                return supabase; // Ya está inicializado
+            if (supabaseClient !== null) {
+                return supabaseClient; // Ya está inicializado
             }
             
             if (!SUPABASE_CONFIGURADO) {
@@ -2417,41 +2430,81 @@
                 return null;
             }
             
-            // Verificar diferentes formas en que Supabase podría estar disponible
+            // El CDN de Supabase expone la librería. Intentar acceder de múltiples formas
             var supabaseLib = null;
             
-            // Verificar window.supabase (forma estándar del CDN v2)
-            if (typeof window.supabase !== 'undefined' && window.supabase) {
-                if (typeof window.supabase.createClient === 'function') {
+            try {
+                // Forma 1: window.supabase (algunos CDNs lo exponen así)
+                if (window.supabase && typeof window.supabase.createClient === 'function') {
                     supabaseLib = window.supabase;
-                } else {
-                    console.warn('window.supabase existe pero no tiene createClient. Tipo:', typeof window.supabase);
-                    // Intentar verificar si es un objeto con métodos
-                    console.log('window.supabase keys:', Object.keys(window.supabase || {}));
                 }
-            } else {
-                // Verificar si está disponible de otra forma (algunos CDNs lo exponen diferente)
-                console.log('Verificando disponibilidad de Supabase...');
-                console.log('window.supabase type:', typeof window.supabase);
-                console.log('window.supabase value:', window.supabase);
+                // Forma 2: Acceder a la variable global 'supabase' usando Function constructor
+                // Esto nos permite acceder al scope global sin conflictos con variables locales
+                else {
+                    var getGlobalSupabase = new Function('return typeof supabase !== "undefined" ? supabase : null');
+                    var globalSupabase = getGlobalSupabase();
+                    
+                    if (globalSupabase && typeof globalSupabase.createClient === 'function') {
+                        supabaseLib = globalSupabase;
+                    }
+                }
+            } catch (e) {
+                console.warn('Error accediendo a Supabase:', e);
             }
             
             // Si Supabase está disponible, crear el cliente
             if (supabaseLib && typeof supabaseLib.createClient === 'function') {
                 try {
-                    supabase = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    supabaseClient = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    // Actualizar el alias en window
+                    if (window.supabase !== supabaseClient) {
+                        try {
+                            Object.defineProperty(window, 'supabase', {
+                                get: function() { return supabaseClient; },
+                                configurable: true
+                            });
+                        } catch (e) {
+                            window.supabase = supabaseClient;
+                        }
+                    }
                     console.log('✅ Supabase inicializado correctamente');
-                    return supabase;
+                    return supabaseClient;
                 } catch (error) {
                     console.error('❌ Error inicializando Supabase:', error);
-                    supabase = null;
+                    supabaseClient = null;
+                    try {
+                        window.supabase = null;
+                    } catch (e) {}
                     return null;
                 }
             } else {
                 // Supabase aún no está disponible - el script del CDN podría no haberse cargado
-                console.warn('⚠️ Supabase library no está disponible aún. window.supabase:', typeof window.supabase);
                 return null;
             }
+        }
+        
+        // Función helper para obtener el cliente de Supabase
+        // Esta función siempre devuelve el cliente actualizado
+        function getSupabase() {
+            // Asegurar que esté inicializado
+            if (SUPABASE_CONFIGURADO && !supabaseClient) {
+                inicializarSupabase();
+            }
+            return supabaseClient;
+        }
+        
+        // Crear variable 'supabase' como alias para compatibilidad con código existente
+        // Usamos Object.defineProperty para crear un getter que siempre devuelva el valor actualizado
+        try {
+            Object.defineProperty(window, 'supabase', {
+                get: function() {
+                    return getSupabase();
+                },
+                configurable: true
+            });
+        } catch (e) {
+            // Si no se puede definir, crear una variable simple
+            window.supabase = null;
         }
         
         // Función para intentar inicializar Supabase con reintentos
@@ -2679,9 +2732,7 @@
          */
         async function cargarProveedores() {
             // Asegurar que Supabase esté inicializado
-            if (SUPABASE_CONFIGURADO && !supabase) {
-                inicializarSupabase();
-            }
+            var supabase = getSupabase();
             
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 console.warn('Supabase no configurado, usando datos locales');
@@ -2735,6 +2786,7 @@
          * Cargar todos los gastos desde Supabase
          */
         async function cargarGastos() {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 return MOCK_DATA.GASTOS;
             }
@@ -2771,6 +2823,7 @@
          * Cargar todos los ingresos desde Supabase
          */
         async function cargarIngresos() {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 return MOCK_DATA.INGRESOS;
             }
@@ -2805,6 +2858,7 @@
          * Cargar presupuesto mensual desde Supabase
          */
         async function cargarPresupuesto() {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 return PRESUPUESTO_MENSUAL;
             }
@@ -2839,6 +2893,7 @@
          * Guardar un nuevo proveedor en Supabase
          */
         async function guardarProveedor(proveedor) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 MOCK_DATA.PROVEEDORES.push(proveedor);
                 return proveedor;
@@ -2882,6 +2937,7 @@
          * Eliminar un proveedor de Supabase
          */
         async function eliminarProveedor(proveedorId) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 MOCK_DATA.PROVEEDORES = MOCK_DATA.PROVEEDORES.filter(p => p.id !== proveedorId);
                 return;
@@ -2906,6 +2962,7 @@
          * Guardar un nuevo gasto en Supabase
          */
         async function guardarGasto(gasto) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 // Asignar ID temporal si no existe
                 if (!gasto.id) {
@@ -2956,6 +3013,7 @@
          * Guardar un nuevo ingreso en Supabase
          */
         async function guardarIngreso(ingreso) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 // Asignar ID temporal si no existe
                 if (!ingreso.id) {
@@ -3002,6 +3060,7 @@
          * Actualizar presupuesto mensual en Supabase
          */
         async function actualizarPresupuestoDB(monto) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 PRESUPUESTO_MENSUAL = monto;
                 return;
@@ -4470,6 +4529,7 @@
         
         // Función para actualizar un proveedor
         async function actualizarProveedor(proveedorId, datosActualizados) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 // Actualizar en datos locales
                 const index = MOCK_DATA.PROVEEDORES.findIndex(p => p.id === proveedorId);
@@ -4551,6 +4611,7 @@
         
         // Función para eliminar gasto de la base de datos
         async function eliminarGastoDB(gastoId) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 MOCK_DATA.GASTOS = MOCK_DATA.GASTOS.filter(g => g.id !== gastoId);
                 return;
@@ -4700,6 +4761,7 @@
          * Actualizar un gasto existente
          */
         async function actualizarGasto(gastoId, datosActualizados) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 // Actualizar en datos locales
                 const index = MOCK_DATA.GASTOS.findIndex(g => g.id === gastoId);
@@ -4756,6 +4818,7 @@
          * Actualizar un ingreso existente
          */
         async function actualizarIngreso(ingresoId, datosActualizados) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 // Actualizar en datos locales
                 const index = MOCK_DATA.INGRESOS.findIndex(i => i.id === ingresoId);
@@ -4806,6 +4869,7 @@
         
         // Función para eliminar ingreso de la base de datos
         async function eliminarIngresoDB(ingresoId) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 MOCK_DATA.INGRESOS = MOCK_DATA.INGRESOS.filter(i => i.id !== ingresoId);
                 return;
@@ -5001,6 +5065,7 @@
 
         // Función para subir logo a Supabase Storage
         async function subirLogoASupabase(file) {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 return null;
             }
@@ -5034,6 +5099,7 @@
         
         // Función para cargar logo desde Supabase Storage
         async function cargarLogoDesdeSupabase() {
+            var supabase = getSupabase();
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 return null;
             }
