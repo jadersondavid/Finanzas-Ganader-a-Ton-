@@ -2119,7 +2119,7 @@
             <section id="presupuesto" class="content-section hidden">
                 <h2>✅ Configuración de Presupuesto Mensual</h2>
                 <div class="card">
-                    <p>El presupuesto actual de **Noviembre 2025** es de <strong id="currentBudgetDisplay"></strong>.</p>
+                    <p>El presupuesto actual de <strong id="currentMonthYear"></strong> es de <strong id="currentBudgetDisplay"></strong>.</p>
                     <form id="budgetForm" class="form-container">
                         <div class="form-group full-width">
                             <label for="newBudget">Nuevo Presupuesto Mensual (COP)</label>
@@ -3054,7 +3054,17 @@
                         });
                     }
                     if (targetId === 'presupuesto') {
-                         document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+                        // Actualizar mes y año actual automáticamente
+                        const mesActual = getMesActual();
+                        const nombreMesCapitalizado = mesActual.nombreMes.charAt(0).toUpperCase() + mesActual.nombreMes.slice(1);
+                        const currentMonthYearEl = document.getElementById('currentMonthYear');
+                        const currentBudgetDisplayEl = document.getElementById('currentBudgetDisplay');
+                        if (currentMonthYearEl) {
+                            currentMonthYearEl.innerText = `${nombreMesCapitalizado} ${mesActual.año}`;
+                        }
+                        if (currentBudgetDisplayEl) {
+                            currentBudgetDisplayEl.innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+                        }
                     }
                 });
             });
@@ -3232,10 +3242,14 @@
                     saldoNetoCard.classList.remove('expense');
                     saldoNetoCard.classList.add('profit');
                     saldoNetoCard.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)';
+                    saldoNetoEl.style.color = '#ffffff';
+                    saldoNetoCard.querySelector('h3').style.color = '#ffffff';
                 } else {
                     saldoNetoCard.classList.remove('profit');
                     saldoNetoCard.classList.add('expense');
                     saldoNetoCard.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 50%, #b91c1c 100%)';
+                    saldoNetoEl.style.color = '#ffffff';
+                    saldoNetoCard.querySelector('h3').style.color = '#ffffff';
                 }
                 
                 document.getElementById('totalProveedores').innerText = totalProveedores;
@@ -5395,7 +5409,17 @@
                 renderIncomeTable(MOCK_DATA.INGRESOS); // Renderizar tabla de ingresos
                 await updateDashboard();
                 await cargarPresupuesto();
-            document.getElementById('currentBudgetDisplay').innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+                // Actualizar mes y año actual en presupuesto
+                const mesActual = getMesActual();
+                const nombreMesCapitalizado = mesActual.nombreMes.charAt(0).toUpperCase() + mesActual.nombreMes.slice(1);
+                const currentMonthYearEl = document.getElementById('currentMonthYear');
+                const currentBudgetDisplayEl = document.getElementById('currentBudgetDisplay');
+                if (currentMonthYearEl) {
+                    currentMonthYearEl.innerText = `${nombreMesCapitalizado} ${mesActual.año}`;
+                }
+                if (currentBudgetDisplayEl) {
+                    currentBudgetDisplayEl.innerText = formatCurrency(PRESUPUESTO_MENSUAL);
+                }
             } catch (error) {
                 console.error('Error cargando datos iniciales:', error);
                 if (SUPABASE_CONFIGURADO) {
