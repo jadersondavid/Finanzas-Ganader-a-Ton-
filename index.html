@@ -2405,14 +2405,51 @@
         
         // Inicializar cliente de Supabase
         var supabase = null;
-        if (SUPABASE_CONFIGURADO && typeof window.supabase !== 'undefined') {
-            try {
-                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            } catch (error) {
-                console.error('Error inicializando Supabase:', error);
-                supabase = null;
+        
+        // Función para inicializar Supabase cuando esté disponible
+        function inicializarSupabase() {
+            if (supabase !== null) {
+                return supabase; // Ya está inicializado
+            }
+            
+            if (!SUPABASE_CONFIGURADO) {
+                return null;
+            }
+            
+            // Verificar diferentes formas en que Supabase podría estar disponible
+            var supabaseLib = null;
+            if (typeof window.supabase !== 'undefined' && window.supabase && typeof window.supabase.createClient === 'function') {
+                supabaseLib = window.supabase;
+            } else if (typeof window.supabase !== 'undefined' && window.supabase) {
+                // Intentar acceder a la propiedad createClient de manera segura
+                try {
+                    if (window.supabase.createClient) {
+                        supabaseLib = window.supabase;
+                    }
+                } catch (e) {
+                    // Ignorar error
+                }
+            }
+            
+            // Si Supabase está disponible, crear el cliente
+            if (supabaseLib && typeof supabaseLib.createClient === 'function') {
+                try {
+                    supabase = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+                    console.log('Supabase inicializado correctamente');
+                    return supabase;
+                } catch (error) {
+                    console.error('Error inicializando Supabase:', error);
+                    supabase = null;
+                    return null;
+                }
+            } else {
+                // Supabase aún no está disponible
+                return null;
             }
         }
+        
+        // Intentar inicializar inmediatamente
+        inicializarSupabase();
 
         // ** CONFIGURACIÓN DE GEMINI API **
         const apiKey = ""; // La clave se provee en tiempo de ejecución en Canvas
@@ -2613,6 +2650,11 @@
          * Cargar todos los proveedores desde Supabase
          */
         async function cargarProveedores() {
+            // Asegurar que Supabase esté inicializado
+            if (SUPABASE_CONFIGURADO && !supabase) {
+                inicializarSupabase();
+            }
+            
             if (!SUPABASE_CONFIGURADO || !supabase) {
                 console.warn('Supabase no configurado, usando datos locales');
                 return MOCK_DATA.PROVEEDORES;
@@ -5391,6 +5433,9 @@
 
         // Inicialización de la Aplicación
         window.onload = async function() {
+            // Inicializar Supabase primero
+            inicializarSupabase();
+            
             setupNavigation();
             setupBudgetForm();
             setupLogoUpload();
