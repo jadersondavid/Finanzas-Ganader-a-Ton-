@@ -2472,25 +2472,20 @@
                 
                 if (globalSupabase && typeof globalSupabase.createClient === 'function') {
                     supabaseLib = globalSupabase;
+                    console.log('✅ Encontrada librería Supabase (método 1: Function constructor)');
                 }
                 // Forma 2: window.supabase (algunos CDNs lo exponen así)
                 else if (window.supabase && typeof window.supabase.createClient === 'function') {
                     supabaseLib = window.supabase;
+                    console.log('✅ Encontrada librería Supabase (método 2: window.supabase)');
                 }
-                // Forma 3: Verificar si está disponible como propiedad del objeto global
-                else if (typeof supabase !== 'undefined' && supabase && typeof supabase.createClient === 'function') {
-                    // Acceder directamente si está en el scope global
-                    try {
-                        supabaseLib = (function() {
-                            try {
-                                return typeof supabase !== 'undefined' ? supabase : null;
-                            } catch(e) {
-                                return null;
-                            }
-                        })();
-                    } catch(e) {
-                        // Ignorar
-                    }
+                
+                // Debug: mostrar qué encontramos
+                if (!supabaseLib) {
+                    console.log('🔍 Debug - Verificando disponibilidad de Supabase:');
+                    console.log('   typeof supabase:', typeof supabase);
+                    console.log('   window.supabase:', window.supabase);
+                    console.log('   globalSupabase:', globalSupabase);
                 }
             } catch (e) {
                 console.warn('Error accediendo a Supabase:', e);
@@ -2501,6 +2496,8 @@
                 try {
                     supabaseClient = supabaseLib.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                     console.log('✅ Supabase inicializado correctamente');
+                    console.log('   URL:', SUPABASE_URL);
+                    console.log('   Cliente creado:', !!supabaseClient);
                     return supabaseClient;
                 } catch (error) {
                     console.error('❌ Error inicializando Supabase:', error);
@@ -2509,6 +2506,7 @@
                 }
             } else {
                 // Supabase aún no está disponible - el script del CDN podría no haberse cargado
+                console.log('⚠️ Supabase library no disponible aún en este momento');
                 return null;
             }
         }
@@ -2559,20 +2557,38 @@
         }
         
         // Esperar a que el DOM y los scripts estén completamente cargados
+        // Usar window.onload para asegurar que todos los scripts se hayan cargado
+        window.addEventListener('load', function() {
+            console.log('📦 Window loaded, intentando inicializar Supabase...');
+            // Esperar un poco más para que el script del CDN se cargue completamente
+            setTimeout(function() {
+                console.log('🔄 Intentando inicializar Supabase después de window.load...');
+                var resultado = inicializarSupabase();
+                if (!resultado) {
+                    console.log('🔄 Iniciando sistema de reintentos...');
+                    inicializarSupabaseConReintentos(15, 400);
+                }
+            }, 1000);
+        });
+        
+        // También intentar cuando el DOM esté listo (por si window.load ya pasó)
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', function() {
-                // Esperar un poco más para que el script del CDN se cargue
                 setTimeout(function() {
-                    inicializarSupabase();
-                    inicializarSupabaseConReintentos(10, 300);
-                }, 500);
+                    if (!supabaseClient) {
+                        console.log('🔄 Intentando desde DOMContentLoaded...');
+                        inicializarSupabase();
+                    }
+                }, 800);
             });
         } else {
-            // El DOM ya está cargado
+            // El DOM ya está cargado, pero esperar un poco más
             setTimeout(function() {
-                inicializarSupabase();
-                inicializarSupabaseConReintentos(10, 300);
-            }, 500);
+                if (!supabaseClient) {
+                    console.log('🔄 Intentando desde readyState...');
+                    inicializarSupabase();
+                }
+            }, 800);
         }
 
         // ** CONFIGURACIÓN DE GEMINI API **
